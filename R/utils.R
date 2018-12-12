@@ -1,3 +1,42 @@
+stream_to_blk <- function(x){
+  unlist(lapply(x, function(x){
+    if(is_blk_s(x)){
+      return(x)
+    }
+    if(is_gnis(x)){
+      return(fwa_gnis_lookup$BlueLineKey[which(fwa_gnis$GnisName %in% x)])
+    }
+    fwa_stream_lookup$BlueLineKey[which(fwa_stream_lookup$WatershedCode %in% x)]
+  }))
+}
+
+stream_to_wscode <- function(x){
+  unlist(lapply(x, function(x){
+    if(is_wscode_s(x)){
+      return(x)
+    }
+    if(is_gnis(x)){
+      return(fwa_gnis_lookup$WatershedCode[fwa_gnis_lookup$GnisName %in% x])
+    }
+    fwa_stream_lookup$WatershedCode[fwa_stream_lookup$BlueLineKey %in% x]
+  }))
+}
+
+wscode_to_blk <- function(x){
+  unlist(lapply(x, function(x){
+    fwa_stream_lookup$BlueLineKey[which(fwa_stream_lookup$WatershedCode %in% x)]
+  }))
+}
+
+fwa_tributaries <- function(x){
+  x <- gsub("-000000", "", x)
+  unlist(lapply(x, function(x){
+    fwa_stream_lookup$BlueLineKey[grepl(x, fwa_stream_lookup$WatershedCode, fixed = TRUE)]
+  }))
+}
+
+# stream_to_blk(fwa_stream_lookup$WatershedCode[1:5])
+
 gnis_to_blk <- function(x){
   check_stream(x)
   unlist(lapply(x, function(x){
@@ -17,19 +56,6 @@ wsname_to_wscode <- function(x){
     fwa_watershed_group$WatershedGroupCode[which(fwa_watershed_group$WatershedGroupName %in% x)]
   }))
 }
-
-or_sql <- function(x, var = "BLUE_LINE_KEY"){
-  paste0(var, " = ", x, " OR ", collapse = "")
-}
-
-select_sql <- function(x, vars = "*", layer = "FWA_ROUTES_SP"){
-  paste("select", vars, "from", layer, "where", x)
-}
-
-snip <- function(x){
-  gsub('.{0,4}$', '', x)
-}
-
 
 line_sample <- function(data, distance){
   # data <- try(st_cast(data, "LINESTRING", silent = TRUE))

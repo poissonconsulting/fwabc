@@ -1,5 +1,5 @@
 is_blk_s <- function(x){
-  x %in% fwa_stream_lookup$BlueLineKey
+ x %in% fwa_stream_lookup$BlueLineKey
 }
 
 is_gnis <- function(x){
@@ -28,25 +28,25 @@ is_wsg_name <- function(x){
 
 check_stream <- function(x){
   lapply(x, function(x){
-    if(!(is_blk_s(x) || is_gnis(x) || is_wscode_s(x))){ps_error(x, " is not a valid BlueLineKey, GnisName or WatershedCode")}
+    if(!(is_blk_s(x) || is_gnis(x) || is_wscode_s(x))) err(x, " is not a valid BlueLineKey, GnisName or WatershedCode")
   })
 }
 
 check_coastline <- function(x){
   lapply(x, function(x){
-    if(!(is_blk_c(x) || is_wscode_c(x))){ps_error(x, " is not a valid BlueLineKey or WatershedCode")}
+    if(!(is_blk_c(x) || is_wscode_c(x))) err(x, " is not a valid BlueLineKey or WatershedCode")
   })
 }
 
 check_wsgroup <- function(x){
   lapply(x, function(x){
-    if(!(is_wsg_code(x) || is_wsg_name(x))) ps_error(x, " is not a valid WatershedGroupCode or WatershedGroupName")
+    if(!(is_wsg_code(x) || is_wsg_name(x))) err(x, " is not a valid WatershedGroupCode or WatershedGroupName")
   })
 }
 
 check_dsn <- function(x, layer){
-  check_string(x)
+  checkr::check_string(x)
   works <- try(st_layers(dsn = x), silent = TRUE)
-  if(inherits(works, "try-error")) ps_error("Could not read any layers from database at ", x)
-  if(!(layer %in% works$name)){ps_error("Database at ", x, " does not have the the required layer: ", layer)}
+  if(inherits(works, "try-error")) err("Could not read any layers from database at ", x)
+  if(!(layer %in% works$name)) err("Database at ", x, " does not have the the required layer: ", layer)
 }
