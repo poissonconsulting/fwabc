@@ -26,15 +26,23 @@ is_wsg_name <- function(x){
   x %in% fwa_wsgroup_lookup$WatershedGroupName
 }
 
+is_wsg_code_c <- function(x){
+  x %in% fwa_coastline_lookup$WatershedGroupCode
+}
+
+is_wsg_name_c <- function(x){
+  x %in% fwa_coastline_lookup$WatershedGroupName
+}
+
 check_stream <- function(x){
   lapply(x, function(x){
-    if(!(is_blk_s(x) || is_gnis(x) || is_wscode_s(x))) err(x, " is not a valid BlueLineKey, GnisName or WatershedCode")
+    if(!(is_blk_s(x) || is_gnis(x) || is_wscode_s(x))) err(x, " is not a valid GnisName, BlueLineKey, or WatershedCode (see fwa_stream_lookup for reference)")
   })
 }
 
 check_coastline <- function(x){
   lapply(x, function(x){
-    if(!(is_blk_c(x) || is_wscode_c(x))) err(x, " is not a valid BlueLineKey or WatershedCode")
+    if(!(is_blk_c(x) || is_wscode_c(x) || is_wsg_code_c(x) || is_wsg_name_c(x))) err(x, " is not a valid coastline WatershedGroupName, WatershedGroupCode, BlueLineKey, or WatershedCode (see fwa_coastline_lookup for reference)")
   })
 }
 
