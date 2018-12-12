@@ -1,4 +1,4 @@
-is_blks <- function(x){
+is_blk_s <- function(x){
   x %in% fwa_stream_lookup$BlueLineKey
 }
 
@@ -6,12 +6,16 @@ is_gnis <- function(x){
   x %in% fwa_gnis_lookup$GnisName
 }
 
-is_wscode <- function(x){
+is_wscode_s <- function(x){
   x %in% fwa_stream_lookup$WatershedCode
 }
 
-is_blk_coast <- function(x){
-  x %in% fwa_blk_coastline$BlueLineKey
+is_blk_c <- function(x){
+  x %in% fwa_coastline_lookup$BlueLineKey
+}
+
+is_wscode_c <- function(x){
+  x %in% fwa_coastline_lookup$WatershedCode
 }
 
 is_wsg_code <- function(x){
@@ -24,19 +28,19 @@ is_wsg_name <- function(x){
 
 check_stream <- function(x){
   lapply(x, function(x){
-    if(!(is_blk_stream(x) || is_gnis(x))){ps_error(x, " is not a valid BlueLineKey or GnisName")}
+    if(!(is_blk_s(x) || is_gnis(x) || is_wscode_s(x))){ps_error(x, " is not a valid BlueLineKey, GnisName or WatershedCode")}
   })
 }
 
-check_blk_coast <- function(x){
+check_coastline <- function(x){
   lapply(x, function(x){
-    if(!(is_blk_coast(x))){ps_error(x, " is not a valid BlueLineKey")}
+    if(!(is_blk_c(x) || is_wscode_c(x))){ps_error(x, " is not a valid BlueLineKey or WatershedCode")}
   })
 }
 
-check_ws <- function(x){
+check_wsgroup <- function(x){
   lapply(x, function(x){
-    if(!(is_wscode(x) || is_wsname(x))) ps_error(x, " is not a valid WatershedGroupCode or WatershedGroupName")
+    if(!(is_wsg_code(x) || is_wsg_name(x))) ps_error(x, " is not a valid WatershedGroupCode or WatershedGroupName")
   })
 }
 
@@ -45,10 +49,4 @@ check_dsn <- function(x, layer){
   works <- try(st_layers(dsn = x), silent = TRUE)
   if(inherits(works, "try-error")) ps_error("Could not read any layers from database at ", x)
   if(!(layer %in% works$name)){ps_error("Database at ", x, " does not have the the required layer: ", layer)}
-}
-
-check_layer <- function(x){
-  if(!(x %in% unlist(fwa_layers, use.names = FALSE))){
-    ps_error(x, " is not a valid layer or shortcut")
-  }
 }
