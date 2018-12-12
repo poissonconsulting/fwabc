@@ -42,10 +42,3 @@ line_sample <- function(data, distance){
     st_sf()
 }
 
-# shortcut_to_layer <- function(x){
-#   if(is_shortcut(x)){
-#     data <- do.call("rbind", lapply(fwa_layers, function(x) x))
-#     return(data$layer[which(data$shortcut == x)])
-#   }
-#   x
-# }

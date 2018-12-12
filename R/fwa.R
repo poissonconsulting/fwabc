@@ -130,24 +130,3 @@ ps_fwa_rkm <- function(dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb/", strea
 
 
 
-#' Read a valid FWA layer limit rows.
-#'
-#' @param dsn A character string indicating path to FWA database with FWA_ROUTES_SP layer.
-#' @param layer A character string of a valid FWA layer name from dsn or a valid shortcut layer name (see fwa_shortcuts dataset).
-#' @param limit An integer indicating how many rows to limit to.
-#' @param
-#' @return A sf object.
-#' @examples
-#' stream1 <- ps_fwa_layer(layer = "routes", limit = 1)
-#' @export
-
-### damn! limit doesnt work in geodatabase
-# ps_fwa_layer <- function(dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb", layer = "routes", limit = 5L) {
-#   check_layer(layer)
-#   check_integer(limit)
-#   layer <- shortcut_to_layer(layer)
-#   check_dsn(dsn, layer = layer)
-#
-#   sql <- paste("select * from", layer, "limit", limit)
-#   st_read(dsn, layer = layer, query = sql)
-# }

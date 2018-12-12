@@ -18,11 +18,6 @@ is_wsname <- function(x){
   x %in% fwa_watershed_group$WatershedGroupName
 }
 
-# is_shortcut <- function(x){
-#   sc <- lapply(fwa_layers, function(x) x$shortcut) %>% unlist(., use.names = FALSE)
-#   x %in% sc
-# }
-
 check_stream <- function(x){
   lapply(x, function(x){
     if(!(is_blk_stream(x) || is_gnis(x))){ps_error(x, " is not a valid BlueLineKey or GnisName")}
