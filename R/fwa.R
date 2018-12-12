@@ -1,21 +1,21 @@
 #' Select and read FWA_ROUTES_SP by stream.
 #'
-#' @param dsn A character string indicating path to FWA database with FWA_ROUTES_SP layer.
 #' @param stream A vector of valid BlueLineKey/GnisName/WatershedCode in any combination (see fwa_stream_lookup reference).
-#' @param tributaries A flag indicating whether to include all tributaries of streams.
+#' @param tributaries A flag indicating whether to include all (TRUE) or no (FALSE) tributaries.
+#' @param dsn A character string indicating path to FWA database with FWA_ROUTES_SP layer.
 #' @param
 #' @return A sf object.
 #' @examples
-#' kaslo <- fwa_stream(stream = "Kaslo River", tributaries = TRUE)
+#' kaslo_tribs <- fwa_stream(stream = "Kaslo River", tributaries = TRUE)
 #' @export
-fwa_stream <- function(dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb", stream = "Kaslo River", tributaries = FALSE) {
+fwa_stream <- function(stream = "Kaslo River", tributaries = FALSE, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb") {
   check_dsn(dsn, layer = "FWA_ROUTES_SP")
   check_stream(stream)
 
   if(tributaries){
     x <- stream_to_wscode(stream) %>%
       fwa_tributaries()
-  } else{
+  } else {
     x <- stream_to_blk(stream)
   }
 
