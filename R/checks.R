@@ -1,21 +1,25 @@
-is_blk_stream <- function(x){
-  x %in% fwa_blue_line_key$BlueLineKey
+is_blks <- function(x){
+  x %in% fwa_stream_lookup$BlueLineKey
+}
+
+is_gnis <- function(x){
+  x %in% fwa_gnis_lookup$GnisName
+}
+
+is_wscode <- function(x){
+  x %in% fwa_stream_lookup$WatershedCode
 }
 
 is_blk_coast <- function(x){
   x %in% fwa_blk_coastline$BlueLineKey
 }
 
-is_gnis <- function(x){
-  x %in% fwa_gnis$GnisName
+is_wsg_code <- function(x){
+  x %in% fwa_wsgroup_lookup$WatershedGroupCode
 }
 
-is_wscode <- function(x){
-  x %in% fwa_watershed_group$WatershedGroupCode
-}
-
-is_wsname <- function(x){
-  x %in% fwa_watershed_group$WatershedGroupName
+is_wsg_name <- function(x){
+  x %in% fwa_wsgroup_lookup$WatershedGroupName
 }
 
 check_stream <- function(x){
