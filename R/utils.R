@@ -1,18 +1,18 @@
 stream_to_blk <- function(x){
   unlist(lapply(x, function(x){
-    if(is_blk_s(x)){
+    if(is_blk_stream(x)){
       return(x)
     }
     if(is_gnis(x)){
-      return(fwa_gnis_lookup$BlueLineKey[which(fwa_gnis$GnisName %in% x)])
+      return(fwa_gnis_lookup$BlueLineKey[fwa_gnis_lookup$GnisName %in% x])
     }
-    fwa_stream_lookup$BlueLineKey[which(fwa_stream_lookup$WatershedCode %in% x)]
+    fwa_stream_lookup$BlueLineKey[fwa_stream_lookup$WatershedCode %in% x]
   }))
 }
 
 stream_to_wscode <- function(x){
   unlist(lapply(x, function(x){
-    if(is_wscode_s(x)){
+    if(is_ws_code_stream(x)){
       return(x)
     }
     if(is_gnis(x)){
@@ -22,38 +22,20 @@ stream_to_wscode <- function(x){
   }))
 }
 
-wscode_to_blk <- function(x){
-  unlist(lapply(x, function(x){
-    fwa_stream_lookup$BlueLineKey[which(fwa_stream_lookup$WatershedCode %in% x)]
-  }))
-}
-
-fwa_tributaries <- function(x){
+tribs <- function(x){
   x <- gsub("-000000", "", x)
   unlist(lapply(x, function(x){
     fwa_stream_lookup$BlueLineKey[grepl(x, fwa_stream_lookup$WatershedCode, fixed = TRUE)]
   }))
 }
 
-# stream_to_blk(fwa_stream_lookup$WatershedCode[1:5])
-
-gnis_to_blk <- function(x){
-  check_stream(x)
-  unlist(lapply(x, function(x){
-    if(is_blk_stream(x)){
-      return(x)
-    }
-    fwa_gnis$BlueLineKey[which(fwa_gnis$GnisName %in% x)]
-  }))
-}
-
-wsname_to_wscode <- function(x){
+wsgname_to_wsgcode <- function(x){
   checkor(check_ws(x), is.null(x))
   unlist(lapply(x, function(x){
-    if(is_wscode(x)){
+    if(is_wsg_code(x)){
       return(x)
     }
-    fwa_watershed_group$WatershedGroupCode[which(fwa_watershed_group$WatershedGroupName %in% x)]
+    fwa_wsgroup_lookup$WatershedGroupCode[fwa_wsgroup_lookup$WatershedGroupName %in% x]
   }))
 }
 

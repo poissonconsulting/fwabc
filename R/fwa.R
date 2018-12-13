@@ -1,4 +1,4 @@
-#' Read stream data from FWA_ROUTES_SP layer.
+#' Read stream polylines from FWA_ROUTES_SP layer.
 #'
 #' Select particular streams with stream argument. Add all tributaries with tributaries = TRUE
 #'
@@ -26,7 +26,7 @@ fwa_stream <- function(stream = "Kaslo River", tributaries = FALSE, dsn = "~/Poi
   st_read(dsn = dsn, layer = "FWA_ROUTES_SP", query = sql)
 }
 
-#' Read coastline data from FWA_COASTLINES_SP layer.
+#' Read coastline polylines from FWA_COASTLINES_SP layer.
 #'
 #' Select particular coastlines with coastline argument.
 #'
@@ -64,3 +64,31 @@ fwa_coastline <- function(coastline, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_B
 
   st_read(dsn = dsn, layer = "FWA_COASTLINES_SP", query = sql)
 }
+
+#' Read watershed group polygons from FWA_WATERSHED_GROUPS_POLY layer.
+#'
+#' Select particular streams with stream argument. Add all tributaries with tributaries = TRUE
+#'
+#' @param watershed_group A vector of valid WatershedGroupCode and/or WatershedGroupNames (see fwa_wsgroup_lookup reference).
+#' @param dsn A character string indicating path to FWA database with FWA_ROUTES_SP layer.
+#' @return A sf object.
+#' @examples
+#' kaslo_tribs <- fwa_stream("Kaslo River", tributaries = TRUE)
+#' @export
+fwa_watershed_group <- function(watershed_group = "Kaslo River", dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb") {
+  check_dsn(dsn, layer = "FWA_WATERSHED_GROUPS_POLY")
+  check_wsgroup(watershed_group)
+
+  ws <- unlist(lapply(watershed_group, function(x){
+    if(is_wsg_name(x)){
+      return(wsgname_to_wsgcode(x))
+    }
+    x
+  }))
+
+  or <- paste0("WATERSHED_GROUP_CODE = '", ws, "' OR ", collapse = "") %>% gsub('.{0,4}$', '', .)
+  sql <- paste("select * from FWA_WATERSHED_GROUPS_POLY where", or)
+
+  st_read(dsn = dsn, layer = "FWA_WATERSHED_GROUPS_POLY", query = sql)
+}
+

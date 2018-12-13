@@ -13,14 +13,41 @@ MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org
 
 # fwabc
 
-fwabc is an R package to read data from BC Freshwater Atlas
-geodatabases.
+`fwabc` is an R package to read subsets of data from various layers in
+the BC Freshwater Atlas.
 
-By providing a GnisName, BlueLineKey and/or WatershedGroup (depending on
-the layers you are accessing), we then write the SQL select queries to
-get a subset of the data into memory.
+There are three main motivations to developing this package:
+
+1.  Some of the layers are huge and difficult to work with in their
+    entirety in memory.
+2.  It is tedious to subset features by common names (e.g. “Porcher
+    Island”, “Kaslo River”).
+3.  It is not immediately obvious how to get all tributaries of a
+    particular feature in the network.
+
+We provide solutions by:
+
+1.  Subsetting data with SQL queries before reading into memory.
+2.  Translating between various coding systems (e.g. GNIS\_NAME and
+    BLUE\_LINE\_KEY).
+3.  Parsing FWA\_WATERSHED\_CODES to determine tributaries.
 
 ## Installation
+
+To install the latest development version from
+[GitHub](https://github.com/poissonconsulting/fwabc)
+
+    install.packages("devtools")
+    devtools::install_github("poissonconsulting/err")
+    devtools::install_github("poissonconsulting/checkr")
+    devtools::install_github("poissonconsulting/fwabc")
+
+To install the latest development version from the Poisson drat
+[repository](https://github.com/poissonconsulting/drat)
+
+    install.packages("drat")
+    drat::addRepo("poissonconsulting")
+    install.packages("fwabc")
 
 ## Contribution
 

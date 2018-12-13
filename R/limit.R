@@ -19,6 +19,12 @@
 #   x %in% sc
 # }
 
+# check_layer <- function(x){
+#   if(!(x %in% unlist(fwa_layers, use.names = FALSE))){
+#     ps_error(x, " is not a valid layer or shortcut")
+#   }
+# }
+
 #' Read a valid FWA layer limit rows.
 #'
 #' @param dsn A character string indicating path to FWA database with FWA_ROUTES_SP layer.

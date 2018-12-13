@@ -14,8 +14,6 @@ test_that("read fwa data", {
   expect_true(nrow(x) == 8L)
   expect_is(x, "sf")
 
-  expect_error(fwa_stream("Cho River", dsn = dsn), "Cho River is not a valid GnisName, BlueLineKey, or WatershedCode (see fwa_stream_lookup for reference)")
-
   ### read coastline
   dsn <- system.file("extdata", "coastline.gpkg", package = "fwabc", mustWork = TRUE)
   x <- fwa_coastline(coastline = c(380891035L, "915-764826-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000"), dsn = dsn)
