@@ -21,26 +21,25 @@ usethis::use_data(fwa_layers, overwrite = TRUE)
 
 route <- st_read(dsn_bc, layer = "FWA_ROUTES_SP", query = "select BLUE_LINE_KEY, FWA_WATERSHED_CODE, WATERSHED_KEY from FWA_ROUTES_SP")
 
-fwa_stream_lookup <- route %>%
+route <- route %>%
   st_set_geometry(NULL) %>%
   select(BlueLineKey = BLUE_LINE_KEY,
-         WatershedCode = FWA_WATERSHED_CODE,
-         WatershedKey = WATERSHED_KEY)
-fwa_stream_lookup$WatershedCode %<>% as.character
+         WatershedCode = FWA_WATERSHED_CODE)
+route$WatershedCode %<>% as.character
 
 ws <- st_read(dsn_bc, layer = "FWA_NAMED_WATERSHEDS_POLY") %>%
   select(GNIS_NAME, BLUE_LINE_KEY, STREAM_ORDER)
 
-fwa_gnis <- ws %>%
+gnis <- ws %>%
   st_set_geometry(NULL) %>%
   select(BlueLineKey = BLUE_LINE_KEY,
          GnisName = GNIS_NAME)
-fwa_gnis$GnisName %<>% as.character
+gnis$GnisName %<>% as.character
 
 # remove Colley Creek BlueLineKey that isn't present in the route table
-fwa_gnis %<>% filter(!(BlueLineKey %in% anti_join(fwa_gnis, fwa_stream_lookup, "BlueLineKey")$BlueLineKey))
-check_join(fwa_gnis, fwa_stream_lookup, "BlueLineKey")
-fwa_stream_lookup <- left_join(fwa_stream_lookup, fwa_gnis, "BlueLineKey")
+gnis %<>% filter(!(BlueLineKey %in% anti_join(gnis, route, "BlueLineKey")$BlueLineKey))
+check_join(gnis, route, "BlueLineKey")
+fwa_stream_lookup <- left_join(route, gnis, "BlueLineKey")
 
 usethis::use_data(fwa_stream_lookup, overwrite = TRUE)
 
@@ -49,36 +48,38 @@ usethis::use_data(fwa_gnis_lookup, overwrite = TRUE)
 
 wsgroup <- st_read(dsn_bc, layer = "FWA_WATERSHED_GROUPS_POLY")
 
-fwa_watershed_group <- wsgroup %>%
+wsgroup <- wsgroup %>%
   st_set_geometry(NULL) %>%
   select(WatershedGroupCode =  WATERSHED_GROUP_CODE,
          WatershedGroupName = WATERSHED_GROUP_NAME)
-fwa_watershed_group$WatershedGroupCode %<>% as.character
-fwa_watershed_group$WatershedGroupName %<>% as.character
+wsgroup$WatershedGroupCode %<>% as.character
+wsgroup$WatershedGroupName %<>% as.character
 
-fwa_wsgroup_lookup <- fwa_watershed_group
+fwa_wsgroup_lookup <- wsgroup
 usethis::use_data(fwa_wsgroup_lookup, overwrite = TRUE)
 
 coastline <- st_read(dsn_bc, layer = "FWA_COASTLINES_SP",
                              query = "select * from FWA_COASTLINES_SP")
 
-fwa_coastline_blk_lookup <- coastline %>%
+cblk <- coastline %>%
   st_set_geometry(NULL) %>%
   select(BlueLineKey = BLUE_LINE_KEY,
-         WatershedCode = FWA_WATERSHED_CODE,
-         WatershedKey = WATERSHED_KEY)
+         WatershedCode = FWA_WATERSHED_CODE)
 
-fwa_coastline_wsgroup_lookup <- coastline %>%
+cwsg <- coastline %>%
   st_set_geometry(NULL) %>%
   select(WatershedGroupCode = WATERSHED_GROUP_CODE) %>%
   distinct
 
-fwa_coastline_wsgroup_lookup$WatershedGroupCode %<>% as.character
-fwa_coastline_blk_lookup$WatershedCode %<>% as.character
+cwsg$WatershedGroupCode %<>% as.character
+cblk$WatershedCode %<>% as.character
 
-check_join(fwa_coastline_wsgroup_lookup, fwa_wsgroup_lookup, "WatershedGroupCode")
-fwa_coastline_wsgroup_lookup <- fwa_coastline_wsgroup_lookup %>%
+check_join(cwsg, fwa_wsgroup_lookup, "WatershedGroupCode")
+cwsg <- cwsg %>%
   left_join(fwa_wsgroup_lookup, "WatershedGroupCode")
+
+fwa_coastline_blk_lookup <- cblk
+fwa_coastline_wsgroup_lookup <- cwsg
 
 usethis::use_data(fwa_coastline_blk_lookup, overwrite = TRUE)
 usethis::use_data(fwa_coastline_wsgroup_lookup, overwrite = TRUE)
