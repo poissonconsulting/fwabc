@@ -14,5 +14,6 @@ Imports: checkr,
          err
 Suggests: 
     covr,
+    spelling,
     testthat
 RoxygenNote: 6.1.1
