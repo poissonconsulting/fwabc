@@ -2,46 +2,30 @@ context("fwa read")
 
 test_that("read fwa data", {
 
-  ### translators
-  x <- c("Kaslo River", "Keen Creek", 356567321L)
-  blk <- gnis_to_blk(x)
-  expect_identical(blk, as.character(c(356567321L, 356562809L, 356567321L)))
-
-  ### read streams (routes)
-  dsn <- system.file(package = "poisspatial", "fwa/FWA_ROUTES_SP.gpkg")
-  # provide gnis
-  x <- ps_fwa_stream(dsn, stream = "Kaslo River")
-  expect_true(nrow(x) == 1L)
-  expect_is(x, "sf")
-  expect_true(x$BLUE_LINE_KEY  == 356567321L)
-  # provide blk
-  x <- ps_fwa_stream(dsn, stream = 356567322L)
-  expect_true(nrow(x) == 1L)
-  expect_is(x, "sf")
-  expect_true(x$BLUE_LINE_KEY == 356567322L)
-  # combination
-  x <- ps_fwa_stream(dsn, stream = c(356567322L, 356567323L, "Kaslo River"))
+  ### read streams
+  dsn <- system.file("extdata", "stream.gpkg", package = "fwabc", mustWork = TRUE)
+  streams <- c("Chown Brook", 360456318L, "940-971473-016923-822158-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000")
+  x <- fwa_stream(stream = streams, dsn = dsn)
   expect_true(nrow(x) == 3L)
   expect_is(x, "sf")
-  expect_true(all(x$BLUE_LINE_KEY %in% c(356567321L, 356567322L, 356567323L)))
+  expect_true(all(x$BLUE_LINE_KEY  %in% c(360456318L, 360545767L, 360640895L)))
+
+  x <- fwa_stream(stream = "Chown Brook", tributaries = TRUE, dsn = dsn)
+  expect_true(nrow(x) == 8L)
+  expect_is(x, "sf")
+
+  expect_error(fwa_stream("Cho River", dsn = dsn), "Cho River is not a valid GnisName, BlueLineKey, or WatershedCode (see fwa_stream_lookup for reference)")
 
   ### read coastline
-  dsn <- system.file(package = "poisspatial", "fwa/FWA_COASTLINES_SP.gpkg")
-  x <- ps_fwa_coastline(dsn = dsn, watershed_group = c("PORI", "Porcher Island"))
+  dsn <- system.file("extdata", "coastline.gpkg", package = "fwabc", mustWork = TRUE)
+  x <- fwa_coastline(coastline = c(380891035L, "915-764826-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000"), dsn = dsn)
   expect_is(x, "sf")
-  expect_true(nrow(x) == 2L)
-  expect_true(all(x$WATERSHED_GROUP_CODE == "PORI"))
-  x <- ps_fwa_coastline(dsn = dsn, blue_line_key = 380891035L)
+  expect_true(nrow(x) == 3L)
+  expect_identical(unique(x$WATERSHED_GROUP_CODE) %>% as.character, c("PORI"))
+
+  x <- fwa_coastline(coastline = c("SEYM", "Porcher Island"), dsn = dsn)
   expect_is(x, "sf")
-  expect_true(nrow(x) == 2L)
-  expect_true(all(x$BLUE_LINE_KEY == 380891035L))
-
-  expect_error(ps_fwa_coastline(dsn = dsn, watershed_group = 380891035L), "Error: 380891035 is not a valid WatershedGroupCode or WatershedGroupName")
-
-  ws
-
-
-  ### read watersheds
-
+  expect_true(nrow(x) == 12L)
+  expect_identical(unique(x$WATERSHED_GROUP_CODE) %>% as.character, c("PORI", "SEYM"))
 
 })
