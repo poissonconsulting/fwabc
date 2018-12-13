@@ -26,6 +26,7 @@ fwa_stream_lookup <- route %>%
   select(BlueLineKey = BLUE_LINE_KEY,
          WatershedCode = FWA_WATERSHED_CODE,
          WatershedKey = WATERSHED_KEY)
+fwa_stream_lookup$WatershedCode %<>% as.character
 
 ws <- st_read(dsn_bc, layer = "FWA_NAMED_WATERSHEDS_POLY") %>%
   select(GNIS_NAME, BLUE_LINE_KEY, STREAM_ORDER)
@@ -43,7 +44,7 @@ fwa_stream_lookup <- left_join(fwa_stream_lookup, fwa_gnis, "BlueLineKey")
 
 usethis::use_data(fwa_stream_lookup, overwrite = TRUE)
 
-fwa_gnis_lookup <- fwa_gnis
+fwa_gnis_lookup <- filter(fwa_stream_lookup, !is.na(GnisName))
 usethis::use_data(fwa_gnis_lookup, overwrite = TRUE)
 
 wsgroup <- st_read(dsn_bc, layer = "FWA_WATERSHED_GROUPS_POLY")
@@ -63,7 +64,15 @@ fwa_coastline_lookup <- st_read(dsn_bc, layer = "FWA_COASTLINES_SP",
   st_set_geometry(NULL) %>%
   select(BlueLineKey = BLUE_LINE_KEY,
          WatershedCode = FWA_WATERSHED_CODE,
-         WatershedKey = WATERSHED_KEY)
+         WatershedKey = WATERSHED_KEY,
+         WatershedGroupCode = WATERSHED_GROUP_CODE)
+
+fwa_coastline_lookup$WatershedGroupCode %<>% as.character
+fwa_coastline_lookup$WatershedCode %<>% as.character
+
+check_join(fwa_coastline_lookup, fwa_wsgroup_lookup, "WatershedGroupCode")
+fwa_coastline_lookup <- fwa_coastline_lookup %>%
+  left_join(fwa_wsgroup_lookup, "WatershedGroupCode")
 
 usethis::use_data(fwa_coastline_lookup, overwrite = TRUE)
 
