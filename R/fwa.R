@@ -6,7 +6,6 @@
 #' @param stream A vector of valid BlueLineKey/GnisName/WatershedCode in any combination (see fwa_stream_lookup reference).
 #' @param tributaries A flag indicating whether to include all (TRUE) or no (FALSE) tributaries.
 #' @param dsn A character string indicating path to FWA database with FWA_ROUTES_SP layer.
-#' @param
 #' @return A sf object.
 #' @examples
 #' kaslo_tribs <- fwa_stream("Kaslo River", tributaries = TRUE)
@@ -33,7 +32,6 @@ fwa_stream <- function(stream = "Kaslo River", tributaries = FALSE, dsn = "~/Poi
 #'
 #' @param coastline A vector of valid coastline WatershedGroupCode, WatershedGroupName, BlueLineKey, and/or WatershedCode. (see fwa_coastline_wsg_lookup and fwa_coastline_blk_lookup for reference).
 #' @param dsn A character string indicating path to FWA database with FWA_COASTLINE_SP layer.
-#' @param
 #' @return A sf object.
 #' @examples
 #' porcher <- fwa_coastline("Porcher Island")
