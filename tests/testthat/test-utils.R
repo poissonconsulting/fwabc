@@ -11,15 +11,15 @@ test_that("utils work", {
   x <- stream_to_wscode("Kaslo River")
   expect_length(x, 1L)
   expect_is(x, "character")
-  expect_true(x == 356567321L)
+  expect_true(x == "300-625474-095953-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000")
 
-  x <- wsgname_to_wsgcode("PORI")
+  x <- wsgname_to_wsgcode("Porcher Island")
   expect_length(x, 1L)
   expect_is(x, "character")
-  expect_true(x == "Porcher Island")
+  expect_true(x == "PORI")
 
   ### tributaries
-  x <- tribs(stream_to_wscode("Chown River"))
+  x <- tribs(stream_to_wscode("Chown Brook"))
   expect_is(x, "integer")
   expect_length(x, 8L)
 })
