@@ -39,14 +39,24 @@ fwa_search_wsgroup <- function(pattern, ignore_case = TRUE, coast_only = FALSE, 
 #' @param stream A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).
 #' @param distance A number indicating distance in metres between each point.
 #' @param label_name A character string of the name of the new column containing km labels.
+#' @param blkey_name A character string of the name of the new column containing BlueLineKey.
+#' @param sfc_name A character string of the name of the new sfc column containing geometries.
+
 #' @param dsn A character string indicating path to FWA_BC geodatabase.
 #' @return A sf object.
 #' @examples
-#' kaslo_rkm <- ps_fwa_rkm(stream = "Kaslo River", distance = 10)
+#' kaslo_rkm <- fwa_rkm(stream = "Kaslo River", distance = 10)
 #' @export
-ps_fwa_rkm <- function(stream = "Kaslo River", distance = 10, label_name = "Rkm"){
-  x <- fwa_stream(stream)
-  rkm <- line_rkm(x)
+fwa_rkm <- function(stream = "Chown Brook", tributaries = TRUE, distance = 10, label_name = "Rkm", blkey_name = "BlueLineKey", sfc_name = "geometry"){
+  dat <- fwa_stream(stream, tributaries = tributaries)
+
+  do.call("rbind", lapply(unique(dat$BLUE_LINE_KEY), function(x){
+    y <- line_rkm(dat[dat$BLUE_LINE_KEY == x,], distance = distance, label_name = label_name, sfc_name = sfc_name)
+    y[[blkey_name]] <- x
+    y
+  }))
 }
+
+
 
 
