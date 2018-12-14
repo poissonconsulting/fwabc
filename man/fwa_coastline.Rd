@@ -13,7 +13,7 @@ fwa_coastline(coastline,
 \item{dsn}{A character string indicating path to FWA database with FWA_COASTLINE_SP layer.}
 }
 \value{
-A sf object.
+A linestring sf object.
 }
 \description{
 Select particular coastlines with coastline argument.

@@ -5,21 +5,24 @@
 \title{Read stream polylines from FWA_ROUTES_SP layer.}
 \usage{
 fwa_stream(stream = "Kaslo River", tributaries = FALSE,
-  dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb")
+  union = FALSE, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb")
 }
 \arguments{
-\item{stream}{A vector of valid BlueLineKey/GnisName/WatershedCode in any combination (see fwa_stream_lookup reference).}
+\item{stream}{A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).}
 
 \item{tributaries}{A flag indicating whether to include all (TRUE) or no (FALSE) tributaries.}
+
+\item{union}{A flag indicating whether to union features into a single feature.}
 
 \item{dsn}{A character string indicating path to FWA database with FWA_ROUTES_SP layer.}
 }
 \value{
-A sf object.
+A linestring sf object.
 }
 \description{
-Select particular streams with stream argument. Add all tributaries with tributaries = TRUE
+Read stream polylines from FWA_ROUTES_SP layer.
 }
 \examples{
-kaslo_tribs <- fwa_stream("Kaslo River", tributaries = TRUE)
+kaslo_keen <- fwa_stream(c("Kaslo River", "Keen Creek"))
+kaslo_tribs <- fwa_stream("Kaslo River", tributaries = TRUE, union = TRUE)
 }
