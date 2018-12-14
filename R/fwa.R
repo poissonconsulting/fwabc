@@ -18,8 +18,8 @@ fwa_stream <- function(stream = "Kaslo River", tributaries = FALSE, dsn = "~/Poi
     x <- stream_to_blk(stream)
   }
 
-  or <- paste0("BLUE_LINE_KEY = '", x, "' OR ", collapse = "") %>% gsub('.{0,4}$', '', .)
-  sql <- paste("select * from FWA_ROUTES_SP where", or)
+  sql <- paste("select * from FWA_ROUTES_SP where",
+               gsub('.{0,4}$', '', paste0("BLUE_LINE_KEY = '", x, "' OR ", collapse = "")))
 
   st_read(dsn = dsn, layer = "FWA_ROUTES_SP", query = sql)
 }
@@ -50,11 +50,9 @@ fwa_coastline <- function(coastline, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_B
     if(is_ws_code_coast(x)){
       return(paste0("FWA_WATERSHED_CODE = '", x, "' OR "))
     }
-  }) %>%
-    paste(collapse = "") %>%
-    gsub('.{0,4}$', '', .) %>%
-    paste("select * from FWA_COASTLINES_SP where", .)
+  })
 
+  sql <- paste("select * from FWA_COASTLINES_SP where", gsub('.{0,4}$', '', paste(sql, collapse = "")))
   st_read(dsn = dsn, layer = "FWA_COASTLINES_SP", query = sql)
 }
 
@@ -107,17 +105,16 @@ fwa_watershed <- function(watershed = "Kaslo River", tributaries = FALSE, union 
   if(tributaries){
     wscodes <- wscodes %>% tribs_wshed()
   }
+  wsgroup <- fwa_lookup_watershed$WatershedGroupCode[fwa_lookup_watershed$WatershedCode %in% wscodes]
 
-  codes <- list(wscode = wscodes,
-            wsgroup = fwa_lookup_watershed$WatershedGroupCode[fwa_lookup_watershed$WatershedCode %in% wscodes])
-
-  x <- do.call("rbind", lapply(unique(codes$wsgroup), function(x){
+  x <- do.call("rbind", lapply(unique(wsgroup), function(x){
     # if(!(x %in% works$name)) err("Database at ", dsn, " does not have the the required layer: ", x)
-    y <- codes$wscode[codes$wsgroup == x]
-    or <- paste0("FWA_WATERSHED_CODE = '", y, "' OR ", collapse = "") %>% gsub('.{0,4}$', '', .)
-    sql <- paste("select * from", x, "where", or)
+    y <- wscodes[wsgroup == x]
+    sql <- paste("select * from", x, "where",
+                 gsub('.{0,4}$', '', paste0("FWA_WATERSHED_CODE = '", y, "' OR ", collapse = "")))
     st_read(dsn = dsn, layer = x, query = sql)
   }))
+
   if(union){
     return(st_union(x) %>% st_sf(stream = paste(stream, collapse = ", ")))
   }
