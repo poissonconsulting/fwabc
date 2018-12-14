@@ -69,9 +69,9 @@ check_dsn <- function(x, layer){
   if(!(layer %in% works$name)) err("Database at ", x, " does not have the the required layer: ", layer)
 }
 
-check_dsn <- function(x, layer){
-  check_string(x)
-  works <- try(st_layers(dsn = x), silent = TRUE)
-  if(inherits(works, "try-error")) err("Could not read any layers from database at ", x)
-  if(!(layer %in% works$name)) err("Database at ", x, " does not have the the required layer: ", layer)
+check_linestringz <- function(x){
+  works <- try(st_cast(x, "LINESTRING", silent = TRUE))
+  if(inherits(data, "try-error")) ps_error("data cannot be cast to LINESTRING")
+  works <- try(st_coordinates(x)[,"Z"])
+  if(inherits(data, "try-error")) ps_error("there is no Z (elevation) coordinate")
 }

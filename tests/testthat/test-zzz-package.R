@@ -26,4 +26,8 @@ test_that("read fwa data", {
   expect_true(nrow(x) == 12L)
   expect_identical(unique(x$WATERSHED_GROUP_CODE) %>% as.character, c("PORI", "SEYM"))
 
+  ### read watershed groups
+
+  ### read watersheds
+
 })

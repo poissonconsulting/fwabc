@@ -45,14 +45,27 @@ tribs_wshed <- function(x){
   }))
 }
 
-line_sample <- function(data, distance){
-  # data <- try(st_cast(data, "LINESTRING", silent = TRUE))
-  # if(inherits(data, "try-error")) ps_error("data cannot be cast to LINESTRING")
+line_sample <- function(x, distance){
   sample <- seq(0, 1, 1/as.vector(round(st_length(data)/distance)))
-
   data %>%
     st_line_sample(sample = sample)  %>%
     st_cast("POINT") %>%
     st_sf()
+}
+
+line_rkm <- function(x, distance, label_name){
+  check_linestringz(x)
+
+  start <- x %>% st_cast("POINT")
+  start <- start[which.min(st_coordinates(start)[,"Z"]),]
+
+  pts <- line_sample(x, distance)
+  i <- st_nearest_feature(start %>% st_zm(), pts %>% st_zm())
+  label <- seq(0, n*distance, distance)/1000
+  if(i > n/2){
+    label <- rev(label)
+  }
+  pts[[label_name]] <- label[1:n]
+  pts
 }
 

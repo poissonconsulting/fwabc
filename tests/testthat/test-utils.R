@@ -37,6 +37,4 @@ test_that("utils work", {
   expect_identical(character(0), fwa_search_wsgroup("porcher", code = TRUE))
   expect_identical(character(0), fwa_search_wsgroup("kootenay", coast = TRUE))
   expect_length(fwa_search_wsgroup("kootenay"), 2L)
-
-
 })
