@@ -22,10 +22,17 @@ stream_to_wscode <- function(x){
   }))
 }
 
-tribs <- function(x){
+tribs_stream <- function(x){
   x <- gsub("-000000", "", x)
   unlist(lapply(x, function(x){
     fwa_lookup_stream_blkey$BlueLineKey[grepl(x, fwa_lookup_stream_blkey$WatershedCode, fixed = TRUE)]
+  }))
+}
+
+tribs_wshed <- function(x){
+  x <- gsub("-000000", "", x)
+  unlist(lapply(x, function(x){
+    fwa_lookup_watershed$WatershedCode[grepl(x, fwa_lookup_watershed$WatershedCode, fixed = TRUE)]
   }))
 }
 

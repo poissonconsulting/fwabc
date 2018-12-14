@@ -18,6 +18,10 @@ is_ws_code_coast <- function(x){
   x %in% fwa_lookup_coast_blkey$WatershedCode
 }
 
+is_ws_code_watershed <- function(x){
+  x %in% fwa_lookup_watershed$WatershedCode
+}
+
 is_wsg_code <- function(x){
   x %in% fwa_lookup_wsgroup$WatershedGroupCode
 }
@@ -36,7 +40,13 @@ is_wsg_name_coast <- function(x){
 
 check_stream <- function(x){
   lapply(x, function(x){
-    if(!(is_blk_stream(x) || is_gnis(x) || is_ws_code_stream(x))) err(x, " is not a valid GnisName, BlueLineKey, or WatershedCode (see fwa_stream_lookup for reference)")
+    if(!(is_blk_stream(x) || is_gnis(x) || is_ws_code_stream(x))) err(x, " is not a valid GnisName, BlueLineKey, or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey for reference)")
+  })
+}
+
+check_watershed <- function(x){
+  lapply(x, function(x){
+    if(!(is_blk_stream(x) || is_gnis(x) || is_ws_code_watershed(x))) err(x, " is not a valid GnisName, or watershed WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_watershed for reference)")
   })
 }
 
@@ -48,8 +58,15 @@ check_coastline <- function(x){
 
 check_wsgroup <- function(x){
   lapply(x, function(x){
-    if(!(is_wsg_code(x) || is_wsg_name(x))) err(x, " is not a valid WatershedGroupCode or WatershedGroupName (see fwa_wsgroup_lookup for reference)")
+    if(!(is_wsg_code(x) || is_wsg_name(x))) err(x, " is not a valid WatershedGroupCode or WatershedGroupName (see fwa_lookup_wsgroup for reference)")
   })
+}
+
+check_dsn <- function(x, layer){
+  check_string(x)
+  works <- try(st_layers(dsn = x), silent = TRUE)
+  if(inherits(works, "try-error")) err("Could not read any layers from database at ", x)
+  if(!(layer %in% works$name)) err("Database at ", x, " does not have the the required layer: ", layer)
 }
 
 check_dsn <- function(x, layer){
