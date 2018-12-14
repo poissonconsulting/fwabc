@@ -1,37 +1,37 @@
 is_blk_stream <- function(x){
- x %in% fwa_stream_lookup$BlueLineKey
+ x %in% fwa_lookup_stream_blkey$BlueLineKey
 }
 
 is_gnis <- function(x){
-  x %in% fwa_gnis_lookup$GnisName
+  x %in% fwa_lookup_stream_gnis$GnisName
 }
 
 is_ws_code_stream <- function(x){
-  x %in% fwa_stream_lookup$WatershedCode
+  x %in% fwa_lookup_stream_blkey$WatershedCode
 }
 
 is_blk_coast <- function(x){
-  x %in% fwa_coastline_lookup$BlueLineKey
+  x %in% fwa_lookup_coast_blkey$BlueLineKey
 }
 
 is_ws_code_coast <- function(x){
-  x %in% fwa_coastline_lookup$WatershedCode
+  x %in% fwa_lookup_coast_blkey$WatershedCode
 }
 
 is_wsg_code <- function(x){
-  x %in% fwa_wsgroup_lookup$WatershedGroupCode
+  x %in% fwa_lookup_wsgroup$WatershedGroupCode
 }
 
 is_wsg_name <- function(x){
-  x %in% fwa_wsgroup_lookup$WatershedGroupName
+  x %in% fwa_lookup_wsgroup$WatershedGroupName
 }
 
 is_wsg_code_coast <- function(x){
-  x %in% fwa_coastline_lookup$WatershedGroupCode
+  x %in% fwa_lookup_coast_wsgroup$WatershedGroupCode
 }
 
 is_wsg_name_coast <- function(x){
-  x %in% fwa_coastline_lookup$WatershedGroupName
+  x %in% fwa_lookup_coast_wsgroup$WatershedGroupName
 }
 
 check_stream <- function(x){
