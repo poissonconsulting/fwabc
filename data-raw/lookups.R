@@ -94,4 +94,16 @@ fwa_lookup_coast_wsgroup <- cwsg
 usethis::use_data(fwa_lookup_coast_blkey, overwrite = TRUE)
 usethis::use_data(fwa_lookup_coast_wsgroup, overwrite = TRUE)
 
+###### ------ watershed polygons
+layers <- st_layers(dsn_wsp)$name
+
+fwa_lookup_watershed <- map_dfr(layers, ~ st_read(dsn = dsn_wsp, layer = ., query = paste("select FWA_WATERSHED_CODE, WATERSHED_GROUP_CODE from", .)) %>%
+                                          st_set_geometry(NULL))
+
+fwa_lookup_watershed %<>% distinct
+fwa_lookup_watershed %<>% rename(WatershedCode = FWA_WATERSHED_CODE,
+                                         WatershedGroupCode = WATERSHED_GROUP_CODE)
+
+usethis::use_data(fwa_lookup_watershed, overwrite = TRUE)
+
 
