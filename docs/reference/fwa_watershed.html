@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • fwabc</title>
+<title>Read watershed polygons from FWA_WATERSHEDS_POLY database layers. — fwa_watershed • fwabc</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Read watershed polygons from FWA_WATERSHEDS_POLY database layers. — fwa_watershed" />
+
+<meta property="og:description" content="Read watershed polygons from FWA_WATERSHEDS_POLY database layers." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -47,7 +50,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -89,84 +92,68 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Read watershed polygons from FWA_WATERSHEDS_POLY database layers.</h1>
+    
+    <div class="hidden name"><code>fwa_watershed.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>Read watershed polygons from FWA_WATERSHEDS_POLY database layers.</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
-
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="fwa_coastline.html">fwa_coastline()</a></code> </p>
-        </td>
-        <td><p>Read coastline polylines from FWA_COASTLINES_SP layer.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fwa_lookup_stream_blkey.html">fwa_lookup_stream_blkey</a></code> </p>
-        </td>
-        <td><p>Stream BlueLineKey lookup table</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fwa_rkm.html">fwa_rkm()</a></code> </p>
-        </td>
-        <td><p>Generate and lable Rkm points at specified distance along FWA stream.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fwa_search_gnis.html">fwa_search_gnis()</a></code> </p>
-        </td>
-        <td><p>Search valid gnis names.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fwa_search_wsgroup.html">fwa_search_wsgroup()</a></code> </p>
-        </td>
-        <td><p>Search valid watershed groups.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fwa_stream.html">fwa_stream()</a></code> </p>
-        </td>
-        <td><p>Read stream polylines from FWA_ROUTES_SP layer.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fwa_watershed.html">fwa_watershed()</a></code> </p>
-        </td>
-        <td><p>Read watershed polygons from FWA_WATERSHEDS_POLY database layers.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fwa_watershed_group.html">fwa_watershed_group()</a></code> </p>
-        </td>
-        <td><p>Read watershed group polygons from FWA_WATERSHED_GROUPS_POLY layer.</p></td>
-      </tr>
-    </tbody>
+    <pre class="usage"><span class='fu'>fwa_watershed</span>(<span class='kw'>watershed</span> <span class='kw'>=</span> <span class='st'>"Sangan River"</span>,
+  <span class='kw'>watershed_group</span> <span class='kw'>=</span> <span class='st'>"Graham Island"</span>, <span class='kw'>tributaries</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>dsn</span> <span class='kw'>=</span> <span class='st'>"~/Poisson/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb"</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>watershed</th>
+      <td><p>A vector of valid GnisName, or WatershedCode within a single WatershedGroup (see fwa_lookup_stream_gnis for reference).</p></td>
+    </tr>
+    <tr>
+      <th>watershed_group</th>
+      <td><p>A character string of the WatershedGroupName or WatershedGroupCode containing watershed(s).</p></td>
+    </tr>
+    <tr>
+      <th>tributaries</th>
+      <td><p>A flag indicating whether to include tributaries.</p></td>
+    </tr>
+    <tr>
+      <th>dsn</th>
+      <td><p>A character string indicating path to FWA_WATERSHEDS_POLY geodatabase.</p></td>
+    </tr>
     </table>
-  </div>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>A polygon sf object.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>wsheds</span> <span class='kw'>&lt;-</span> <span class='fu'>fwa_watershed</span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"Hiellen River"</span>, <span class='st'>"Sangan River"</span>), <span class='st'>"Graham Island"</span>, <span class='kw'>tributaries</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; Reading layer `GRAI' from data source `/Users/sebastiandalgarno/Dropbox (Poisson Consulting)/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb' using driver `OpenFileGDB'
+#&gt; Simple feature collection with 681 features and 36 fields
+#&gt; geometry type:  MULTIPOLYGON
+#&gt; dimension:      XY
+#&gt; bbox:           xmin: 600757.4 ymin: 1002844 xmax: 629651.3 ymax: 1023355
+#&gt; epsg (SRID):    3005
+#&gt; proj4string:    +proj=aea +lat_1=50 +lat_2=58.5 +lat_0=45 +lon_0=-126 +x_0=1000000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
     </ul>
+
   </div>
 </div>
 

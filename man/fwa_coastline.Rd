@@ -4,7 +4,7 @@
 \alias{fwa_coastline}
 \title{Read coastline polylines from FWA_COASTLINES_SP layer.}
 \usage{
-fwa_coastline(coastline,
+fwa_coastline(coastline = "Graham Island",
   dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb")
 }
 \arguments{

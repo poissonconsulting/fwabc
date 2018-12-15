@@ -8,8 +8,8 @@
 #' streams <- fwa_stream(c("Sangan River", "Hiellen River"))
 #' sangan_tribs <- fwa_stream("Sangan River", tributaries = TRUE)
 #' @export
-fwa_stream <- function(stream = "Kaslo River", tributaries = FALSE, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb") {
-  check_dsn(dsn, layer = "FWA_ROUTES_SP")
+fwa_stream <- function(stream = "Sangan River", tributaries = FALSE, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb") {
+  check_dsn(dsn, "FWA_ROUTES_SP")
   check_stream(stream)
 
   if(tributaries){
@@ -20,7 +20,6 @@ fwa_stream <- function(stream = "Kaslo River", tributaries = FALSE, dsn = "~/Poi
 
   sql <- paste("select * from FWA_ROUTES_SP where",
                gsub('.{0,4}$', '', paste0("BLUE_LINE_KEY = '", x, "' OR ", collapse = "")))
-
   st_read(dsn = dsn, layer = "FWA_ROUTES_SP", query = sql)
 }
 
@@ -34,7 +33,7 @@ fwa_stream <- function(stream = "Kaslo River", tributaries = FALSE, dsn = "~/Poi
 #' @examples
 #' graham <- fwa_coastline("Graham Island")
 #' @export
-fwa_coastline <- function(coastline, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb") {
+fwa_coastline <- function(coastline = "Graham Island", dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb") {
   check_dsn(dsn, layer = "FWA_COASTLINES_SP")
   check_coastline(coastline)
 
@@ -61,27 +60,20 @@ fwa_coastline <- function(coastline, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_B
 #' Select particular streams with stream argument. Add all tributaries with tributaries = TRUE
 #'
 #' @param watershed_group A vector of valid WatershedGroupCode and/or WatershedGroupNames (see fwa_wsgroup_lookup reference).
-#' @param include_inner A flag indicating whether to include all watersheds within the group.
 #' @param dsn A character string indicating path to FWA database with FWA_ROUTES_SP layer.
 #' @return A polygon sf object.
 #' @examples
 #' grai <- fwa_watershed_group("Graham Island")
 #' @export
-fwa_watershed_group <- function(watershed_group = "Kootenay Lake", include_inner = FALSE, dsn_outer = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb", dsn_inner = "~/Poisson/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb") {
-  check_dsn(dsn_outer, layer = "FWA_WATERSHED_GROUPS_POLY")
+fwa_watershed_group <- function(watershed_group = "Graham Island", dsn) {
+  check_dsn(dsn, "FWA_WATERSHED_GROUPS_POLY")
   check_wsgroup(watershed_group)
 
   ws <- wsgname_to_wsgcode(watershed_group)
 
-  if(include_inner){
-    return(do.call("rbind", lapply(ws, function(x){
-      st_read(dsn = dsn_inner, layer = x)
-    })))
-  }
-
-  or <- paste0("WATERSHED_GROUP_CODE = '", ws, "' OR ", collapse = "") %>% gsub('.{0,4}$', '', .)
-  sql <- paste("select * from FWA_WATERSHED_GROUPS_POLY where", or)
-  st_read(dsn = dsn_outer, layer = "FWA_WATERSHED_GROUPS_POLY", query = sql)
+  sql <- paste("select * from FWA_WATERSHED_GROUPS_POLY where",
+               gsub('.{0,4}$', '', paste0("WATERSHED_GROUP_CODE = '", ws, "' OR ", collapse = "")))
+  st_read(dsn = dsn, layer = "FWA_WATERSHED_GROUPS_POLY", query = sql)
 }
 
 #' Read watershed polygons from FWA_WATERSHEDS_POLY database layers.
@@ -94,16 +86,15 @@ fwa_watershed_group <- function(watershed_group = "Kootenay Lake", include_inner
 #' @examples
 #' wsheds <- fwa_watershed(c("Hiellen River", "Sangan River"), "Graham Island", tributaries = TRUE)
 #' @export
-fwa_watershed <- function(watershed = "Chown Brook", watershed_group = "Graham Island", tributaries = FALSE, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb") {
+fwa_watershed <- function(watershed = "Sangan River", watershed_group = "Graham Island", tributaries = FALSE, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb") {
 
-  check_string(dsn)
-  # works <- try(st_layers(dsn = dsn), silent = TRUE)
-  # if(inherits(works, "try-error")) err("Could not read any layers from database at ", dsn)
+  if(length(watershed_group) > 1) err("Only one watershed group allowed. All watersheds should be within that group.")
   check_watershed(watershed)
-
+  check_wsgroup(watershed_group)
   group <- wsgname_to_wsgcode(watershed_group)
+  check_dsn(dsn, group)
 
-  codes <- watershed_to_wscode(watershed, group = group)
+  codes <- watershed_to_wscode(watershed, group)
   if(tributaries){
     codes <- codes %>% tribs_wshed()
   }

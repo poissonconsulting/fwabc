@@ -12,5 +12,5 @@ test_that("tools work", {
   expect_length(fwa_search_wsgroup("kootenay"), 2L)
 
   ### rkm
-  x <- fwa_rkm(stream = "Chown Brook", label_name = "rkmtest", distance = 100, blkey_name = "blktest", sfc_name = "geom")
+  # x <- fwa_rkm(stream = "Chown Brook", label_name = "rkmtest", distance = 100, blkey_name = "blktest", sfc_name = "geom")
 })

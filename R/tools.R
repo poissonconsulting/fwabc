@@ -5,7 +5,7 @@
 #' @param ... Arguments passed to grepl.
 #' @return A character vector.
 #' @examples
-#' fwa_search_gnis("kaslo")
+#' fwa_search_gnis("sangan")
 #' @export
 fwa_search_gnis <- function(pattern, ignore_case = TRUE, ...){
   fwa_lookup_stream_gnis$GnisName[grepl(pattern, fwa_lookup_stream_gnis$GnisName, ignore.case = ignore_case, ...)]
@@ -45,9 +45,9 @@ fwa_search_wsgroup <- function(pattern, ignore_case = TRUE, coast_only = FALSE, 
 #' @param dsn A character string indicating path to FWA_BC geodatabase.
 #' @return A sf object.
 #' @examples
-#' kaslo_rkm <- fwa_rkm(stream = "Kaslo River", distance = 10)
+#' kaslo_rkm <- fwa_rkm("Sangan River", distance = 10)
 #' @export
-fwa_rkm <- function(stream = "Chown Brook", tributaries = TRUE, distance = 10, label_name = "Rkm", blkey_name = "BlueLineKey", sfc_name = "geometry"){
+fwa_rkm <- function(stream = "Sangan River", tributaries = TRUE, distance = 10, label_name = "Rkm", blkey_name = "BlueLineKey", sfc_name = "geometry"){
   dat <- fwa_stream(stream, tributaries = tributaries)
 
   do.call("rbind", lapply(unique(dat$BLUE_LINE_KEY), function(x){

@@ -4,7 +4,7 @@
 \alias{fwa_watershed}
 \title{Read watershed polygons from FWA_WATERSHEDS_POLY database layers.}
 \usage{
-fwa_watershed(watershed = "Chown Brook",
+fwa_watershed(watershed = "Sangan River",
   watershed_group = "Graham Island", tributaries = FALSE,
   dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb")
 }

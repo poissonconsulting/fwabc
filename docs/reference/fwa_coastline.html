@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read coastline data from FWA_COASTLINES_SP layer. — fwa_coastline • fwabc</title>
+<title>Read coastline polylines from FWA_COASTLINES_SP layer. — fwa_coastline • fwabc</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Read coastline data from FWA_COASTLINES_SP layer. — fwa_coastline" />
+<meta property="og:title" content="Read coastline polylines from FWA_COASTLINES_SP layer. — fwa_coastline" />
 
 <meta property="og:description" content="Select particular coastlines with coastline argument." />
 <meta name="twitter:card" content="summary" />
@@ -94,7 +94,7 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Read coastline data from FWA_COASTLINES_SP layer.</h1>
+    <h1>Read coastline polylines from FWA_COASTLINES_SP layer.</h1>
     
     <div class="hidden name"><code>fwa_coastline.Rd</code></div>
     </div>
@@ -105,7 +105,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>fwa_coastline</span>(<span class='no'>coastline</span>,
+    <pre class="usage"><span class='fu'>fwa_coastline</span>(<span class='kw'>coastline</span> <span class='kw'>=</span> <span class='st'>"Graham Island"</span>,
   <span class='kw'>dsn</span> <span class='kw'>=</span> <span class='st'>"~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -123,15 +123,15 @@
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A sf object.</p>
+    <p>A linestring sf object.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>porcher</span> <span class='kw'>&lt;-</span> <span class='fu'>fwa_coastline</span>(<span class='st'>"Porcher Island"</span>)</div><div class='output co'>#&gt; Reading layer `FWA_COASTLINES_SP' from data source `/Users/sebastiandalgarno/Dropbox (Poisson Consulting)/Data/spatial/fwa/gdb/FWA_BC.gdb' using driver `OpenFileGDB'
-#&gt; Simple feature collection with 2427 features and 13 fields
+    <pre class="examples"><div class='input'><span class='no'>graham</span> <span class='kw'>&lt;-</span> <span class='fu'>fwa_coastline</span>(<span class='st'>"Graham Island"</span>)</div><div class='output co'>#&gt; Reading layer `FWA_COASTLINES_SP' from data source `/Users/sebastiandalgarno/Dropbox (Poisson Consulting)/Data/spatial/fwa/gdb/FWA_BC.gdb' using driver `OpenFileGDB'
+#&gt; Simple feature collection with 2901 features and 13 fields
 #&gt; geometry type:  MULTILINESTRING
 #&gt; dimension:      XY
-#&gt; bbox:           xmin: 682596 ymin: 980451.2 xmax: 730243.1 ymax: 1043456
+#&gt; bbox:           xmin: 529104.2 ymin: 922281.6 xmax: 633150.8 ymax: 1051407
 #&gt; epsg (SRID):    3005
 #&gt; proj4string:    +proj=aea +lat_1=50 +lat_2=58.5 +lat_0=45 +lon_0=-126 +x_0=1000000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</div></pre>
   </div>

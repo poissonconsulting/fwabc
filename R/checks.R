@@ -46,7 +46,7 @@ check_stream <- function(x){
 
 check_watershed <- function(x){
   lapply(x, function(x){
-    if(!(is_gnis(x) || is_ws_code_watershed(x))) err(x, " is not a valid GnisName, or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_watershed and fwa_lookup_wsgroup for reference)")
+    if(!(is_gnis(x) || is_ws_code_watershed(x))) err(x, " is not a valid GnisName, or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_watershed for reference)")
   })
 }
 

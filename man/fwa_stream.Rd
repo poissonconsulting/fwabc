@@ -4,7 +4,7 @@
 \alias{fwa_stream}
 \title{Read stream polylines from FWA_ROUTES_SP layer.}
 \usage{
-fwa_stream(stream = "Kaslo River", tributaries = FALSE,
+fwa_stream(stream = "Sangan River", tributaries = FALSE,
   dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb")
 }
 \arguments{

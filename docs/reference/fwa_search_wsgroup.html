@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • fwabc</title>
+<title>Search valid watershed groups. — fwa_search_wsgroup • fwabc</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Search valid watershed groups. — fwa_search_wsgroup" />
+
+<meta property="og:description" content="Search valid watershed groups." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -47,7 +50,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -89,84 +92,65 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Search valid watershed groups.</h1>
+    
+    <div class="hidden name"><code>fwa_search_wsgroup.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>Search valid watershed groups.</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
-
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="fwa_coastline.html">fwa_coastline()</a></code> </p>
-        </td>
-        <td><p>Read coastline polylines from FWA_COASTLINES_SP layer.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fwa_lookup_stream_blkey.html">fwa_lookup_stream_blkey</a></code> </p>
-        </td>
-        <td><p>Stream BlueLineKey lookup table</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fwa_rkm.html">fwa_rkm()</a></code> </p>
-        </td>
-        <td><p>Generate and lable Rkm points at specified distance along FWA stream.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fwa_search_gnis.html">fwa_search_gnis()</a></code> </p>
-        </td>
-        <td><p>Search valid gnis names.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fwa_search_wsgroup.html">fwa_search_wsgroup()</a></code> </p>
-        </td>
-        <td><p>Search valid watershed groups.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fwa_stream.html">fwa_stream()</a></code> </p>
-        </td>
-        <td><p>Read stream polylines from FWA_ROUTES_SP layer.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fwa_watershed.html">fwa_watershed()</a></code> </p>
-        </td>
-        <td><p>Read watershed polygons from FWA_WATERSHEDS_POLY database layers.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fwa_watershed_group.html">fwa_watershed_group()</a></code> </p>
-        </td>
-        <td><p>Read watershed group polygons from FWA_WATERSHED_GROUPS_POLY layer.</p></td>
-      </tr>
-    </tbody>
+    <pre class="usage"><span class='fu'>fwa_search_wsgroup</span>(<span class='no'>pattern</span>, <span class='kw'>ignore_case</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>coast_only</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>code</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>pattern</th>
+      <td><p>A character string containing a regular expression (or character string for fixed = TRUE) to be matched.</p></td>
+    </tr>
+    <tr>
+      <th>ignore_case</th>
+      <td><p>A flag indicating whether to ignore case.</p></td>
+    </tr>
+    <tr>
+      <th>coast_only</th>
+      <td><p>A flag indicating whether to only search watershed groups in the coastline layer.</p></td>
+    </tr>
+    <tr>
+      <th>code</th>
+      <td><p>A flag indicating whether to search by watershed group code (not name).</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Arguments passed to grepl.</p></td>
+    </tr>
     </table>
-  </div>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>A character vector.</p>
+    
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>fwa_search_wsgroup</span>(<span class='st'>"graham"</span>)</div><div class='output co'>#&gt; [1] "Graham Island"</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
     </ul>
+
   </div>
 </div>
 

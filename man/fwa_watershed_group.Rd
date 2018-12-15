@@ -4,15 +4,10 @@
 \alias{fwa_watershed_group}
 \title{Read watershed group polygons from FWA_WATERSHED_GROUPS_POLY layer.}
 \usage{
-fwa_watershed_group(watershed_group = "Kootenay Lake",
-  include_inner = FALSE,
-  dsn_outer = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb",
-  dsn_inner = "~/Poisson/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb")
+fwa_watershed_group(watershed_group = "Graham Island", dsn)
 }
 \arguments{
 \item{watershed_group}{A vector of valid WatershedGroupCode and/or WatershedGroupNames (see fwa_wsgroup_lookup reference).}
-
-\item{include_inner}{A flag indicating whether to include all watersheds within the group.}
 
 \item{dsn}{A character string indicating path to FWA database with FWA_ROUTES_SP layer.}
 }
