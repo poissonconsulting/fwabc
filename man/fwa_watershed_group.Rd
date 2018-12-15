@@ -23,5 +23,5 @@ A polygon sf object.
 Select particular streams with stream argument. Add all tributaries with tributaries = TRUE
 }
 \examples{
-kootenay <- fwa_watershed_group("Kootenay Lake")
+grai <- fwa_watershed_group("Graham Island")
 }

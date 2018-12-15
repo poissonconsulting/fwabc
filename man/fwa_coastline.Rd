@@ -19,5 +19,5 @@ A linestring sf object.
 Select particular coastlines with coastline argument.
 }
 \examples{
-porcher <- fwa_coastline("Porcher Island")
+graham <- fwa_coastline("Graham Island")
 }
