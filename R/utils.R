@@ -22,6 +22,15 @@ stream_to_wscode <- function(x){
   }))
 }
 
+watershed_to_wscode <- function(x, group){
+  unlist(lapply(x, function(x){
+    y <- stream_to_wscode(x)
+    code <- fwa_lookup_watershed$WatershedCode[fwa_lookup_watershed$WatershedCode %in% y & fwa_lookup_watershed$WatershedGroupCode == group]
+    if(!length(code)) err(x, " is not in watershed group: ", group)
+    code
+  }))
+}
+
 wsgname_to_wsgcode <- function(x){
   unlist(lapply(x, function(x){
     if(!(is_wsg_name(x))){

@@ -1,15 +1,14 @@
 #' Read stream polylines from FWA_ROUTES_SP layer.
 #'
 #' @param stream A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).
-#' @param tributaries A flag indicating whether to include all (TRUE) or no (FALSE) tributaries.
-#' @param union A flag indicating whether to union features into a single feature.
+#' @param tributaries A flag indicating whether to include tributaries.
 #' @param dsn A character string indicating path to FWA database with FWA_ROUTES_SP layer.
 #' @return A linestring sf object.
 #' @examples
-#' kaslo_keen <- fwa_stream(c("Kaslo River", "Keen Creek"))
-#' kaslo_tribs <- fwa_stream("Kaslo River", tributaries = TRUE, union = TRUE)
+#' streams <- fwa_stream(c("Sangan River", "Hiellen River"))
+#' sangan_tribs <- fwa_stream("Sangan River", tributaries = TRUE)
 #' @export
-fwa_stream <- function(stream = "Kaslo River", tributaries = FALSE, union = FALSE, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb") {
+fwa_stream <- function(stream = "Kaslo River", tributaries = FALSE, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb") {
   check_dsn(dsn, layer = "FWA_ROUTES_SP")
   check_stream(stream)
 
@@ -22,12 +21,7 @@ fwa_stream <- function(stream = "Kaslo River", tributaries = FALSE, union = FALS
   sql <- paste("select * from FWA_ROUTES_SP where",
                gsub('.{0,4}$', '', paste0("BLUE_LINE_KEY = '", x, "' OR ", collapse = "")))
 
-  x <- st_read(dsn = dsn, layer = "FWA_ROUTES_SP", query = sql)
-
-  if(union){
-    return(st_union(x) %>% st_sf(stream = paste(stream, collapse = ", ")))
-  }
-  x
+  st_read(dsn = dsn, layer = "FWA_ROUTES_SP", query = sql)
 }
 
 #' Read coastline polylines from FWA_COASTLINES_SP layer.
@@ -38,7 +32,7 @@ fwa_stream <- function(stream = "Kaslo River", tributaries = FALSE, union = FALS
 #' @param dsn A character string indicating path to FWA database with FWA_COASTLINE_SP layer.
 #' @return A linestring sf object.
 #' @examples
-#' porcher <- fwa_coastline("Porcher Island")
+#' graham <- fwa_coastline("Graham Island")
 #' @export
 fwa_coastline <- function(coastline, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb") {
   check_dsn(dsn, layer = "FWA_COASTLINES_SP")
@@ -71,7 +65,7 @@ fwa_coastline <- function(coastline, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_B
 #' @param dsn A character string indicating path to FWA database with FWA_ROUTES_SP layer.
 #' @return A polygon sf object.
 #' @examples
-#' kootenay <- fwa_watershed_group("Kootenay Lake")
+#' grai <- fwa_watershed_group("Graham Island")
 #' @export
 fwa_watershed_group <- function(watershed_group = "Kootenay Lake", include_inner = FALSE, dsn_outer = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb", dsn_inner = "~/Poisson/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb") {
   check_dsn(dsn_outer, layer = "FWA_WATERSHED_GROUPS_POLY")
@@ -92,40 +86,29 @@ fwa_watershed_group <- function(watershed_group = "Kootenay Lake", include_inner
 
 #' Read watershed polygons from FWA_WATERSHEDS_POLY database layers.
 #'
-#' @param watershed A vector of valid GnisName, or WatershedCode (see fwa_lookup_stream reference).
-#' @param tributaries A flag indicating whether to include all (TRUE) or no (FALSE) tributaries.
-#' @param union A flag indicating whether to union features into a single feature.
-#' @param dsn A character string indicating path to FWA database with FWA_ROUTES_SP layer.
+#' @param watershed A vector of valid GnisName, or WatershedCode within a single WatershedGroup (see fwa_lookup_stream_gnis for reference).
+#' @param watershed_group A character string of the WatershedGroupName or WatershedGroupCode containing watershed(s).
+#' @param tributaries A flag indicating whether to include tributaries.
+#' @param dsn A character string indicating path to FWA_WATERSHEDS_POLY geodatabase.
 #' @return A polygon sf object.
 #' @examples
-#' kaslo <- fwa_watershed("Kaslo River", tributaries = TRUE)
+#' wsheds <- fwa_watershed(c("Hiellen River", "Sangan River"), "Graham Island", tributaries = TRUE)
 #' @export
-fwa_watershed <- function(watershed = "Kaslo River", tributaries = FALSE, union = FALSE, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb") {
+fwa_watershed <- function(watershed = "Chown Brook", watershed_group = "Graham Island", tributaries = FALSE, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb") {
 
   check_string(dsn)
   # works <- try(st_layers(dsn = dsn), silent = TRUE)
   # if(inherits(works, "try-error")) err("Could not read any layers from database at ", dsn)
   check_watershed(watershed)
 
-  wscodes <- stream_to_wscode(watershed)
+  group <- wsgname_to_wsgcode(watershed_group)
+
+  codes <- watershed_to_wscode(watershed, group = group)
   if(tributaries){
-    wscodes <- wscodes %>% tribs_wshed()
+    codes <- codes %>% tribs_wshed()
   }
-  wsgroup <- fwa_lookup_watershed$WatershedGroupCode[fwa_lookup_watershed$WatershedCode %in% wscodes]
 
-  x <- do.call("rbind", lapply(unique(wsgroup), function(x){
-    # if(!(x %in% works$name)) err("Database at ", dsn, " does not have the the required layer: ", x)
-    y <- wscodes[wsgroup == x]
-    sql <- paste("select * from", x, "where",
-                 gsub('.{0,4}$', '', paste0("FWA_WATERSHED_CODE = '", y, "' OR ", collapse = "")))
-    st_read(dsn = dsn, layer = x, query = sql)
-  }))
-
-  if(union){
-    return(st_union(x) %>% st_sf(stream = paste(stream, collapse = ", ")))
-  }
-  x
+  sql <- paste("select * from", group, "where",
+               gsub('.{0,4}$', '', paste0("FWA_WATERSHED_CODE = '", codes, "' OR ", collapse = "")))
+  st_read(dsn = dsn, layer = group, query = sql)
 }
-
-
-

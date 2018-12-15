@@ -29,5 +29,6 @@ test_that("read fwa data", {
   ### read watershed groups
 
   ### read watersheds
+  x <- fwa_watershed(watershed = c())
 
 })
