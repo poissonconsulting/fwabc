@@ -3,18 +3,22 @@
 #' @param x A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).
 #' @param tributaries A flag indicating whether to include tributaries.
 #' @param dsn A character string indicating path to FWA database with FWA_ROUTES_SP layer.
+#' @param ask A flag indicating whether to ask before reading entire dataset.
 #' @return A linestring sf object.
 #' @examples
 #' all <- fwa_streams()
 #' streams <- fwa_stream(c("Sangan River", "Hiellen River"))
 #' sangan_tribs <- fwa_stream("Sangan River", tributaries = TRUE)
 #' @export
-fwa_stream <- function(x = NULL, tributaries = FALSE, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb") {
+fwa_stream <- function(x = NULL, tributaries = FALSE, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb", ask = TRUE) {
   check_dsn(dsn, "FWA_ROUTES_SP")
 
   if(is.null(x)){
-    if(yesno::yesno("This is a very large dataset. Are you sure you want all FWA streams?")){
+    if(!ask){
       return(st_read(dsn = dsn, layer = "FWA_ROUTES_SP"))
+    }
+    if(yesno::yesno("This is a very large dataset. Are you sure you want all FWA streams?")){
+      st_read(dsn = dsn, layer = "FWA_ROUTES_SP")
     }
   }
   check_stream(x)
