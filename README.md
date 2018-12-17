@@ -38,8 +38,6 @@ To install the latest development version from
 [GitHub](https://github.com/poissonconsulting/fwabc)
 
     install.packages("devtools")
-    devtools::install_github("poissonconsulting/err")
-    devtools::install_github("poissonconsulting/checkr")
     devtools::install_github("poissonconsulting/fwabc")
 
 To install the latest development version from the Poisson drat
