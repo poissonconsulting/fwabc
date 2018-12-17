@@ -1,5 +1,5 @@
 Package: fwabc
-Title: Read Data from BC Freshwater Atlas.
+Title: Read Data from BC Freshwater Atlas
 Version: 0.0.0.9000
 Authors@R: c(
     person("Sebastian", "Dalgarno", role = c("aut", "cre"), email = "seb@poissonconsulting.ca"),
@@ -12,7 +12,9 @@ Depends: R (>= 2.10)
 Imports: checkr,
          magrittr,
          sf,
-         err
+         err,
+         stats,
+         yesno
 Suggests: 
     covr,
     spelling,
