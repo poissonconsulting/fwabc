@@ -22,6 +22,36 @@ stream_to_wscode <- function(x){
   }))
 }
 
+match_gnis <- function(x, ...){
+  unlist(lapply(x, function(x){
+    if(is_gnis(x) || is_blk_stream(x) || is_ws_code_stream(x)){
+      return(x)
+    }
+    y <- fwa_search_gnis(x, ...)
+    if(!length(y)){
+      msg(x, " does not match any GnisName")
+    } else {
+      msg(x, " matched with GnisNames: ", y)
+    }
+    y
+  }))
+}
+
+match_wsgroup <- function(x, ...){
+  unlist(lapply(x, function(x){
+    if(is_wsg_code(x) || is_wsg_name(x)){
+      return(x)
+    }
+    y <- fwa_search_wsgroup(x, ...)
+    if(!length(y)){
+      msg(x, " does not match any WatershedGroupName")
+    } else {
+      msg(x, " matched with WatershedGroupName: ", y)
+    }
+    y
+  }))
+}
+
 watershed_to_wscode <- function(x, group){
   unlist(lapply(x, function(x){
     y <- stream_to_wscode(x)
