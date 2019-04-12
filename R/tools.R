@@ -36,19 +36,21 @@ fwa_search_wsgroup <- function(pattern, ignore_case = TRUE, coast_only = FALSE, 
 
 #' Generate and lable Rkm points at specified distance along FWA stream.
 #'
-#' @param stream A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).
+#' @param x A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).
+#' @param tributaries A flag indicating whether to include tributaries.
 #' @param distance A number indicating distance in metres between each point.
 #' @param label_name A character string of the name of the new column containing km labels.
 #' @param blkey_name A character string of the name of the new column containing BlueLineKey.
 #' @param sfc_name A character string of the name of the new sfc column containing geometries.
+#' @param tributaries
 
 #' @param dsn A character string indicating path to FWA_BC geodatabase.
 #' @return A sf object.
 #' @examples
 #' kaslo_rkm <- fwa_rkm("Sangan River", distance = 10)
 #' @export
-fwa_rkm <- function(stream = "Sangan River", tributaries = TRUE, distance = 10, label_name = "Rkm", blkey_name = "BlueLineKey", sfc_name = "geometry"){
-  dat <- fwa_stream(stream, tributaries = tributaries)
+fwa_rkm <- function(x = "Sangan River", tributaries = FALSE, distance = 10, label_name = "Rkm", blkey_name = "BlueLineKey", sfc_name = "geometry"){
+  dat <- fwa_stream(x, tributaries = tributaries)
 
   do.call("rbind", lapply(unique(dat$BLUE_LINE_KEY), function(x){
     y <- line_rkm(dat[dat$BLUE_LINE_KEY == x,], distance = distance, label_name = label_name, sfc_name = sfc_name)
