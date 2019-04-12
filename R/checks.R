@@ -1,6 +1,6 @@
 is_blk_stream <- function(x) x %in% fwa_lookup_stream_blkey$BlueLineKey
 
-is_gnis <- function(x) x %in% fwa_lookup_stream_gnis$GnisName
+is_gnis <- function(x) all(unlist(lapply(fwa_search_gnis(x), function(x) x %in% fwa_lookup_stream_gnis$GnisName)))
 
 is_ws_code_stream <- function(x) x %in% fwa_lookup_stream_blkey$WatershedCode
 
@@ -25,8 +25,8 @@ is_wsg_name_coast <- function(x) {
 check_stream <- function(x){
   lapply(x, function(x){
     if(!(is_blk_stream(x) || is_gnis(x) || is_ws_code_stream(x))) {
-      err(x, p0(" is not a valid GnisName, BlueLineKey, or WatershedCode",
-                "(see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey ",
+      err(x, p0(" cannot be matched to a valid valid GnisName or is not a valid BlueLineKeyor WatershedCode",
+                "(see fwa_lookup_stream_gnis, fwa_lookup_stream_blkey or fwa_search_gnis",
                 "for reference)"))
     }
   })

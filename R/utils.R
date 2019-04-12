@@ -4,7 +4,7 @@ stream_to_blk <- function(x){
       return(x)
     }
     if(is_gnis(x)){
-      return(fwa_lookup_stream_gnis$BlueLineKey[fwa_lookup_stream_gnis$GnisName %in% x])
+      return(fwa_lookup_stream_gnis$BlueLineKey[fwa_lookup_stream_gnis$GnisName %in% fwa_search_gnis(x)])
     }
     fwa_lookup_stream_blkey$BlueLineKey[fwa_lookup_stream_blkey$WatershedCode %in% x]
   }))
@@ -16,7 +16,7 @@ stream_to_wscode <- function(x){
       return(x)
     }
     if(is_gnis(x)){
-      return(fwa_lookup_stream_gnis$WatershedCode[fwa_lookup_stream_gnis$GnisName %in% x])
+      return(fwa_lookup_stream_gnis$WatershedCode[fwa_lookup_stream_gnis$GnisName %in% fwa_search_gnis(x)])
     }
     fwa_lookup_stream_blkey$WatershedCode[fwa_lookup_stream_blkey$BlueLineKey %in% x]
   }))
