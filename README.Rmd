@@ -9,7 +9,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  dpi = 300
 )
 ```
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
@@ -21,18 +21,58 @@ knitr::opts_chunk$set(
 # fwabc
 
 `fwabc` is an R package to read subsets of data from various layers in the BC Freshwater Atlas.
+Currently, the package supports retrieving streams, watersheds, watershed groups, and coastline.  
 
-There are three main motivations to developing this package:  
+We simplify working with the databases by:  
 
-  1. Some of the layers are huge and difficult to work with in their entirety in memory. 
-  2. It is tedious to subset features by common names (e.g. "Porcher Island", "Kaslo River"). 
-  3. It is not immediately obvious how to get all tributaries of a particular feature in the network. 
++ Writing SQL queries required to read only a subset of a layer prior to loading into memory.  
 
-We provide solutions by:  
++ Matching regular expressions (e.g. "columbia|koot") to GNIS_NAME, BLUE_LINE_KEY and FWA_WATERSHED_CODE.  
 
-  1. Subsetting data with SQL queries before reading into memory.
-  2. Translating between various coding systems (e.g. GNIS_NAME and BLUE_LINE_KEY).
-  3. Parsing FWA_WATERSHED_CODES to determine tributaries.
++ Parsing FWA_WATERSHED_CODE to get all tributaries of a particular feature in the network.  
+
+
+Let's take a look at two of my neighbourhoud streams, whose official GNIS names are Sangan River and Hiellen River.
+```{r stream}
+library(fwabc)
+library(ggplot2)
+library(sf)
+
+streams <- fwa_stream("sangan|hiellen")
+```
+
+Notice that `fwa_stream()` takes a regular expression to internally search for matching GNIS names.  It is useful to check which streams we have included.
+```{r stream search}
+fwa_search_gnis("sangan|hiellen")
+```
+
+Now let's get all of the tributaries and plot.
+```{r stream tribs, fig.width = 5, fig.height = 3}
+tribs <- fwa_stream("sangan|hiellen", tributaries = TRUE)
+
+ggplot() +
+  geom_sf(data = tribs, color = "black", size = 0.2) +
+  geom_sf(data = streams, color = "steelblue", size = 0.5) 
+
+```
+
+Finally let's get the watershed polygons and coastline for Graham Island.
+```{r stream map, fig.width = 6, fig.height = 5}
+wshed <- fwa_watershed("sangan|hiellen", tributaries = TRUE) %>% 
+  sf::st_union()
+
+coastline <- fwa_coastline("Graham Island")
+
+bbox <- sf::st_bbox(sf::st_buffer(wshed, 8000))
+
+ggplot() +
+  geom_sf(data = coastline, size = 0.3, color = "black") +
+  geom_sf(data = wshed, fill = "white", size = 0.4, color = "black") +
+  geom_sf(data = tribs, size = 0.1, color = "black") +
+  geom_sf(data = streams, size = 0.5, color = "steelblue") +
+  coord_sf(xlim = c(bbox[1], bbox[3]), ylim = c(bbox[2], bbox[4]))
+
+```
 
 ## Installation
 
