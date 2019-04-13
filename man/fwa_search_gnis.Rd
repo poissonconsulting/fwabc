@@ -20,5 +20,5 @@ A character vector.
 Search valid gnis names.
 }
 \examples{
-fwa_search_gnis("kaslo")
+fwa_search_gnis("sangan")
 }

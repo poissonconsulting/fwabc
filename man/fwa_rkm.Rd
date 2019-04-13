@@ -4,12 +4,14 @@
 \alias{fwa_rkm}
 \title{Generate and lable Rkm points at specified distance along FWA stream.}
 \usage{
-fwa_rkm(stream = "Chown Brook", tributaries = TRUE, distance = 10,
+fwa_rkm(x = "Sangan River", tributaries = FALSE, distance = 10,
   label_name = "Rkm", blkey_name = "BlueLineKey",
   sfc_name = "geometry")
 }
 \arguments{
-\item{stream}{A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).}
+\item{x}{A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).}
+
+\item{tributaries}{A flag indicating whether to include tributaries.}
 
 \item{distance}{A number indicating distance in metres between each point.}
 
@@ -28,5 +30,5 @@ A sf object.
 Generate and lable Rkm points at specified distance along FWA stream.
 }
 \examples{
-kaslo_rkm <- fwa_rkm(stream = "Kaslo River", distance = 10)
+kaslo_rkm <- fwa_rkm("Sangan River", distance = 10)
 }

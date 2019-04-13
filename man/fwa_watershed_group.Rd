@@ -4,10 +4,11 @@
 \alias{fwa_watershed_group}
 \title{Read watershed group polygons from FWA_WATERSHED_GROUPS_POLY layer.}
 \usage{
-fwa_watershed_group(watershed_group = "Graham Island", dsn)
+fwa_watershed_group(x = NULL,
+  dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb/")
 }
 \arguments{
-\item{watershed_group}{A vector of valid WatershedGroupCode and/or WatershedGroupNames (see fwa_wsgroup_lookup reference).}
+\item{x}{A vector of valid WatershedGroupCode and/or WatershedGroupNames (see fwa_wsgroup_lookup reference).}
 
 \item{dsn}{A character string indicating path to FWA database with FWA_ROUTES_SP layer.}
 }
@@ -18,5 +19,6 @@ A polygon sf object.
 Select particular streams with stream argument. Add all tributaries with tributaries = TRUE
 }
 \examples{
+all <- fwa_watershed_group()
 grai <- fwa_watershed_group("Graham Island")
 }

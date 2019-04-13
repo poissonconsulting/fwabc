@@ -4,13 +4,13 @@
 \alias{fwa_coastline}
 \title{Read coastline polylines from FWA_COASTLINES_SP layer.}
 \usage{
-fwa_coastline(coastline = "Graham Island",
+fwa_coastline(x = NULL,
   dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb")
 }
 \arguments{
-\item{coastline}{A vector of valid coastline WatershedGroupCode, WatershedGroupName, BlueLineKey, and/or WatershedCode. (see fwa_coastline_wsg_lookup and fwa_coastline_blk_lookup for reference).}
-
 \item{dsn}{A character string indicating path to FWA database with FWA_COASTLINE_SP layer.}
+
+\item{coastline}{A vector of valid coastline WatershedGroupCode, WatershedGroupName, BlueLineKey, and/or WatershedCode. (see fwa_coastline_wsg_lookup and fwa_coastline_blk_lookup for reference).}
 }
 \value{
 A linestring sf object.
@@ -19,5 +19,6 @@ A linestring sf object.
 Select particular coastlines with coastline argument.
 }
 \examples{
+all <- fwa_coastline()
 graham <- fwa_coastline("Graham Island")
 }

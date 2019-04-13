@@ -4,15 +4,17 @@
 \alias{fwa_stream}
 \title{Read stream polylines from FWA_ROUTES_SP layer.}
 \usage{
-fwa_stream(stream = "Sangan River", tributaries = FALSE,
-  dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb")
+fwa_stream(x = NULL, tributaries = FALSE,
+  dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb", ask = TRUE)
 }
 \arguments{
-\item{stream}{A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).}
+\item{x}{A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).}
 
 \item{tributaries}{A flag indicating whether to include tributaries.}
 
 \item{dsn}{A character string indicating path to FWA database with FWA_ROUTES_SP layer.}
+
+\item{ask}{A flag indicating whether to ask before reading entire dataset.}
 }
 \value{
 A linestring sf object.
@@ -21,6 +23,7 @@ A linestring sf object.
 Read stream polylines from FWA_ROUTES_SP layer.
 }
 \examples{
+all <- fwa_streams()
 streams <- fwa_stream(c("Sangan River", "Hiellen River"))
 sangan_tribs <- fwa_stream("Sangan River", tributaries = TRUE)
 }

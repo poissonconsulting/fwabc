@@ -11,6 +11,10 @@ status](https://codecov.io/gh/poissonconsulting/fwabc/branch/master/graph/badge.
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
+**Disclaimer: This package is still under active development. It does
+work for many things, but expect improvements and breaking changes in
+the near future.**
+
 # fwabc
 
 `fwabc` is an R package to read subsets of data from various layers in
@@ -38,8 +42,6 @@ library(sf)
 #> Linking to GEOS 3.6.1, GDAL 2.1.3, PROJ 4.9.3
 
 streams <- fwa_stream("sangan|hiellen")
-#> Warning in if (is_gnis(x)) {: the condition has length > 1 and only the
-#> first element will be used
 #> Reading layer `FWA_ROUTES_SP' from data source `/Users/sebastiandalgarno/Dropbox (Poisson Consulting)/Data/spatial/fwa/gdb/FWA_BC.gdb' using driver `OpenFileGDB'
 #> Simple feature collection with 2 features and 7 fields
 #> geometry type:  MULTILINESTRING
@@ -62,8 +64,6 @@ Now let’s get all of the tributaries and plot.
 
 ``` r
 tribs <- fwa_stream("sangan|hiellen", tributaries = TRUE)
-#> Warning in if (is_gnis(x)) {: the condition has length > 1 and only the
-#> first element will be used
 #> Reading layer `FWA_ROUTES_SP' from data source `/Users/sebastiandalgarno/Dropbox (Poisson Consulting)/Data/spatial/fwa/gdb/FWA_BC.gdb' using driver `OpenFileGDB'
 #> Simple feature collection with 362 features and 7 fields
 #> geometry type:  MULTILINESTRING
@@ -85,8 +85,6 @@ Island.
 ``` r
 wshed <- fwa_watershed("sangan|hiellen", tributaries = TRUE) %>% 
   sf::st_union()
-#> Warning in if (is_gnis(x)) {: the condition has length > 1 and only the
-#> first element will be used
 #> Reading layer `GRAI' from data source `/Users/sebastiandalgarno/Dropbox (Poisson Consulting)/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb' using driver `OpenFileGDB'
 #> Simple feature collection with 681 features and 36 fields
 #> geometry type:  MULTIPOLYGON
