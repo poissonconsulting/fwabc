@@ -11,10 +11,6 @@ status](https://codecov.io/gh/poissonconsulting/fwabc/branch/master/graph/badge.
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-**Disclaimer: This package is still under active development. It does
-work for many things, but expect improvements and breaking changes in
-the near future.**
-
 # fwabc
 
 `fwabc` is an R package to read subsets of data from various layers in
@@ -85,11 +81,15 @@ Island.
 ``` r
 wshed <- fwa_watershed("sangan|hiellen", tributaries = TRUE) %>% 
   sf::st_union()
+#> Warning in grepl(a, fwa_lookup_watershed$WatershedCode, fixed = TRUE):
+#> argument 'pattern' has length > 1 and only the first element will be used
+#> Warning in gsub(paste0(a, "-"), "", .): argument 'pattern' has length > 1
+#> and only the first element will be used
 #> Reading layer `GRAI' from data source `/Users/sebastiandalgarno/Dropbox (Poisson Consulting)/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb' using driver `OpenFileGDB'
-#> Simple feature collection with 681 features and 36 fields
+#> Simple feature collection with 247 features and 36 fields
 #> geometry type:  MULTIPOLYGON
 #> dimension:      XY
-#> bbox:           xmin: 600757.4 ymin: 1002844 xmax: 629651.3 ymax: 1023355
+#> bbox:           xmin: 608008.4 ymin: 1003117 xmax: 629651.3 ymax: 1023355
 #> epsg (SRID):    3005
 #> proj4string:    +proj=aea +lat_1=50 +lat_2=58.5 +lat_0=45 +lon_0=-126 +x_0=1000000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs
 
