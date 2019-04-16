@@ -22,6 +22,10 @@ is_wsg_name_coast <- function(x) {
   x %in% fwa_lookup_coast_wsgroup$WatershedGroupName
 }
 
+check_tributaries <- function(x){
+  checkor(check_logical(x), check_integer(x))
+}
+
 check_stream <- function(x){
   lapply(x, function(x){
     if(!(is_blk_stream(x) || is_gnis(x) || is_ws_code_stream(x))) {

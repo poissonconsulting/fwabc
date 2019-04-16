@@ -11,7 +11,7 @@ fwa_rkm(x = "Sangan River", tributaries = FALSE, distance = 10,
 \arguments{
 \item{x}{A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).}
 
-\item{tributaries}{A flag indicating whether to include tributaries.}
+\item{tributaries}{A flag indicating whether to include tributaries or an integer indicating order of tributaries to include. If TRUE, all tributaries are returned.}
 
 \item{distance}{A number indicating distance in metres between each point.}
 

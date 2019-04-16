@@ -24,10 +24,24 @@ test_that("utils work", {
   expect_true(all(is_blk_stream(x)))
   expect_length(x, 8L)
 
+  y <- tribs_stream(stream_to_wscode("Chown Brook"), n = 1L)
+  expect_is(x, "integer")
+  expect_true(all(is_blk_stream(x)))
+  expect_length(x, 3L)
+
+  expect_true(all(y %in% x))
+
   x <- tribs_wshed(stream_to_wscode("Chown Brook"))
   expect_is(x, "character")
   expect_true(all(is_ws_code_stream(x)))
   expect_length(x, 8L)
+
+  y <- tribs_wshed(stream_to_wscode("Chown Brook"), n = 1L)
+  expect_is(x, "character")
+  expect_true(all(is_ws_code_stream(x)))
+  expect_length(x, 3L)
+
+  expect_true(all(y %in% x))
 
   ### search funs
   expect_identical(fwa_search_gnis("kaslo"), "Kaslo River")

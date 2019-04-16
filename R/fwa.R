@@ -1,17 +1,18 @@
 #' Read stream polylines from FWA_ROUTES_SP layer.
 #'
 #' @param x A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).
-#' @param tributaries A flag indicating whether to include tributaries.
+#' @param tributaries A flag indicating whether to include tributaries or an integer indicating order of tributaries to include. If TRUE, all tributaries are returned.
 #' @param dsn A character string indicating path to FWA database with FWA_ROUTES_SP layer.
 #' @param ask A flag indicating whether to ask before reading entire dataset.
 #' @return A linestring sf object.
 #' @examples
 #' all <- fwa_streams()
 #' streams <- fwa_stream(c("Sangan River", "Hiellen River"))
-#' sangan_tribs <- fwa_stream("Sangan River", tributaries = TRUE)
+#' sangan_tribs <- fwa_stream("Sangan River", tributaries = 1)
 #' @export
 fwa_stream <- function(x = NULL, tributaries = FALSE, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb", ask = TRUE) {
   check_dsn(dsn, "FWA_ROUTES_SP")
+  check_tributaries(tributaries)
 
   if(is.null(x)){
     if(!ask){
@@ -24,8 +25,13 @@ fwa_stream <- function(x = NULL, tributaries = FALSE, dsn = "~/Poisson/Data/spat
   check_stream(x)
 
   if(tributaries){
-    x <- stream_to_wscode(x) %>% tribs_stream()
-  } else {
+    if(is.integer(tributaries)) {
+      x <- stream_to_wscode(x) %>% tribs_streams(n = tributaries)
+    } else {
+      # get all trib orders (never more than 100)
+      x <- stream_to_wscode(x) %>% tribs_streams(n = 100)
+    }
+    } else {
     x <- stream_to_blk(x)
   }
 
@@ -100,12 +106,12 @@ fwa_watershed_group <- function(x = NULL, dsn = "~/Poisson/Data/spatial/fwa/gdb/
 #'
 #' @param x A vector of valid GnisName, or WatershedCode within a single WatershedGroup (see fwa_lookup_stream_gnis for reference).
 #' @param watershed_group A character string of the WatershedGroupName or WatershedGroupCode containing watershed(s).
-#' @param tributaries A flag indicating whether to include tributaries.
+#' @param tributaries A flag indicating whether to include tributaries or an integer indicating order of tributaries to include. If TRUE, all tributaries are returned.
 #' @param dsn A character string indicating path to FWA_WATERSHEDS_POLY geodatabase.
 #' @return A polygon sf object.
 #' @examples
 #' all_grai <- fwa_watershed(watershed_group = "Graham Island")
-#' wsheds <- fwa_watershed(c("Hiellen River", "Sangan River"), "Graham Island", tributaries = TRUE)
+#' wsheds <- fwa_watershed(c("Hiellen River", "Sangan River"), watershed_group = "Graham Island", tributaries = 1)
 #' @export
 fwa_watershed <- function(x = NULL, watershed_group = "Graham Island", tributaries = FALSE, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb") {
 
@@ -113,6 +119,7 @@ fwa_watershed <- function(x = NULL, watershed_group = "Graham Island", tributari
   check_wsgroup(watershed_group)
   group <- wsgname_to_wsgcode(watershed_group)
   check_dsn(dsn, group)
+  check_tributaries(tributaries)
 
   if(is.null(x)){
     return(st_read(dsn = dsn, layer = group))
@@ -120,8 +127,14 @@ fwa_watershed <- function(x = NULL, watershed_group = "Graham Island", tributari
 
   check_watershed(x)
   wscodes <- watershed_to_wscode(x, group)
+
   if(tributaries){
-    wscodes <- wscodes %>% tribs_wshed()
+    if(is.integer(tributaries)) {
+      wscodes <- wscodes %>% tribs_wshed(n = tributaries)
+    } else {
+      # get all trib orders (never more than 100)
+      wscodes <- wscodes %>% tribs_wshed(n = 100)
+    }
   }
 
   sql <- paste("select * from", group, "where",

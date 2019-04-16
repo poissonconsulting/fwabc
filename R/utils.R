@@ -70,18 +70,29 @@ wsgname_to_wsgcode <- function(x){
   }))
 }
 
-tribs_stream <- function(x){
-  x <- gsub("-000000", "", x)
-  unlist(lapply(x, function(x){
-    fwa_lookup_stream_blkey$BlueLineKey[grepl(x, fwa_lookup_stream_blkey$WatershedCode, fixed = TRUE)]
-  }))
+tribs_streams <- function(x, n){
+  unlist(lapply(x, function(x){tribs_stream(x, n)}))
 }
 
-tribs_wshed <- function(x){
-  x <- gsub("-000000", "", x)
-  unlist(lapply(x, function(x){
-    fwa_lookup_watershed$WatershedCode[grepl(x, fwa_lookup_watershed$WatershedCode, fixed = TRUE)]
-  }))
+tribs_stream <- function(x, n){
+  x <- as.character(x)
+  a <- gsub("-000000", "", x)
+  b <- fwa_lookup_stream_blkey$WatershedCode[grepl(a, fwa_lookup_stream_blkey$WatershedCode, fixed = TRUE)]
+  c <- gsub("-000000", "", b) %>% gsub(paste0(a, "-"), "", .)
+  d <- c(x, b[sapply(strsplit(c, "-"), function(x) length(x) <= n)])
+  fwa_lookup_stream_blkey$BlueLineKey[fwa_lookup_stream_blkey$WatershedCode %in% d]
+}
+
+tribs_wsheds <- function(x, n){
+  unlist(lapply(x, function(x){tribs_wshed(x, n)}))
+}
+
+tribs_wshed <- function(x, n){
+  x <- as.character(x)
+  a <- gsub("-000000", "", x)
+  b <- fwa_lookup_watershed$WatershedCode[grepl(a, fwa_lookup_watershed$WatershedCode, fixed = TRUE)]
+  c <- gsub("-000000", "", b) %>% gsub(paste0(a, "-"), "", .)
+  c(x, b[sapply(strsplit(c, "-"), function(x) length(x) <= n)])
 }
 
 line_sample <- function(x, distance){

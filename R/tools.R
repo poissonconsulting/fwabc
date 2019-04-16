@@ -37,13 +37,11 @@ fwa_search_wsgroup <- function(pattern, ignore_case = TRUE, coast_only = FALSE, 
 #' Generate and lable Rkm points at specified distance along FWA stream.
 #'
 #' @param x A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).
-#' @param tributaries A flag indicating whether to include tributaries.
+#' @param tributaries A flag indicating whether to include tributaries or an integer indicating order of tributaries to include. If TRUE, all tributaries are returned.
 #' @param distance A number indicating distance in metres between each point.
 #' @param label_name A character string of the name of the new column containing km labels.
 #' @param blkey_name A character string of the name of the new column containing BlueLineKey.
 #' @param sfc_name A character string of the name of the new sfc column containing geometries.
-#' @param tributaries
-
 #' @param dsn A character string indicating path to FWA_BC geodatabase.
 #' @return A sf object.
 #' @examples

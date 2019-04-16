@@ -13,7 +13,7 @@ fwa_watershed(x = NULL, watershed_group = "Graham Island",
 
 \item{watershed_group}{A character string of the WatershedGroupName or WatershedGroupCode containing watershed(s).}
 
-\item{tributaries}{A flag indicating whether to include tributaries.}
+\item{tributaries}{A flag indicating whether to include tributaries or an integer indicating order of tributaries to include. If TRUE, all tributaries are returned.}
 
 \item{dsn}{A character string indicating path to FWA_WATERSHEDS_POLY geodatabase.}
 }
@@ -25,5 +25,5 @@ Read watershed polygons from FWA_WATERSHEDS_POLY database layers.
 }
 \examples{
 all_grai <- fwa_watershed(watershed_group = "Graham Island")
-wsheds <- fwa_watershed(c("Hiellen River", "Sangan River"), "Graham Island", tributaries = TRUE)
+wsheds <- fwa_watershed(c("Hiellen River", "Sangan River"), watershed_group = "Graham Island", tributaries = 1)
 }

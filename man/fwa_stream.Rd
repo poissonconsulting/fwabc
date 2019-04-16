@@ -10,7 +10,7 @@ fwa_stream(x = NULL, tributaries = FALSE,
 \arguments{
 \item{x}{A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).}
 
-\item{tributaries}{A flag indicating whether to include tributaries.}
+\item{tributaries}{A flag indicating whether to include tributaries or an integer indicating order of tributaries to include. If TRUE, all tributaries are returned.}
 
 \item{dsn}{A character string indicating path to FWA database with FWA_ROUTES_SP layer.}
 
@@ -25,5 +25,5 @@ Read stream polylines from FWA_ROUTES_SP layer.
 \examples{
 all <- fwa_streams()
 streams <- fwa_stream(c("Sangan River", "Hiellen River"))
-sangan_tribs <- fwa_stream("Sangan River", tributaries = TRUE)
+sangan_tribs <- fwa_stream("Sangan River", tributaries = 1)
 }
