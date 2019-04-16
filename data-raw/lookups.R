@@ -1,4 +1,8 @@
-library(poispkgs)
+library(dplyr)
+library(sf)
+library(purrr)
+library(magrittr)
+library(checkr)
 
 dsn_bc <- "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb/"
 dsn_wsl <- "~/Poisson/Data/spatial/fwa/gdb/FWA_WATERSHED_BOUNDARIES_SP.gdb/"
@@ -25,85 +29,61 @@ route <- st_read(dsn_bc, layer = "FWA_ROUTES_SP", query = "select BLUE_LINE_KEY,
 
 route <- route %>%
   st_set_geometry(NULL) %>%
-  select(BlueLineKey = BLUE_LINE_KEY,
-         WatershedCode = FWA_WATERSHED_CODE)
-route$WatershedCode %<>% as.character
+  select(BLUE_LINE_KEY, FWA_WATERSHED_CODE)
+route$FWA_WATERSHED_CODE %<>% as.character()
 
-check_key(route, "BlueLineKey")
-
-fwa_lookup_stream_blkey <- route
-usethis::use_data(fwa_lookup_stream_blkey, overwrite = TRUE)
+check_key(route, "BLUE_LINE_KEY")
 
 ###### ------ gnis
 gnis <- st_read(dsn_bc, layer = "FWA_NAMED_WATERSHEDS_POLY") %>%
-  select(GNIS_NAME, BLUE_LINE_KEY, STREAM_ORDER)
+  select(GNIS_NAME, BLUE_LINE_KEY)
 
 gnis <- gnis %>%
-  st_set_geometry(NULL) %>%
-  select(BlueLineKey = BLUE_LINE_KEY,
-         GnisName = GNIS_NAME)
-gnis$GnisName %<>% as.character
+  st_set_geometry(NULL)
+
+gnis$GNIS_NAME %<>% as.character()
 
 # remove Colley Creek BlueLineKey that isn't present in the route table
-gnis %<>% filter(!(BlueLineKey %in% anti_join(gnis, route, "BlueLineKey")$BlueLineKey))
-check_join(gnis, route, "BlueLineKey")
+gnis %<>% filter(!(BLUE_LINE_KEY %in% anti_join(gnis, route, "BLUE_LINE_KEY")$BLUE_LINE_KEY))
+check_join(gnis, route, "BLUE_LINE_KEY")
 
-# get WatershedCode
-# note there are ~ 10 cases where the same BlueLineKey has multiple GnisNames!!
-check_join(gnis, route, "BlueLineKey")
-fwa_lookup_stream_gnis <- left_join(gnis, route, "BlueLineKey")
-usethis::use_data(fwa_lookup_stream_gnis, overwrite = TRUE)
+fwa_lookup_stream <- route %>%
+  left_join(gnis, "BLUE_LINE_KEY")
+
+# note there are ~ 10 cases where the same BlueLineKey has multiple GnisNames!! BLUE_LINE_KEY is not the primary key
+check_key(fwa_lookup_stream, c("BLUE_LINE_KEY", "GNIS_NAME"))
+usethis::use_data(fwa_lookup_stream, overwrite = TRUE)
 
 ###### ------ watershed groups
 wsgroup <- st_read(dsn_bc, layer = "FWA_WATERSHED_GROUPS_POLY")
 
 wsgroup <- wsgroup %>%
   st_set_geometry(NULL) %>%
-  select(WatershedGroupCode =  WATERSHED_GROUP_CODE,
-         WatershedGroupName = WATERSHED_GROUP_NAME)
-wsgroup$WatershedGroupCode %<>% as.character
-wsgroup$WatershedGroupName %<>% as.character
+  select(WATERSHED_GROUP_CODE, WATERSHED_GROUP_NAME)
+wsgroup$WATERSHED_GROUP_CODE %<>% as.character()
+wsgroup$WATERSHED_GROUP_NAME %<>% as.character()
 
-fwa_lookup_wsgroup <- wsgroup
-usethis::use_data(fwa_lookup_wsgroup, overwrite = TRUE)
+fwa_lookup_watershedgroup <- wsgroup
+usethis::use_data(fwa_lookup_watershedgroup, overwrite = TRUE)
 
 ###### ------ coastline
 coastline <- st_read(dsn_bc, layer = "FWA_COASTLINES_SP",
-                     query = "select * from FWA_COASTLINES_SP")
-
-cblk <- coastline %>%
+                     query = "select BLUE_LINE_KEY, FWA_WATERSHED_CODE, WATERSHED_GROUP_CODE from FWA_COASTLINES_SP") %>%
   st_set_geometry(NULL) %>%
-  select(BlueLineKey = BLUE_LINE_KEY,
-         WatershedCode = FWA_WATERSHED_CODE)
+  distinct()
 
-cwsg <- coastline %>%
-  st_set_geometry(NULL) %>%
-  select(WatershedGroupCode = WATERSHED_GROUP_CODE) %>%
-  distinct
+coastline$WATERSHED_GROUP_CODE %<>% as.character()
 
-cwsg$WatershedGroupCode %<>% as.character
-cblk$WatershedCode %<>% as.character
-
-check_join(cwsg, wsgroup, "WatershedGroupCode")
-cwsg <- cwsg %>%
-  left_join(wsgroup, "WatershedGroupCode")
-
-fwa_lookup_coast_blkey <- cblk
-fwa_lookup_coast_wsgroup <- cwsg
-
-usethis::use_data(fwa_lookup_coast_blkey, overwrite = TRUE)
-usethis::use_data(fwa_lookup_coast_wsgroup, overwrite = TRUE)
+check_join(coastline, wsgroup, "WATERSHED_GROUP_CODE")
+fwa_lookup_coastline <- coastline
+usethis::use_data(fwa_lookup_coastline, overwrite = TRUE)
 
 ###### ------ watershed polygons
 layers <- st_layers(dsn_wsp)$name
 
 fwa_lookup_watershed <- map_dfr(layers, ~ st_read(dsn = dsn_wsp, layer = ., query = paste("select FWA_WATERSHED_CODE, WATERSHED_GROUP_CODE from", .)) %>%
-                                          st_set_geometry(NULL))
-
-fwa_lookup_watershed %<>% distinct
-fwa_lookup_watershed %<>% rename(WatershedCode = FWA_WATERSHED_CODE,
-                                         WatershedGroupCode = WATERSHED_GROUP_CODE)
+                                          st_set_geometry(NULL)) %>%
+  distinct()
 
 usethis::use_data(fwa_lookup_watershed, overwrite = TRUE)
-
 
