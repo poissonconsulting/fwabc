@@ -10,8 +10,8 @@ is_ws_code_coast <- function(x) x %in% fwa_lookup_coastline$FWA_WATERSHED_CODE
 
 is_wsg_code_coast <- function(x) x %in% fwa_lookup_coastline$WATERSHED_GROUP_CODE
 
-is_wsg_name_coast <- function(x) x %in% fwa_lookup_coast_wsgroup$WATERSHED_GROUP_NAME
-
+is_wsg_name_coast <- function(x) x %in% fwa_lookup_watershedgroup$WATERSHED_GROUP_NAME[fwa_lookup_watershedgroup$WATERSHED_GROUP_CODE %in%
+                                                                                         fwa_lookup_coastline$WATERSHED_GROUP_CODE]
 is_ws_code_watershed <- function(x) x %in% fwa_lookup_watershed$FWA_WATERSHED_CODE
 
 is_wsg_code <- function(x) x %in% fwa_lookup_watershedgroup$WATERSHED_GROUP_CODE
@@ -23,43 +23,33 @@ check_tributaries <- function(x){
 }
 
 check_stream <- function(x){
-  lapply(x, function(x){
-    if(!(is_blk_stream(x) || is_gnis(x) || is_ws_code_stream(x))) {
-      err(x, p0(" is not a valid GNIS_NAME, BLUE_LINE_KEY or FWA_WATERSHED_CODE",
-                "(see fwa_lookup_stream or fwa_search_gnis",
-                "for reference)"))
-    }
-  })
+  x <- x[!(is_blk_stream(x) | is_gnis(x) | is_ws_code_stream(x))]
+  if(!length(x)) return(TRUE)
+    err(co(x, some = "%c %r not valid GNIS_NAME, BLUE_LINE_KEY or FWA_WATERSHED_CODE
+           (see fwa_lookup_stream for reference or use fwa_search_gnis
+           function to match a regular expression to valid GNIS_NAME)", conjunction = "and"))
 }
 
 check_watershed <- function(x){
-  lapply(x, function(x){
-    if(!(is_gnis(x) || is_ws_code_watershed(x))) {
-      err(x, p0("is not a valid GNIS_NAME, or FWA_WATERSHED_CODE ",
-                "(see fwa_lookup_stream_gnis and fwa_lookup_watershed for",
-                "reference)"))
-    }
-  })
+  x <- x[!(is_gnis(x) | is_ws_code_watershed(x))]
+  if(!length(x)) return(TRUE)
+  err(co(x, some = "%c %r not valid GNIS_NAME or FWA_WATERSHED_CODE
+           (see fwa_lookup_stream and fwa_lookup_watershed for reference)", conjunction = "and"))
 }
 
 check_coastline <- function(x){
-  lapply(x, function(x){
-    if(!(is_blk_coast(x) || is_ws_code_coast(x) || is_wsg_code_coast(x) ||
-         is_wsg_name_coast(x))) {
-      err(x, p0(" is not a valid coastline WATERSHED_GROUP_NAME, ",
-                "WATERSHED_GROUP_CODE, BLUE_LINE_KEY, or FWA_WATERSHED_CODE ",
-                "(see fwa_coastline_lookup for reference)"))
-    }
-  })
+  x <- x[!(is_blk_coast(x) | is_ws_code_coast(x) | is_wsg_code_coast(x) | is_wsg_name_coast(x))]
+  if(!length(x)) return(TRUE)
+  err(co(x, some = "%c %r not valid WATERSHED_GROUP_NAME
+           (see see fwa_coastline_lookup for reference)", conjunction = "and"))
 }
 
-check_wsgroup <- function(x){
-  lapply(x, function(x){
-    if(!(is_wsg_code(x) || is_wsg_name(x))) {
-      err(x, p0(" is not a valid WATERSHED_GROUP_CODE or WATERSHED_GROUP_NAME ",
-                "(see fwa_lookup_wsgroup for reference)"))
-    }
-  })
+check_watershedgroup <- function(x){
+  x <- x[!(is_wsg_code(x) || is_wsg_name(x))]
+  if(!length(x)) return(TRUE)
+  err(co(x, some = "%c %r not valid WATERSHED_GROUP_CODE or WATERSHED_GROUP_NAME
+           (see fwa_lookup_wsgroup for reference or use fwa_search_watershedgroup
+         function to match a regular expression to valid WATERSHED_GROUP_NAME)", conjunction = "and"))
 }
 
 check_dsn <- function(x, layer){
@@ -71,9 +61,9 @@ check_dsn <- function(x, layer){
     err("Database at ", x, " does not have the the required layer: ", layer)
 }
 
-check_linestringz <- function(x){
-  works <- try(st_cast(x, "LINESTRING", silent = TRUE))
-  if(inherits(data, "try-error")) err("data cannot be cast to LINESTRING")
-  works <- try(st_coordinates(x)[,"Z"])
-  if(inherits(data, "try-error")) err("there is no Z (elevation) coordinate")
-}
+# check_linestringz <- function(x){
+#   works <- try(st_cast(x, "LINESTRING", silent = TRUE))
+#   if(inherits(data, "try-error")) err("data cannot be cast to LINESTRING")
+#   works <- try(st_coordinates(x)[,"Z"])
+#   if(inherits(data, "try-error")) err("there is no Z (elevation) coordinate")
+# }
