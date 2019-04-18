@@ -8,7 +8,7 @@
 #' fwa_search_gnis("sangan")
 #' @export
 fwa_search_gnis <- function(pattern, ignore_case = TRUE, ...){
-  fwa_lookup_stream_gnis$GnisName[grepl(pattern, fwa_lookup_stream_gnis$GnisName, ignore.case = ignore_case, ...)]
+  fwa_lookup_stream$GNIS_NAME[which(grepl(pattern, fwa_lookup_stream$GNIS_NAME, ignore.case = ignore_case, ...))]
 }
 
 #' Search valid watershed groups.
@@ -23,13 +23,13 @@ fwa_search_gnis <- function(pattern, ignore_case = TRUE, ...){
 #' fwa_search_wsgroup("graham")
 #' @export
 fwa_search_wsgroup <- function(pattern, ignore_case = TRUE, coast_only = FALSE, code = FALSE, ...){
-  x <- fwa_lookup_wsgroup
+  x <- fwa_lookup_watershedgroup
   if(coast_only){
-    x <- fwa_lookup_coast_wsgroup
+    x <- merge(fwa_lookup_coastline, fwa_lookup_watershedgroup, by = "WATERSHED_GROUP_CODE")
   }
-  y <- x$WatershedGroupName
+  y <- x$WATERSHED_GROUP_NAME
   if(code){
-    y <- x$WatershedGroupCode
+    y <- x$WATERSHED_GROUP_CODE
   }
   y[grepl(pattern, y, ignore.case = ignore_case, ...)]
 }
