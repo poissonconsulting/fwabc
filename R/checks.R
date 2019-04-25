@@ -1,6 +1,6 @@
 is_blk_stream <- function(x) x %in% unique(fwa_lookup_stream$BLUE_LINE_KEY)
 
-is_gnis <- function(x) x %in% unique(fwa_lookup_stream$GNIS_NAME)
+is_gnis <- function(x) x %in% lookup_stream_gnis$GNIS_NAME
 
 is_ws_code_stream <- function(x) x %in% fwa_lookup_stream$FWA_WATERSHED_CODE
 
@@ -8,9 +8,9 @@ is_blk_coast <- function(x) x %in% fwa_lookup_coastline$BLUE_LINE_KEY
 
 is_ws_code_coast <- function(x) x %in% fwa_lookup_coastline$FWA_WATERSHED_CODE
 
-is_wsg_code_coast <- function(x) x %in% fwa_lookup_coastline$WATERSHED_GROUP_CODE
+is_wsg_code_coast <- function(x) x %in% lookup_coast_wsgroup$WATERSHED_GROUP_CODE
 
-is_wsg_name_coast <- function(x) x %in% fwa_lookup_watershedgroup$WATERSHED_GROUP_NAME[fwa_lookup_watershedgroup$WATERSHED_GROUP_CODE %in%
+is_wsg_name_coast <- function(x) x %in% lookup_coast_wsgroup$WATERSHED_GROUP_NAME[fwa_lookup_watershedgroup$WATERSHED_GROUP_CODE %in%
                                                                                          fwa_lookup_coastline$WATERSHED_GROUP_CODE]
 is_ws_code_watershed <- function(x) x %in% fwa_lookup_watershed$FWA_WATERSHED_CODE
 
@@ -31,9 +31,9 @@ check_stream <- function(x){
 }
 
 check_watershed <- function(x){
-  x <- x[!(is_gnis(x) | is_ws_code_watershed(x))]
+  x <- x[!(is_gnis(x) | is_ws_code_watershed(x) | is_wsg_code(x) | is_wsg_name(x))]
   if(!length(x)) return(TRUE)
-  err(co(x, some = "%c %r not valid GNIS_NAME or FWA_WATERSHED_CODE
+  err(co(x, some = "%c %r not valid GNIS_NAME, FWA_WATERSHED_CODE, WATERSHED_GROUP_CODE, or WATERSHED_GROUP_NAME
            (see fwa_lookup_stream and fwa_lookup_watershed for reference)", conjunction = "and"))
 }
 

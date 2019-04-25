@@ -8,7 +8,7 @@ fwa_stream(x = NULL, tributaries = FALSE,
   dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb", ask = TRUE)
 }
 \arguments{
-\item{x}{A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).}
+\item{x}{A vector of valid GnisName, BlueLineKey or WatershedCode from FWA_BC geodatabase}
 
 \item{tributaries}{A flag indicating whether to include tributaries or an integer indicating order of tributaries to include. If TRUE, all tributaries are returned.}
 

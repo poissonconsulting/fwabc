@@ -4,9 +4,9 @@ stream_to_blk <- function(x){
       return(x)
     }
     if(is_gnis(x)){
-      return(fwa_lookup_stream_gnis$BlueLineKey[fwa_lookup_stream_gnis$GnisName %in% fwa_search_gnis(x)])
+      return(lookup_stream_gnis$BLUE_LINE_KEY[which(lookup_stream_gnis$GNIS_NAME == x)])
     }
-    fwa_lookup_stream_blkey$BlueLineKey[fwa_lookup_stream_blkey$WatershedCode %in% x]
+    fwa_lookup_stream$BLUE_LINE_KEY[fwa_lookup_stream$FWA_WATERSHED_CODE %in% x]
   }))
 }
 
@@ -16,46 +16,16 @@ stream_to_wscode <- function(x){
       return(x)
     }
     if(is_gnis(x)){
-      return(fwa_lookup_stream_gnis$WatershedCode[fwa_lookup_stream_gnis$GnisName %in% fwa_search_gnis(x)])
+      return(lookup_stream_gnis$FWA_WATERSHED_CODE[lookup_stream_gnis$GNIS_NAME == x])
     }
-    fwa_lookup_stream_blkey$WatershedCode[fwa_lookup_stream_blkey$BlueLineKey %in% x]
-  }))
-}
-
-match_gnis <- function(x, ...){
-  unlist(lapply(x, function(x){
-    if(is_gnis(x) || is_blk_stream(x) || is_ws_code_stream(x)){
-      return(x)
-    }
-    y <- fwa_search_gnis(x, ...)
-    if(!length(y)){
-      msg(x, " does not match any GnisName")
-    } else {
-      msg(x, " matched with GnisNames: ", y)
-    }
-    y
-  }))
-}
-
-match_wsgroup <- function(x, ...){
-  unlist(lapply(x, function(x){
-    if(is_wsg_code(x) || is_wsg_name(x)){
-      return(x)
-    }
-    y <- fwa_search_wsgroup(x, ...)
-    if(!length(y)){
-      msg(x, " does not match any WatershedGroupName")
-    } else {
-      msg(x, " matched with WatershedGroupName: ", y)
-    }
-    y
+    fwa_lookup_stream$FWA_WATERSHED_CODE[fwa_lookup_stream$BLUE_LINE_KEY == x]
   }))
 }
 
 watershed_to_wscode <- function(x, group){
   unlist(lapply(x, function(x){
     y <- stream_to_wscode(x)
-    code <- fwa_lookup_watershed$WatershedCode[fwa_lookup_watershed$WatershedCode %in% y & fwa_lookup_watershed$WatershedGroupCode == group]
+    code <- fwa_lookup_watershed$FWA_WATERSHED_CODE[fwa_lookup_watershed$FWA_WATERSHED_CODE %in% y & fwa_lookup_watershed$FWA_WATERSHED_CODE == group]
     if(!length(code)) err(x, " is not in watershed group: ", group)
     code
   }))
@@ -66,7 +36,7 @@ wsgname_to_wsgcode <- function(x){
     if(!(is_wsg_name(x))){
       return(x)
     }
-    fwa_lookup_wsgroup$WatershedGroupCode[fwa_lookup_wsgroup$WatershedGroupName %in% x]
+    fwa_lookup_watershedgroup$WATERSHED_GROUP_CODE[fwa_lookup_watershedgroup$WATERSHED_GROUP_NAME == x]
   }))
 }
 

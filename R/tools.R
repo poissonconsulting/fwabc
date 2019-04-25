@@ -8,7 +8,7 @@
 #' fwa_search_gnis("sangan")
 #' @export
 fwa_search_gnis <- function(pattern, ignore_case = TRUE, ...){
-  fwa_lookup_stream$GNIS_NAME[which(grepl(pattern, fwa_lookup_stream$GNIS_NAME, ignore.case = ignore_case, ...))]
+  lookup_stream_gnis$GNIS_NAME[which(grepl(pattern, lookup_stream_gnis$GNIS_NAME, ignore.case = ignore_case, ...))]
 }
 
 #' Search valid watershed groups.
@@ -25,13 +25,26 @@ fwa_search_gnis <- function(pattern, ignore_case = TRUE, ...){
 fwa_search_wsgroup <- function(pattern, ignore_case = TRUE, coast_only = FALSE, code = FALSE, ...){
   x <- fwa_lookup_watershedgroup
   if(coast_only){
-    x <- merge(fwa_lookup_coastline, fwa_lookup_watershedgroup, by = "WATERSHED_GROUP_CODE")
+    x <- lookup_coast_wsgroup
   }
   y <- x$WATERSHED_GROUP_NAME
   if(code){
     y <- x$WATERSHED_GROUP_CODE
   }
   y[grepl(pattern, y, ignore.case = ignore_case, ...)]
+}
+
+#' Get tributaries.
+#'
+#' @param pattern A character string containing a regular expression (or character string for fixed = TRUE) to be matched.
+#' @param ignore_case A flag indicating whether to ignore case.
+#' @param ... Arguments passed to grepl.
+#' @return A character vector.
+#' @examples
+#' fwa_search_gnis("sangan")
+#' @export
+fwa_tributaries <- function(pattern, ignore_case = TRUE, ...){
+  lookup_stream_gnis$GNIS_NAME[which(grepl(pattern, lookup_stream_gnis$GNIS_NAME, ignore.case = ignore_case, ...))]
 }
 
 #' Generate and lable Rkm points at specified distance along FWA stream.

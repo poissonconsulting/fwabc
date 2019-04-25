@@ -1,8 +1,8 @@
 #' Read stream polylines from FWA_ROUTES_SP layer.
 #'
-#' @param x A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).
+#' @param x A vector of valid GNIS_NAME, BLUE_LINE_KEY or FWA_WATERSHED_CODE from FWA_ROUTES_SP layer in FWA_BC geodatabase (see fwa_lookup_stream for reference).
 #' @param tributaries A flag indicating whether to include tributaries or an integer indicating order of tributaries to include. If TRUE, all tributaries are returned.
-#' @param dsn A character string indicating path to FWA database with FWA_ROUTES_SP layer.
+#' @param dsn A character string indicating path to FWA_BC geodatabase.
 #' @param ask A flag indicating whether to ask before reading entire dataset.
 #' @return A linestring sf object.
 #' @examples
@@ -44,8 +44,8 @@ fwa_stream <- function(x = NULL, tributaries = FALSE, dsn = "~/Poisson/Data/spat
 #'
 #' Select particular coastlines with coastline argument.
 #'
-#' @param coastline A vector of valid coastline WatershedGroupCode, WatershedGroupName, BlueLineKey, and/or WatershedCode. (see fwa_coastline_wsg_lookup and fwa_coastline_blk_lookup for reference).
-#' @param dsn A character string indicating path to FWA database with FWA_COASTLINE_SP layer.
+#' @param x A vector of valid coastline WATERSHED_GROUP_CODE, WATERSHED_GROUP_NAME, BLUE_LINE_KEY, or FWA_WATERSHED_CODE from FWA_COASTLINES_SP layer of FWA_BC geodatabase (see fwa_lookup_coastline for reference).
+#' @inheritParams fwa_stream
 #' @return A linestring sf object.
 #' @examples
 #' all <- fwa_coastline()
@@ -81,8 +81,8 @@ fwa_coastline <- function(x = NULL, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC
 #'
 #' Select particular streams with stream argument. Add all tributaries with tributaries = TRUE
 #'
-#' @param x A vector of valid WatershedGroupCode and/or WatershedGroupNames (see fwa_wsgroup_lookup reference).
-#' @param dsn A character string indicating path to FWA database with FWA_ROUTES_SP layer.
+#' @param x A vector of valid WATERSHED_GROUP_CODE or WATERSHED_GROUP_NAME (see fwa_lookup_watershedgroup reference).
+#' @inheritParams fwa_stream
 #' @return A polygon sf object.
 #' @examples
 #' all <- fwa_watershed_group()
@@ -104,29 +104,31 @@ fwa_watershed_group <- function(x = NULL, dsn = "~/Poisson/Data/spatial/fwa/gdb/
 
 #' Read watershed polygons from FWA_WATERSHEDS_POLY database layers.
 #'
-#' @param x A vector of valid GnisName, or WatershedCode within a single WatershedGroup (see fwa_lookup_stream_gnis for reference).
-#' @param watershed_group A character string of the WatershedGroupName or WatershedGroupCode containing watershed(s).
+#' @param x A vector of valid GNIS_NAME, FWA_WATERSHED_CODE, WATERSHED_GROUP_CODE or WATERSHED_GROUP_NAME from FWA_WATERSHEDS_POLY geodatabase
 #' @param tributaries A flag indicating whether to include tributaries or an integer indicating order of tributaries to include. If TRUE, all tributaries are returned.
+#' If x is a WATERSHED_GROUP_CODE or WATERSHED_GROUP_NAME, tributaries argument is ignored.
 #' @param dsn A character string indicating path to FWA_WATERSHEDS_POLY geodatabase.
 #' @return A polygon sf object.
 #' @examples
-#' all_grai <- fwa_watershed(watershed_group = "Graham Island")
-#' wsheds <- fwa_watershed(c("Hiellen River", "Sangan River"), watershed_group = "Graham Island", tributaries = 1)
+#' graham_wsgroup <- fwa_watershed("Graham Island")
+#' watersheds <- fwa_watershed(c("Hiellen River", "Sangan River"), tributaries = 1L)
 #' @export
-fwa_watershed <- function(x = NULL, watershed_group = "Graham Island", tributaries = FALSE, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb") {
+fwa_watershed <- function(x = NULL, tributaries = FALSE, dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb") {
 
-  if(length(watershed_group) > 1) err("Specify only one watershed_group. All requested watersheds should be within that group.")
-  check_wsgroup(watershed_group)
-  group <- wsgname_to_wsgcode(watershed_group)
-  check_dsn(dsn, group)
+  check_dsn(dsn)
   check_tributaries(tributaries)
 
   if(is.null(x)){
-    return(st_read(dsn = dsn, layer = group))
+    return(st_read(dsn = dsn, layer = "PORI"))
   }
 
   check_watershed(x)
+  if(is_wsg_code(x) | is_wsg_name(x)){
+    x <- wsgname_to_wsgcode(x)
+
+  }
   wscodes <- watershed_to_wscode(x, group)
+
 
   if(tributaries){
     if(is.integer(tributaries)) {

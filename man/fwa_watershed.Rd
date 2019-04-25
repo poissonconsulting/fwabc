@@ -4,18 +4,15 @@
 \alias{fwa_watershed}
 \title{Read watershed polygons from FWA_WATERSHEDS_POLY database layers.}
 \usage{
-fwa_watershed(x = NULL, watershed_group = "Graham Island",
-  tributaries = FALSE,
+fwa_watershed(x = NULL, tributaries = FALSE,
   dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb")
 }
 \arguments{
-\item{x}{A vector of valid GnisName, or WatershedCode within a single WatershedGroup (see fwa_lookup_stream_gnis for reference).}
-
-\item{watershed_group}{A character string of the WatershedGroupName or WatershedGroupCode containing watershed(s).}
+\item{x}{A vector of valid GNIS_NAME or FWA_WATERSHED_CODE from FWA_WATERSHEDS_POLY geodatabase}
 
 \item{tributaries}{A flag indicating whether to include tributaries or an integer indicating order of tributaries to include. If TRUE, all tributaries are returned.}
 
-\item{dsn}{A character string indicating path to FWA_WATERSHEDS_POLY geodatabase.}
+\item{dsn}{A character string indicating path to FWA database with FWA_ROUTES_SP layer.}
 }
 \value{
 A polygon sf object.
@@ -24,6 +21,6 @@ A polygon sf object.
 Read watershed polygons from FWA_WATERSHEDS_POLY database layers.
 }
 \examples{
-all_grai <- fwa_watershed(watershed_group = "Graham Island")
-wsheds <- fwa_watershed(c("Hiellen River", "Sangan River"), watershed_group = "Graham Island", tributaries = 1)
+all_grai <- fwa_watershed("Graham Island")
+wsheds <- fwa_watershed(c("Hiellen River", "Sangan River"), tributaries = 1L)
 }

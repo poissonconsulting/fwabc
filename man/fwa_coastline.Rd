@@ -8,9 +8,9 @@ fwa_coastline(x = NULL,
   dsn = "~/Poisson/Data/spatial/fwa/gdb/FWA_BC.gdb")
 }
 \arguments{
-\item{dsn}{A character string indicating path to FWA database with FWA_COASTLINE_SP layer.}
+\item{x}{A vector of valid coastline WatershedGroupCode, WatershedGroupName, BlueLineKey, and/or WatershedCode. (see fwa_coastline_wsg_lookup and fwa_coastline_blk_lookup for reference).}
 
-\item{coastline}{A vector of valid coastline WatershedGroupCode, WatershedGroupName, BlueLineKey, and/or WatershedCode. (see fwa_coastline_wsg_lookup and fwa_coastline_blk_lookup for reference).}
+\item{dsn}{A character string indicating path to FWA database with FWA_ROUTES_SP layer.}
 }
 \value{
 A linestring sf object.
