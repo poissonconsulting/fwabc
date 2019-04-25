@@ -22,12 +22,19 @@ check_tributaries <- function(x){
   checkor(check_logical(x), check_integer(x))
 }
 
-check_stream <- function(x){
-  x <- x[!(is_blk_stream(x) | is_gnis(x) | is_ws_code_stream(x))]
+check_gnis <- function(x){
+  x <- x[!(is_gnis(x))]
   if(!length(x)) return(TRUE)
-    err(co(x, some = "%c %r not valid GNIS_NAME, BLUE_LINE_KEY or FWA_WATERSHED_CODE
+  err(co(x, some = "%c %r not valid GNIS_NAME
            (see fwa_lookup_stream for reference or use fwa_search_gnis
            function to match a regular expression to valid GNIS_NAME)", conjunction = "and"))
+}
+
+check_stream <- function(x){
+  x <- x[!(is_blk_stream(x) | is_ws_code_stream(x))]
+  if(!length(x)) return(TRUE)
+    err(co(x, some = "%c %r not valid BLUE_LINE_KEY or FWA_WATERSHED_CODE
+           (see fwa_lookup_stream for reference)", conjunction = "and"))
 }
 
 check_watershed <- function(x){
