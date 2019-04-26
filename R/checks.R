@@ -1,62 +1,63 @@
-is_blk_stream <- function(x) x %in% unique(fwa_lookup_stream$BLUE_LINE_KEY)
+is_stream_wskey <- function(x) x %in% unique(fwa_lookup_stream$WATERSHED_KEY)
+is_stream_wsgcode <- function(x) x %in% unique(fwa_lookup_stream$WATERSHED_GROUP_CODE)
+is_stream_gnis <- function(x) x %in% unique(lookup_stream_gnis$GNIS_NAME)
 
-is_gnis <- function(x) x %in% lookup_stream_gnis$GNIS_NAME
+is_wshed_wskey <- function(x) x %in% unique(fwa_lookup_watershed$WATERSHED_KEY)
+is_wshed_wsgcode <- function(x) x %in% unique(fwa_lookup_watershed$WATERSHED_GROUP_CODE)
+is_wshed_gnis <- function(x) x %in% unique(lookup_wshed_gnis$GNIS_NAME)
 
-is_ws_code_stream <- function(x) x %in% fwa_lookup_stream$FWA_WATERSHED_CODE
+is_coast_wskey <- function(x) x %in% unique(fwa_lookup_coastline$WATERSHED_KEY)
+is_coast_wsgcode <- function(x) x %in% unique(fwa_lookup_coastline$WATERSHED_GROUP_CODE)
 
-is_blk_coast <- function(x) x %in% fwa_lookup_coastline$BLUE_LINE_KEY
-
-is_ws_code_coast <- function(x) x %in% fwa_lookup_coastline$FWA_WATERSHED_CODE
-
-is_wsg_code_coast <- function(x) x %in% lookup_coast_wsgroup$WATERSHED_GROUP_CODE
-
-is_wsg_name_coast <- function(x) x %in% lookup_coast_wsgroup$WATERSHED_GROUP_NAME[fwa_lookup_watershedgroup$WATERSHED_GROUP_CODE %in%
-                                                                                         fwa_lookup_coastline$WATERSHED_GROUP_CODE]
-is_ws_code_watershed <- function(x) x %in% fwa_lookup_watershed$FWA_WATERSHED_CODE
-
-is_wsg_code <- function(x) x %in% fwa_lookup_watershedgroup$WATERSHED_GROUP_CODE
-
-is_wsg_name <- function(x) x %in% fwa_lookup_watershedgroup$WATERSHED_GROUP_NAME
+is_wsgcode <- function(x) x %in% unique(fwa_lookup_watershedgroup$WATERSHED_GROUP_CODE)
 
 check_tributaries <- function(x){
   checkor(check_logical(x), check_integer(x))
 }
 
-check_gnis <- function(x){
-  x <- x[!(is_gnis(x))]
-  if(!length(x)) return(TRUE)
-  err(co(x, some = "%c %r not valid GNIS_NAME
-           (see fwa_lookup_stream for reference or use fwa_search_gnis
-           function to match a regular expression to valid GNIS_NAME)", conjunction = "and"))
-}
+# check_stream_gnis <- function(x){
+#   x <- x[!(is_stream_gnis(x))]
+#   if(!length(x)) return(TRUE)
+#   err(co(x, some = "%c %r not valid GNIS_NAME in the FWA_STREAM_NETWORKS_SP geodatabase.
+#            (see fwa_lookup_stream for reference)", conjunction = "and"))
+# }
+#
+# check_wshed_gnis <- function(x){
+#   x <- x[!(is_wshed_gnis(x))]
+#   if(!length(x)) return(TRUE)
+#   err(co(x, some = "%c %r not valid GNIS_NAME in the FWA_WATERSHEDS_POLY geodatabase.
+#            (see fwa_lookup_watershed for reference)", conjunction = "and"))
+# }
 
 check_stream <- function(x){
-  x <- x[!(is_blk_stream(x) | is_ws_code_stream(x))]
+  x <- x[!(is_stream_wskey(x) | is_stream_wsgcode(x))]
   if(!length(x)) return(TRUE)
-    err(co(x, some = "%c %r not valid BLUE_LINE_KEY or FWA_WATERSHED_CODE
+    err(co(x, some = "%c %r not valid WATERSHED_KEY or WATERSHED_GROUP_CODE
+    in the FWA_STREAM_NETWORKS_SP geodatabase.
            (see fwa_lookup_stream for reference)", conjunction = "and"))
 }
 
 check_watershed <- function(x){
-  x <- x[!(is_gnis(x) | is_ws_code_watershed(x) | is_wsg_code(x) | is_wsg_name(x))]
+  x <- x[!(is_wshed_wskey(x) | is_wshed_wsgcode(x))]
   if(!length(x)) return(TRUE)
-  err(co(x, some = "%c %r not valid GNIS_NAME, FWA_WATERSHED_CODE, WATERSHED_GROUP_CODE, or WATERSHED_GROUP_NAME
-           (see fwa_lookup_stream and fwa_lookup_watershed for reference)", conjunction = "and"))
+  err(co(x, some = "%c %r not valid WATERSHED_KEY or WATERSHED_GROUP_CODE
+  in the FWA_WATERSHEDS_POLY geodatabase.
+           (see fwa_lookup_watershed for reference)", conjunction = "and"))
 }
 
 check_coastline <- function(x){
-  x <- x[!(is_blk_coast(x) | is_ws_code_coast(x) | is_wsg_code_coast(x) | is_wsg_name_coast(x))]
+  x <- x[!(is_coast_wskey(x) | is_coast_wsgcode(x))]
   if(!length(x)) return(TRUE)
-  err(co(x, some = "%c %r not valid WATERSHED_GROUP_NAME
-           (see see fwa_coastline_lookup for reference)", conjunction = "and"))
+  err(co(x, some = "%c %r not valid WATERSHED_KEY or WATERSHED_GROUP_CODE
+  in the FWA_COASTLINE_SP layer of the FWA_BC geodatabase.
+           (see fwa_lookup_coastline for reference)", conjunction = "and"))
 }
 
 check_watershedgroup <- function(x){
-  x <- x[!(is_wsg_code(x) || is_wsg_name(x))]
+  x <- x[!(is_wsgcode(x))]
   if(!length(x)) return(TRUE)
-  err(co(x, some = "%c %r not valid WATERSHED_GROUP_CODE or WATERSHED_GROUP_NAME
-           (see fwa_lookup_wsgroup for reference or use fwa_search_watershedgroup
-         function to match a regular expression to valid WATERSHED_GROUP_NAME)", conjunction = "and"))
+  err(co(x, some = "%c %r not valid WATERSHED_GROUP_CODE in the FWA_WATERSHED_GROUPS_POLY layer of the FWA_BC geodatabase.
+           (see fwa_lookup_watershedgroup for reference)", conjunction = "and"))
 }
 
 check_dsn <- function(x, layer){
