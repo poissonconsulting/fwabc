@@ -51,6 +51,7 @@ coastline <- st_read(dsn_bc,
   distinct()
 
 coastline$WATERSHED_GROUP_CODE %<>% as.character()
+coastline$FWA_WATERSHED_CODE %<>% as.character()
 
 fwa_lookup_coastline <- coastline
 usethis::use_data(fwa_lookup_coastline, overwrite = TRUE)
@@ -79,14 +80,6 @@ fwa_lookup_watershed <- map_dfr(layers, ~ st_read(dsn = dsn_wsp,
                                                   FWA_WATERSHED_CODE, WATERSHED_GROUP_CODE from", .)) %>%
                                           st_set_geometry(NULL)) %>%
   distinct()
-
-gnis <- stream %>%
-  select(WATERSHED_KEY, GNIS_NAME) %>%
-  distinct() %>%
-  filter(!is.na(GNIS_NAME))
-
-fwa_lookup_watershed <- fwa_lookup_watershed %>%
-  left_join(gnis, "WATERSHED_KEY")
 
 usethis::use_data(fwa_lookup_watershed, overwrite = TRUE)
 
