@@ -67,7 +67,7 @@ use_data(fwa_lookup_gnis, overwrite = TRUE)
 
 lookup_wsgroup <- wsgroup
 
-select_key <- function(x) x %>% select(WATERSHED_KEY, FWA_WATERSHED_CODE)
+select_key <- function(x) x %>% select(WATERSHED_KEY, FWA_WATERSHED_CODE, WATERSHED_GROUP_CODE)
 lookup_wskey <- bind_rows(
   select_key(stream),
   select_key(watershed),
