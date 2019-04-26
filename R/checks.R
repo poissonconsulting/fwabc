@@ -15,19 +15,19 @@ check_tributaries <- function(x){
   checkor(check_logical(x), check_integer(x))
 }
 
-# check_stream_gnis <- function(x){
-#   x <- x[!(is_stream_gnis(x))]
-#   if(!length(x)) return(TRUE)
-#   err(co(x, some = "%c %r not valid GNIS_NAME in the FWA_STREAM_NETWORKS_SP geodatabase.
-#            (see fwa_lookup_stream for reference)", conjunction = "and"))
-# }
-#
-# check_wshed_gnis <- function(x){
-#   x <- x[!(is_wshed_gnis(x))]
-#   if(!length(x)) return(TRUE)
-#   err(co(x, some = "%c %r not valid GNIS_NAME in the FWA_WATERSHEDS_POLY geodatabase.
-#            (see fwa_lookup_watershed for reference)", conjunction = "and"))
-# }
+check_stream_gnis <- function(x){
+  x <- x[!(is_stream_gnis(x))]
+  if(!length(x)) return(TRUE)
+  err(co(x, some = "%c %r not valid GNIS_NAME in the FWA_STREAM_NETWORKS_SP geodatabase.
+           (see fwa_lookup_stream for reference)", conjunction = "and"))
+}
+
+check_wshed_gnis <- function(x){
+  x <- x[!(is_wshed_gnis(x))]
+  if(!length(x)) return(TRUE)
+  err(co(x, some = "%c %r not valid GNIS_NAME in the FWA_WATERSHEDS_POLY geodatabase.
+           (see fwa_lookup_watershed for reference)", conjunction = "and"))
+}
 
 check_stream <- function(x){
   x <- x[!(is_stream_wskey(x) | is_stream_wsgcode(x))]
@@ -37,7 +37,7 @@ check_stream <- function(x){
            (see fwa_lookup_stream for reference)", conjunction = "and"))
 }
 
-check_watershed <- function(x){
+check_wshed <- function(x){
   x <- x[!(is_wshed_wskey(x) | is_wshed_wsgcode(x))]
   if(!length(x)) return(TRUE)
   err(co(x, some = "%c %r not valid WATERSHED_KEY or WATERSHED_GROUP_CODE
@@ -53,7 +53,7 @@ check_coastline <- function(x){
            (see fwa_lookup_coastline for reference)", conjunction = "and"))
 }
 
-check_watershedgroup <- function(x){
+check_wshedgroup <- function(x){
   x <- x[!(is_wsgcode(x))]
   if(!length(x)) return(TRUE)
   err(co(x, some = "%c %r not valid WATERSHED_GROUP_CODE in the FWA_WATERSHED_GROUPS_POLY layer of the FWA_BC geodatabase.
