@@ -1,11 +1,11 @@
-#' Pull WATERSHED_KEY from stream GNIS_NAME.
+#' Pull WATERSHED_KEY from GNIS_NAME.
 #'
-#' @param x A vector of valid stream GNIS_NAME.
+#' @param x A vector of valid GNIS_NAME.
 #' @return A character vector.
 #' @examples
 #' fwa_pull_stream_wskey("Sangan River")
 #' @export
-fwa_pull_stream_wskey <- function(x){
+fwa_pull_wskey <- function(x){
   check_stream_gnis(x)
   lookup_stream_gnis$WATERSHED_KEY[lookup_stream_gnis$GNIS_NAME %in% x]
 }
@@ -15,9 +15,9 @@ fwa_pull_stream_wskey <- function(x){
 #' @param x A vector of valid watershed GNIS_NAME.
 #' @return A character vector.
 #' @examples
-#' fwa_pull_wshed_wskey("Sangan River")
+#' fwa_pull_watershed_wskey("Sangan River")
 #' @export
-fwa_pull_wshed_wskey <- function(x){
+fwa_watershed_pull_wskey <- function(x){
   check_wshed_gnis(x)
   lookup_wshed_gnis$WATERSHED_KEY[lookup_wshed_gnis$GNIS_NAME %in% x]
 }
