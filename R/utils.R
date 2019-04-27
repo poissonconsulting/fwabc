@@ -28,12 +28,6 @@ all_data <- function(layer){
     bcdata::collect()
 }
 
-some_data <- function(layer, wskey){
-  bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer)) %>%
-    bcdata::filter(WATERSHED_KEY %in% c(360709847, 360843586)) %>%
-    bcdata::collect()
-}
-
 line_sample <- function(x, distance){
   x <- x %>% st_cast("LINESTRING")
   sample <- seq(0, 1, 1/as.vector(round(st_length(x)/distance)))
