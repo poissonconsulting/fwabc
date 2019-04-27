@@ -71,6 +71,9 @@ fwa_read_coastlines <- function(x = NULL, ask = FALSE) {
 #' graham <- fwa_read_watershed_group("GRAI")
 #' @export
 fwa_read_watershed_groups <- function(x = NULL, ask = FALSE) {
+
+  layer <- "watershed-groups"
+
   if(is.null(x)){
     if(!ask){
       return(all_data(layer))
@@ -84,7 +87,7 @@ fwa_read_watershed_groups <- function(x = NULL, ask = FALSE) {
 
   check_wsgcode(x)
 
-  bcdata::bcdc_query_geodata(paste0("freshwater-atlas-watershed-groups")) %>%
-    bcdata::filter(WATERSHED_KEY %in% "PORI") %>%
+  bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer)) %>%
+    bcdata::filter(WATERSHED_GROUP_CODE %in% "PORI") %>%
     bcdata::collect()
 }
