@@ -15,6 +15,7 @@ dsn_st <- "~/Poisson/Data/spatial/fwa/gdb/FWA_STREAM_NETWORKS_SP.gdb/"
 ###### ------ layers
 fwa_lookup_layer <- c("stream-network", "coastlines",
                       "watersheds", "watershed-groups")
+use_data(fwa_lookup_layer, overwrite = TRUE)
 
 ###### ------ streams
 layers <- st_layers(dsn_st)$name[1:246]
