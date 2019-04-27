@@ -2,7 +2,7 @@
 % Please edit documentation in R/read.R
 \name{fwa_read_watersheds}
 \alias{fwa_read_watersheds}
-\title{Read watershed from FWA_WATERSHEDS_POLY geodatabase.}
+\title{Read from watersheds layer.}
 \usage{
 fwa_read_watersheds(x = NULL, ask = TRUE)
 }
@@ -15,7 +15,7 @@ fwa_read_watersheds(x = NULL, ask = TRUE)
 A sf object.
 }
 \description{
-Read watershed from FWA_WATERSHEDS_POLY geodatabase.
+Read from watersheds layer.
 }
 \examples{
 watershed <- fwa_read_watershed(c(360709847, 360843586))

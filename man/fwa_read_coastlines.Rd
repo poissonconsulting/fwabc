@@ -2,7 +2,7 @@
 % Please edit documentation in R/read.R
 \name{fwa_read_coastlines}
 \alias{fwa_read_coastlines}
-\title{Read coastline from FWA_COASTLINES_SP layer in FWA_BC geodatabase.}
+\title{Read from coastlines layer.}
 \usage{
 fwa_read_coastlines(x = NULL, ask = FALSE)
 }
@@ -15,7 +15,7 @@ fwa_read_coastlines(x = NULL, ask = FALSE)
 A sf object.
 }
 \description{
-Read coastline from FWA_COASTLINES_SP layer in FWA_BC geodatabase.
+Read from coastlines layer.
 }
 \examples{
 coastline <- fwa_read_coastline("GRAI")

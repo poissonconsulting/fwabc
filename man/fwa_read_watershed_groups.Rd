@@ -2,7 +2,7 @@
 % Please edit documentation in R/read.R
 \name{fwa_read_watershed_groups}
 \alias{fwa_read_watershed_groups}
-\title{Read watershed group from FWA_WATERSHED_GROUPS layer in FWA_BC geodatabase}
+\title{Read from watershed-groups layer.}
 \usage{
 fwa_read_watershed_groups(x = NULL, ask = FALSE)
 }
@@ -15,7 +15,7 @@ fwa_read_watershed_groups(x = NULL, ask = FALSE)
 A sf object.
 }
 \description{
-Read watershed group from FWA_WATERSHED_GROUPS layer in FWA_BC geodatabase
+Read from watershed-groups layer.
 }
 \examples{
 graham <- fwa_read_watershed_group("GRAI")

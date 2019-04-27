@@ -2,7 +2,7 @@
 % Please edit documentation in R/read.R
 \name{fwa_read_stream}
 \alias{fwa_read_stream}
-\title{Read features from stream-network layer.}
+\title{Read from stream-network layer.}
 \usage{
 fwa_read_stream(x = NULL, ask = TRUE)
 }
@@ -15,7 +15,7 @@ fwa_read_stream(x = NULL, ask = TRUE)
 A sf object.
 }
 \description{
-Read features from stream-network layer.
+Read from stream-network layer.
 }
 \examples{
 all <- fwa_read_stream()
