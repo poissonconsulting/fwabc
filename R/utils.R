@@ -23,6 +23,12 @@ wsgcode_to_wskey <- function(x){
   unique(as.numeric(c(wskey, y)))
 }
 
+wskey_to_wsgcode <- function(x){
+  wsgcode <- x[is_wsgcode(x)]
+  y <- lookup_wskey$WATERSHED_GROUP_CODE[lookup_wskey$WATERSHED_KEY %in% x]
+  unique(as.numeric(c(wsgcode, y)))
+}
+
 all_data <- function(layer){
   bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer)) %>%
     bcdata::collect()

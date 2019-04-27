@@ -64,7 +64,6 @@ fwa_read_coastlines <- function(x = NULL, ask = FALSE) {
 
 #' Read from watershed-groups layer.
 #'
-#' @param x A vector of valid WATERSHED_GROUP_CODE. If NULL, entire dataset is read.
 #' @inheritParams fwa_read
 #' @return A sf object.
 #' @examples
@@ -86,6 +85,7 @@ fwa_read_watershed_groups <- function(x = NULL, ask = FALSE) {
   }
 
   check_wsgcode(x)
+  x <- wskey_to_wsgcode(x)
 
   bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer)) %>%
     bcdata::filter(WATERSHED_GROUP_CODE %in% "PORI") %>%
