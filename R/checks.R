@@ -33,6 +33,11 @@ check_wskey_wsgcode <- function(x){
   err(co(x, some = "%c %r not valid WATERSHED_KEY or WATERSHED_GROUP_CODE", conjunction = "and"))
 }
 
+check_layer <- function(x){
+  if(x %in% fwa_lookup_layer) return(TRUE)
+  err(x, " is not a valid layer (see fwa_lookup_layer for reference).")
+}
+
 # check_dsn <- function(x, layer){
 #   check_string(x)
 #   works <- try(st_layers(dsn = x), silent = TRUE)

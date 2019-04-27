@@ -12,6 +12,10 @@ dsn_wsp <- "~/Poisson/Data/spatial/fwa/gdb/FWA_WATERSHEDS_POLY.gdb/"
 dsn_lb <- "~/Poisson/Data/spatial/fwa/gdb/FWA_LINEAR_BOUNDARIES_SP.gdb/"
 dsn_st <- "~/Poisson/Data/spatial/fwa/gdb/FWA_STREAM_NETWORKS_SP.gdb/"
 
+###### ------ layers
+fwa_lookup_layer <- c("stream-network", "coastlines",
+                      "watersheds", "watershed-groups")
+
 ###### ------ streams
 layers <- st_layers(dsn_st)$name[1:246]
 
