@@ -7,7 +7,7 @@
 fwa_read_stream(x = NULL, ask = TRUE)
 }
 \arguments{
-\item{x}{A vector of valid WATERSHED_KEY or WATERSHED_GROUP_CODE.}
+\item{x}{A vector of valid WATERSHED_KEY or WATERSHED_GROUP_CODE. If NULL, entire dataset is read.}
 
 \item{ask}{A flag indicating whether to ask before reading entire dataset.}
 }

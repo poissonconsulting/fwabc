@@ -4,14 +4,14 @@
 \alias{fwa_read}
 \title{Read layer from FWA database.}
 \usage{
-fwa_read(x = NULL, layer = "stream-network", ask = TRUE)
+fwa_read(x = NULL, ask = TRUE, layer = "stream-network")
 }
 \arguments{
-\item{x}{A vector of valid WATERSHED_KEY or WATERSHED_GROUP_CODE.}
-
-\item{layer}{A character string of valid layer name (see fwa_lookup_layers for reference).}
+\item{x}{A vector of valid WATERSHED_KEY or WATERSHED_GROUP_CODE. If NULL, entire dataset is read.}
 
 \item{ask}{A flag indicating whether to ask before reading entire dataset.}
+
+\item{layer}{A character string of valid layer name (see fwa_lookup_layers for reference).}
 }
 \value{
 A sf object.
