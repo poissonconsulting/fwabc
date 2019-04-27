@@ -8,4 +8,4 @@
 #'   \item{carat}{weight of the diamond, in carats}
 #'   ...
 #' }
-"fwa_lookup_stream"
+"fwa_lookup_gnis"

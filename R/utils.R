@@ -4,6 +4,36 @@ is_wsgcode <- function(x) x %in% unique(lookup_wsgroup$WATERSHED_GROUP_CODE)
 is_wsgname <- function(x) x %in% unique(lookup_wsgroup$WATERSHED_GROUP_NAME)
 is_gnis <- function(x) x %in% unique(lookup_gnis$GNIS_NAME)
 
+tribs <- function(x, n){
+  x <- as.character(x)
+  a <- gsub("-000000", "", x)
+  b <- lookup_wskey$FWA_WATERSHED_CODE[grepl(a, lookup_wskey$FWA_WATERSHED_CODE, fixed = TRUE)]
+  c <- gsub("-000000", "", b) %>% gsub(paste0(a, "-"), "", .)
+  d <- c(x, b[sapply(strsplit(c, "-"), function(x) length(x) <= order)])
+  lookup_wskey$WATERSHED_KEY[lookup_wskey$FWA_WATERSHED_CODE %in% d]
+}
+
+wskey_to_wscode <- function(x){
+  lookup_wskey$FWA_WATERSHED_CODE[lookup_wskey$WATERSHED_KEY %in% x]
+}
+
+wsgcode_to_wskey <- function(x){
+  wskey <- x[is_wskey(x)]
+  y <- lookup_wskey$WATERSHED_KEY[lookup_wskey$WATERSHED_GROUP_CODE %in% x]
+  unique(as.numeric(c(wskey, y)))
+}
+
+all_data <- function(layer){
+  bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer)) %>%
+    bcdata::collect()
+}
+
+some_data <- function(layer, wskey){
+  bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer)) %>%
+    bcdata::filter(WATERSHED_KEY %in% c(360709847, 360843586)) %>%
+    bcdata::collect()
+}
+
 line_sample <- function(x, distance){
   x <- x %>% st_cast("LINESTRING")
   sample <- seq(0, 1, 1/as.vector(round(st_length(x)/distance)))

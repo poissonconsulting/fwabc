@@ -9,12 +9,14 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 2.10)
-Imports: checkr,
-         magrittr,
-         sf,
-         err,
-         stats,
-         yesno
+Imports: 
+    checkr,
+    magrittr,
+    sf,
+    err,
+    stats,
+    yesno,
+    bcdata
 Suggests: 
     covr,
     spelling,

@@ -2,33 +2,28 @@
 % Please edit documentation in R/tools.R
 \name{fwa_rkm}
 \alias{fwa_rkm}
-\title{Generate and lable Rkm points at specified distance along FWA stream.}
+\title{Generate and lable Rkm points at specified distance a line.}
 \usage{
-fwa_rkm(x = "Sangan River", tributaries = FALSE, distance = 10,
-  label_name = "Rkm", blkey_name = "BlueLineKey",
-  sfc_name = "geometry")
+fwa_rkm(x = 360709847, distance = 10, label_name = "Rkm",
+  stream_name = "WATERSHED_KEY", sfc_name = "geometry")
 }
 \arguments{
-\item{x}{A vector of valid GnisName, BlueLineKey or WatershedCode (see fwa_lookup_stream_gnis and fwa_lookup_stream_blkey reference).}
-
-\item{tributaries}{A flag indicating whether to include tributaries or an integer indicating order of tributaries to include. If TRUE, all tributaries are returned.}
+\item{x}{A valid WATERSHED_KEY.}
 
 \item{distance}{A number indicating distance in metres between each point.}
 
 \item{label_name}{A character string of the name of the new column containing km labels.}
 
-\item{blkey_name}{A character string of the name of the new column containing BlueLineKey.}
-
 \item{sfc_name}{A character string of the name of the new sfc column containing geometries.}
 
-\item{dsn}{A character string indicating path to FWA_BC geodatabase.}
+\item{blkey_name}{A character string of the name of the new column containing BlueLineKey.}
 }
 \value{
 A sf object.
 }
 \description{
-Generate and lable Rkm points at specified distance along FWA stream.
+Generate and lable Rkm points at specified distance a line.
 }
 \examples{
-kaslo_rkm <- fwa_rkm("Sangan River", distance = 10)
+rkm <- fwa_rkm(360709847, distance = 10)
 }
