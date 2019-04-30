@@ -162,8 +162,7 @@ lookup %<>% left_join(glacier %>% select(WATERSHED_KEY, WATERSHED_GROUP_CODE, `g
 
 lookup_wskey <- lookup %>%
   select(-GNIS_NAME, -GNIS_NAME_1,
-         -GNIS_NAME_2, -GNIS_NAME_3) %>%
-  replace_na(FALSE)
+         -GNIS_NAME_2, -GNIS_NAME_3)
 
 lookup_wskey %<>% modify_if(.p = ~ is.logical(.), .f = ~ replace_na(., FALSE))
 
@@ -177,6 +176,23 @@ lookup_gnis <- lookup %>%
 fwa_lookup_gnis <- lookup_gnis
 use_data(fwa_lookup_gnis, overwrite = TRUE)
 
-lookup_wsgroup <- wsgroup
+lookup <- all_data %>%
+  select(WATERSHED_GROUP_CODE) %>%
+  distinct()
+lookup %<>% left_join(stream %>% select(WATERSHED_GROUP_CODE, `stream-network`) %>% distinct(), c("WATERSHED_GROUP_CODE"))
+lookup %<>% left_join(linear %>% select(WATERSHED_GROUP_CODE, `linear-boundaries`) %>% distinct(), c("WATERSHED_GROUP_CODE"))
+lookup %<>% left_join(watershed %>% select(WATERSHED_GROUP_CODE, `watersheds`) %>% distinct(), c("WATERSHED_GROUP_CODE"))
+lookup %<>% left_join(coastline %>% select(WATERSHED_GROUP_CODE, `coastlines`) %>% distinct(), c("WATERSHED_GROUP_CODE"))
+lookup %<>% left_join(obstruction %>% select(WATERSHED_GROUP_CODE, `obstructions`) %>% distinct(), c("WATERSHED_GROUP_CODE"))
+lookup %<>% left_join(lake %>% select(WATERSHED_GROUP_CODE, `lakes`) %>% distinct(), c("WATERSHED_GROUP_CODE"))
+lookup %<>% left_join(wetland %>% select(WATERSHED_GROUP_CODE, `wetlands`) %>% distinct(), c("WATERSHED_GROUP_CODE"))
+lookup %<>% left_join(river %>% select(WATERSHED_GROUP_CODE, `rivers`) %>% distinct(), c("WATERSHED_GROUP_CODE"))
+lookup %<>% left_join(manmade %>% select(WATERSHED_GROUP_CODE, `manmade-waterbodies`) %>% distinct(), c("WATERSHED_GROUP_CODE"))
+lookup %<>% left_join(glacier %>% select(WATERSHED_GROUP_CODE, `glaciers`) %>% distinct(), c("WATERSHED_GROUP_CODE"))
+
+lookup_wsgroup <- lookup %>%
+  modify_if(.p = ~ is.logical(.), .f = ~ replace_na(., FALSE))
+
+lookup_wsgroup$`watershed-groups` <- TRUE
 
 use_data(lookup_gnis, lookup_wskey, lookup_wsgroup, internal = TRUE, overwrite = TRUE)
