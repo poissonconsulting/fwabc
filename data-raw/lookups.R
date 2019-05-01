@@ -173,6 +173,8 @@ lookup_gnis <- lookup %>%
   filter(!is.na(GNIS_NAME)) %>%
   distinct()
 
+lookup_gnis %<>% modify_if(.p = ~ is.logical(.), .f = ~ replace_na(., FALSE))
+
 fwa_lookup_gnis <- lookup_gnis
 use_data(fwa_lookup_gnis, overwrite = TRUE)
 
@@ -194,5 +196,6 @@ lookup_wsgroup <- lookup %>%
   modify_if(.p = ~ is.logical(.), .f = ~ replace_na(., FALSE))
 
 lookup_wsgroup$`watershed-groups` <- TRUE
+lookup_wsgroup %<>% left_join(wsgroup %>% select(WATERSHED_GROUP_CODE, WATERSHED_GROUP_NAME), "WATERSHED_GROUP_CODE")
 
 use_data(lookup_gnis, lookup_wskey, lookup_wsgroup, internal = TRUE, overwrite = TRUE)
