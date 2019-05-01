@@ -1,8 +1,8 @@
-is_wskey <- function(x) x %in% unique(lookup_wskey$WATERSHED_KEY)
-is_wscode <- function(x) x %in% unique(lookup_wskey$FWA_WATERSHED_CODE)
-is_wsgcode <- function(x) x %in% unique(lookup_wsgroup$WATERSHED_GROUP_CODE)
-is_wsgname <- function(x) x %in% unique(lookup_wsgroup$WATERSHED_GROUP_NAME)
-is_gnis <- function(x) x %in% unique(lookup_gnis$GNIS_NAME)
+is_wskey <- function(x, layer) x %in% unique(lookup_wskey$WATERSHED_KEY[lookup_wskey[[layer]]])
+is_wscode <- function(x, layer) x %in% unique(lookup_wskey$FWA_WATERSHED_CODE[lookup_wskey[[layer]]])
+is_wsgcode <- function(x, layer) x %in% unique(lookup_wsgroup$WATERSHED_GROUP_CODE[lookup_wsgroup[[layer]]])
+is_wsgname <- function(x, layer) x %in% unique(lookup_wsgroup$WATERSHED_GROUP_NAME[lookup_wsgroup[[layer]]])
+is_gnis <- function(x, layer) x %in% unique(lookup_gnis$GNIS_NAME[lookup_gnis[[layer]]])
 
 tribs <- function(x, n){
   x <- as.character(x)
@@ -17,16 +17,16 @@ wskey_to_wscode <- function(x){
   lookup_wskey$FWA_WATERSHED_CODE[lookup_wskey$WATERSHED_KEY %in% x]
 }
 
-wsgcode_to_wskey <- function(x){
-  wskey <- x[is_wskey(x)]
+wsgcode_to_wskey <- function(x, layer){
+  wskey <- x[is_wskey(x, layer)]
   y <- lookup_wskey$WATERSHED_KEY[lookup_wskey$WATERSHED_GROUP_CODE %in% x]
   unique(as.numeric(c(wskey, y)))
 }
 
-wskey_to_wsgcode <- function(x){
-  wsgcode <- x[is_wsgcode(x)]
+wskey_to_wsgcode <- function(x, layer){
+  wsgcode <- x[is_wsgcode(x, layer)]
   y <- lookup_wskey$WATERSHED_GROUP_CODE[lookup_wskey$WATERSHED_KEY %in% x]
-  unique(as.numeric(c(wsgcode, y)))
+  unique(c(wsgcode, y))
 }
 
 all_data <- function(layer){

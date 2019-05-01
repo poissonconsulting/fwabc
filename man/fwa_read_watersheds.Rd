@@ -4,19 +4,22 @@
 \alias{fwa_read_watersheds}
 \title{Read from watersheds layer.}
 \usage{
-fwa_read_watersheds(x = NULL, ask = TRUE)
+fwa_read_watersheds(x = NULL, ask = TRUE, crs = 3005)
 }
 \arguments{
 \item{x}{A vector of valid WATERSHED_KEY or WATERSHED_GROUP_CODE. If NULL, entire dataset is read.}
 
 \item{ask}{A flag indicating whether to ask before reading entire dataset.}
+
+\item{crs}{The epsg code for the coordinate reference system. Defaults to `3005`
+(B.C. Albers). See https://epsgi.io.}
 }
 \value{
-A sf object.
+A sf object with sfc_POLYGON geometry.
 }
 \description{
 Read from watersheds layer.
 }
 \examples{
-watershed <- fwa_read_watershed(c(360709847, 360843586))
+fwa_read_watersheds(c(360709847, 360843586))
 }

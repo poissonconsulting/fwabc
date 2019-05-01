@@ -2,35 +2,35 @@ check_tributaries <- function(x){
   checkor(check_logical(x), check_integer(x))
 }
 
-check_gnis <- function(x){
-  x <- x[!(is_gnis(x))]
+check_gnis <- function(x, layer){
+  x <- x[!(is_gnis(x, layer))]
   if(!length(x)) return(TRUE)
   err(co(x, some = "%c %r not valid GNIS_NAME
            (see fwa_lookup_gnis for reference)", conjunction = "and"))
 }
 
-check_wskey <- function(x){
-  x <- x[!(is_wskey(x))]
+check_wskey <- function(x, layer){
+  x <- x[!(is_wskey(x, layer))]
   if(!length(x)) return(TRUE)
-  err(co(x, some = "%c %r not valid WATERSHED_KEY", conjunction = "and"))
+  err(co(x, some = paste0("%c %r not valid WATERSHED_KEY for layer '", layer, "'"), conjunction = "and"))
 }
 
-check_wsgcode <- function(x){
-  x <- x[!(is_wsgcode(x))]
+check_wsgcode <- function(x, layer){
+  x <- x[!(is_wsgcode(x, layer))]
   if(!length(x)) return(TRUE)
-  err(co(x, some = "%c %r not valid WATERSHED_GROUP_CODE", conjunction = "and"))
+  err(co(x, some = paste0("%c %r not valid WATERSHED_GROUP_CODE for layer '", layer, "'"), conjunction = "and"))
 }
 
-check_wsgname <- function(x){
+check_wsgname <- function(x, layer){
   x <- x[!(is_wsgname(x))]
   if(!length(x)) return(TRUE)
-  err(co(x, some = "%c %r not valid WATERSHED_GROUP_NAME", conjunction = "and"))
+  err(co(x, some = paste0("%c %r not valid WATERSHED_GROUP_NAME for layer '", layer, "'"), conjunction = "and"))
 }
 
-check_wskey_wsgcode <- function(x){
-  x <- x[!(is_wskey(x) | is_wsgcode(x))]
+check_wskey_wsgcode <- function(x, layer){
+  x <- x[!(is_wskey(x, layer) | is_wsgcode(x, layer))]
   if(!length(x)) return(TRUE)
-  err(co(x, some = "%c %r not valid WATERSHED_KEY or WATERSHED_GROUP_CODE", conjunction = "and"))
+  err(co(x, some = paste0("%c %r not valid WATERSHED_KEY or WATERSHED_GROUP_CODE for layer '", layer, "'"), conjunction = "and"))
 }
 
 check_layer <- function(x){
