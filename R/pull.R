@@ -18,8 +18,8 @@ fwa_pull_watershed_key <- function(x){
 #' fwa_pull_watershed_group_code("Graham Island")
 #' @export
 fwa_pull_watershed_group_code <- function(x){
-  check_wsgcode(x)
-  fwa_lookup_watershedgroup$WATERSHED_GROUP_NAME[fwa_lookup_watershedgroup$WATERSHED_GROUP_CODE %in% x]
+  check_wsgname(x)
+  fwa_lookup_watershedgroup$WATERSHED_GROUP_CODE[fwa_lookup_watershedgroup$WATERSHED_GROUP_NAME %in% x]
 }
 
 #' Pull tributaries from WATERSHED_KEY.

@@ -4,12 +4,12 @@
 \alias{fwa_search_watershed_group}
 \title{Search valid WATERSHED_GROUP_NAME.}
 \usage{
-fwa_search_watershed_group(pattern, ignore_case = TRUE, ...)
+fwa_search_watershed_group(pattern, layer = NULL, ...)
 }
 \arguments{
 \item{pattern}{A character string containing a regular expression (or character string for fixed = TRUE) to be matched.}
 
-\item{ignore_case}{A flag indicating whether to ignore case.}
+\item{layer}{A valid layer from fwa_lookup_layer.}
 
 \item{...}{Arguments passed to grepl.}
 }

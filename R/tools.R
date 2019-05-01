@@ -17,7 +17,7 @@ fwa_rkm <- function(x = 360709847,
   # get main stem
   dat <- dat[dat$BLUE_LINE_KEY == x]
 
-  y <- line_rkm(, distance = distance,
+  y <- line_rkm(dat, distance = distance,
                 label_name = label_name, sfc_name = sfc_name)
 
   y[[stream_name]] <- x
