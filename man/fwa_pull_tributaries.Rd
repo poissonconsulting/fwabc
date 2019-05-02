@@ -19,5 +19,5 @@ A vector of WATERSHED_KEY tributaries.
 Pull tributaries from WATERSHED_KEY.
 }
 \examples{
-fwa_pull_tributaries("Sangan River")
+fwa_pull_tributaries(360709847)
 }

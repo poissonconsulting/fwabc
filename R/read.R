@@ -45,10 +45,10 @@ fwa_read <- function(x = NULL, ask = TRUE, layer = "stream-network", crs = 3005)
 #' @inheritParams fwa_read
 #' @return A sf object with sfc_LINESTRING geometry.
 #' @examples
-#' fwa_read_streams()
-#' fwa_read_streams(c(360709847, 360843586))
+#' fwa_read_stream_network(ask = FALSE)
+#' fwa_read_stream_network(c(360709847, 360843586))
 #' @export
-fwa_read_streams <- function(x = NULL, ask = TRUE, crs = 3005) {
+fwa_read_stream_network <- function(x = NULL, ask = TRUE, crs = 3005) {
  fwa_read(x = x, ask = ask, layer = "stream-network", crs = crs)
 }
 

@@ -15,7 +15,7 @@ test_that("read fwa data", {
   # test convenience functions work
   # streams
   x <- lookup_wskey$WATERSHED_KEY[lookup_wskey$`stream-network`][1]
-  expect_identical(fwa_read_streams(x)$WATERSHED_KEY,
+  expect_identical(fwa_read_stream_network(x)$WATERSHED_KEY,
                    fwa_read(x, layer = "stream-network")$WATERSHED_KEY)
   # coastlines
   x <- lookup_wskey$WATERSHED_KEY[lookup_wskey$`coastlines`][1]
