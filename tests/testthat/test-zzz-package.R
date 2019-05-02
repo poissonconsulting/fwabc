@@ -2,62 +2,87 @@ context("fwa read")
 
 test_that("read fwa data", {
 
-  ### read streams
-  dsn <- system.file("extdata", "stream.gpkg", package = "fwabc", mustWork = TRUE)
-  streams <- c("Chown Brook", 360456318L, "940-971473-016923-822158-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000")
-  x <- fwa_stream(streams, dsn = dsn)
-  expect_identical(nrow(x), 3L)
+  ###### ------ fwa_read
+  # works with WATERSHED_KEY
+  streams <- c(360709847, 360843586)
+  x <- fwa_read(streams, layer = "stream-network")
+  expect_identical(nrow(x), 43L)
   expect_is(x, "sf")
-  expect_identical(x$BLUE_LINE_KEY, c(360456318L, 360545767L, 360640895L))
+  expect_equal(st_crs(x), 3005L)
 
-  x <- fwa_stream("Chown Brook", tributaries = TRUE, dsn = dsn)
-  expect_identical(nrow(x), 8L)
+  y <- bcdata::bcdc_query_geodata("freshwater-atlas-stream-network") %>%
+    bcdata::filter(WATERSHED_KEY %in% c(360709847, 360843586)) %>%
+    bcdata::collect()
+  testthat::expect_equal(x %>% st_set_geometry(NULL), y %>% st_set_geometry(NULL))
+
+  # works with WATERSHED_GROUP_CODE
+  streams <- c("PORI")
+  x <- fwa_read(streams, layer = "stream-network", crs = 4326)
+  expect_equal(st_crs(x), 4326L)
+  expect_identical(nrow(x), 5203L)
   expect_is(x, "sf")
 
-  x2 <- fwa_stream(dsn = dsn, ask = FALSE)
-  expect_identical(x, x2)
+  y <- bcdata::bcdc_query_geodata("freshwater-atlas-stream-network") %>%
+    bcdata::filter(WATERSHED_GROUP_CODE %in% "PORI") %>%
+    bcdata::collect()
 
-  ### read coastline
-  dsn <- system.file("extdata", "coastline.gpkg", package = "fwabc", mustWork = TRUE)
-  x <- fwa_coastline(c(380891035L, "915-764826-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000-000000"), dsn = dsn)
-  expect_is(x, "sf")
-  expect_true(nrow(x) == 3L)
-  expect_identical(unique(x$WATERSHED_GROUP_CODE) %>% as.character, c("PORI"))
+  testthat::expect_equal(x %>% st_set_geometry(NULL), y %>% st_set_geometry(NULL))
 
-  x <- fwa_coastline(c("SEYM", "Porcher Island"), dsn = dsn)
-  expect_is(x, "sf")
-  expect_identical(nrow(x), 12L)
-  expect_identical(unique(x$WATERSHED_GROUP_CODE) %>% as.character, c("PORI", "SEYM"))
+  x <- c(360843586)
 
-  x2 <- fwa_coastline(dsn = dsn)
-  expect_identical(x, x2)
+  # test convenience functions work
+  # streams
+  x <- lookup_wskey$WATERSHED_KEY[lookup_wskey$`stream-network`][1]
+  expect_identical(fwa_read_streams(x)$WATERSHED_KEY,
+                   fwa_read(x, layer = "stream-network")$WATERSHED_KEY)
+  # coastlines
+  x <- lookup_wskey$WATERSHED_KEY[lookup_wskey$`coastlines`][1]
+  expect_identical(fwa_read_coastlines(x)$WATERSHED_KEY,
+                   fwa_read(x, layer = "coastlines")$WATERSHED_KEY)
+  # watersheds
+  x <- lookup_wskey$WATERSHED_KEY[lookup_wskey$`watersheds`][1]
+  expect_identical(fwa_read_watersheds(x)$WATERSHED_KEY,
+                   fwa_read(x, layer = "watersheds")$WATERSHED_KEY)
+  # obstructions
+  x <- lookup_wskey$WATERSHED_KEY[lookup_wskey$`obstructions`][1]
+  expect_identical(fwa_read_obstructions(x)$WATERSHED_KEY,
+                   fwa_read(x, layer = "obstructions")$WATERSHED_KEY)
+  # linear-boundaries
+  x <- lookup_wskey$WATERSHED_KEY[lookup_wskey$`linear-boundaries`][1]
+  expect_identical(fwa_read_linear_boundaries(x)$WATERSHED_KEY,
+                   fwa_read(x, layer = "linear-boundaries")$WATERSHED_KEY)
+  # lakes
+  x <- lookup_wskey$WATERSHED_KEY[lookup_wskey$`lakes`][1]
+  expect_identical(fwa_read_lakes(x)$WATERSHED_KEY,
+                   fwa_read(x, layer = "lakes")$WATERSHED_KEY)
+  # rivers
+  x <- lookup_wskey$WATERSHED_KEY[lookup_wskey$`rivers`][1]
+  expect_identical(fwa_read_rivers(x)$WATERSHED_KEY,
+                   fwa_read(x, layer = "rivers")$WATERSHED_KEY)
+  # wetlands
+  x <- lookup_wskey$WATERSHED_KEY[lookup_wskey$`wetlands`][1]
+  expect_identical(fwa_read_wetlands(x)$WATERSHED_KEY,
+                   fwa_read(x, layer = "wetlands")$WATERSHED_KEY)
+  # manmade-waterbodies
+  x <- lookup_wskey$WATERSHED_KEY[lookup_wskey$`manmade-waterbodies`][1]
+  expect_identical(fwa_read_manmade_waterbodies(x)$WATERSHED_KEY,
+                   fwa_read(x, layer = "manmade-waterbodies")$WATERSHED_KEY)
+  # watershed_groups
+  x <- "PORI"
+  expect_identical(fwa_read_watershed_groups(x)$WATERSHED_GROUP_CODE,
+                   fwa_read(x, layer = "watershed-groups")$WATERSHED_GROUP_CODE)
+  # glaciers
+  x <- lookup_wsgroup$WATERSHED_GROUP_CODE[lookup_wsgroup$glaciers][1]
+  expect_equal(fwa_read_glaciers(x)$WATERBODY_POLY_ID,
+                   fwa_read(x, layer = "glaciers")$WATERBODY_POLY_ID)
 
-  ### read watershed groups
-  dsn <- system.file("extdata", "wsgroup.gpkg", package = "fwabc", mustWork = TRUE)
-  x <- fwa_watershed_group(c("NBNK", "North Banks Island"), dsn = dsn)
-  expect_is(x, "sf")
-  expect_identical(nrow(x), 1L)
-  expect_identical(x$WATERSHED_GROUP_CODE %>% as.character, "NBNK")
-  expect_identical(ncol(x), 8L)
+  ###### ------ search functions
+  x <- fwa_search_gnis("sangan|hiellen")
+  y <- fwa_search_gnis("sangan|hiellen", ignore.case = FALSE)
+  z <- fwa_search_gnis("sangan", layer = "lakes")
 
-  x2 <- fwa_watershed_group(dsn = dsn)
-  expect_identical(x, x2)
 
-  ### read watersheds
-  dsn <- system.file("extdata", "wshed.gpkg", package = "fwabc", mustWork = TRUE)
-  wsheds <- c("Kliki Damen Creek", "Hiellen River")
-  x <- fwa_watershed(wsheds, watershed_group = "GRAI", dsn = dsn)
-  expect_is(x, "sf")
-  expect_identical(nrow(x), 4L)
-  expect_identical(ncol(x), 37L)
-  expect_true(all(x$WATERSHED_GROUP_CODE == "GRAI"))
 
-  x <- fwa_watershed(wsheds, watershed_group = "GRAI", tributaries = TRUE, dsn = dsn)
-  expect_identical(nrow(x), 10L)
-  expect_identical(ncol(x), 37L)
-  expect_true(all(x$WATERSHED_GROUP_CODE == "GRAI"))
 
-  x2 <- fwa_watershed(dsn = dsn)
-  expect_identical(x2, x)
 
 })
