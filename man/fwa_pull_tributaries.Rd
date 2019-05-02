@@ -4,7 +4,7 @@
 \alias{fwa_pull_tributaries}
 \title{Pull tributaries from WATERSHED_KEY.}
 \usage{
-fwa_pull_tributaries(x)
+fwa_pull_tributaries(x, order = 1)
 }
 \arguments{
 \item{x}{A vector of WATERSHED_KEY.}
