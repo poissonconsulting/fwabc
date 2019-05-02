@@ -22,7 +22,7 @@ fwa_read <- function(x = NULL, ask = TRUE, layer = "stream-network", crs = 3005)
     return()
   }
 
-  if(layer %in% c("watershed-groups", "glaciers")){
+  if(layer %in% fwa_lookup_layer$layer[!fwa_lookup_layer$WATERSHED_KEY]){
     check_wsgcode(x)
     return(filter_wsgcode(x, layer = layer, crs = crs))
   }
