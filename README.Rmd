@@ -20,74 +20,138 @@ knitr::opts_chunk$set(
 
 # fwabc
 
-`fwabc` is an R package to read subsets of data from various layers in the BC Freshwater Atlas.
-Currently, the package supports retrieving streams, watersheds, watershed groups, and coastline.  
-
-We simplify working with the databases by:  
-
-+ Writing SQL queries required to read only a subset of a layer prior to loading into memory.  
-
-+ Matching regular expressions (e.g. "columbia|koot") to GNIS_NAME, BLUE_LINE_KEY and FWA_WATERSHED_CODE.  
-
-+ Parsing FWA_WATERSHED_CODE to get all tributaries of a particular feature in the network.  
-
-
-Let's take a look at two of my neighbourhoud streams, whose official GNIS names are Sangan River and Hiellen River.
-```{r stream}
-library(fwabc)
-library(ggplot2)
-library(sf)
-
-streams <- fwa_stream("sangan|hiellen")
-```
-
-Notice that `fwa_stream()` takes a regular expression to internally search for matching GNIS names.  It is useful to check which streams we have included.
-```{r stream search}
-fwa_search_gnis("sangan|hiellen")
-```
-
-Now let's get all of the tributaries and plot.
-```{r stream tribs, fig.width = 5, fig.height = 3}
-tribs <- fwa_stream("sangan|hiellen", tributaries = TRUE)
-
-ggplot() +
-  geom_sf(data = tribs, color = "black", size = 0.2) +
-  geom_sf(data = streams, color = "steelblue", size = 0.5) 
-
-```
-
-Finally let's get the watershed polygons and coastline for Graham Island.
-```{r stream map, fig.width = 6, fig.height = 5}
-wshed <- fwa_watershed("sangan|hiellen", tributaries = TRUE) %>% 
-  sf::st_union()
-
-coastline <- fwa_coastline("Graham Island")
-
-bbox <- sf::st_bbox(sf::st_buffer(wshed, 8000))
-
-ggplot() +
-  geom_sf(data = coastline, size = 0.3, color = "black") +
-  geom_sf(data = wshed, fill = "white", size = 0.4, color = "black") +
-  geom_sf(data = tribs, size = 0.1, color = "black") +
-  geom_sf(data = streams, size = 0.5, color = "steelblue") +
-  coord_sf(xlim = c(bbox[1], bbox[3]), ylim = c(bbox[2], bbox[4]))
-
-```
+`fwabc` is an R package to read data from the [BC Freshwater Atlas](https://www2.gov.bc.ca/assets/gov/data/geographic/topography/fwa/fwa_user_guide.pdf). Reference tables and functions are provided to simplify working with the database.
 
 ## Installation
 
-To install the latest development version from [GitHub](https://github.com/poissonconsulting/fwabc)
+Install the latest development version of `bcdata` from [GitHub](https://github.com/bcgov/bcdata) with `remotes` package:
 ```
-install.packages("devtools")
-devtools::install_github("poissonconsulting/fwabc")
+install.packages("remotes")
+remotes::install_github("bcgov/bcdata")
 ```
 
-To install the latest development version from the Poisson drat [repository](https://github.com/poissonconsulting/drat)
+Install the latest development version of `fwabc` from [GitHub](https://github.com/poissonconsulting/fwabc)
 ```
-install.packages("drat")
-drat::addRepo("poissonconsulting")
-install.packages("fwabc")
+remotes::install_github("poissonconsulting/fwabc")
 ```
+
+## Functions
++ `fwa_read_` - Read features from BC Freshwater Atlas layers.
++ `fwa_pull_` - Provide an input and return some modified version of it (e.g. another input type, or tributaries of that input).
++ `fwa_search_` Match a regular expression to official named features (`GNIS_NAME` and `WATERSHED_GROUP_NAME`).
+
+## Usage
+### Read 
+Read features from available layers using the `fwa_read()` function:
+```{r stream}
+library(ggplot2)
+library(magrittr)
+library(fwabc)
+
+x <- fwa_read(c("SKGT", 356439092), layer = "stream-network") 
+
+ggplot() + 
+  geom_sf(data = x, size = 0.2) +
+  ggtitle("Skagit River stream-network layer")
+
+```
+All `fwa_read_` functions return a [sf](https://github.com/r-spatial/sf) object and require any combination of `WATERSHED_KEY` and `WATERSHED_GROUP_CODE` as input. The `glaciers` and `watershed-groups` layers do not accept `WATERSHED_KEY` as input.
+
+Read features from multiple layers for Skagit River watershed group:
+```{r layers}
+layers <- c("stream-network", "rivers", "lakes", "watershed-groups")
+x <- lapply(layers, function(x) fwa_read("SKGT", layer = x))
+names(x) <- layers
+
+ggplot() + 
+    geom_sf(data = x[["watershed-groups"]], size = 0.2) +
+    geom_sf(data = x[["lakes"]], size = 0.3, fill = "steelblue") +
+    geom_sf(data = x[["rivers"]], size = 0.3, fill = "steelblue") +
+    geom_sf(data = x[["stream-network"]][x[["stream-network"]]$STREAM_ORDER > 2,], size = 0.07) +
+    geom_sf_label(data = x[["rivers"]], aes(label = GNIS_NAME_1)) +
+    ggtitle("Skagit River Watershed Group")
+  
+```
+
+There is a convenience function for each layer, e.g. `fwa_read_stream_network()`, `fwa_read_watershed_groups()`, `fwa_read_coastlines()` etc.
+To read an entire layer, leave the default `x = NULL`. Some layers (e.g. `stream-network` and `watersheds`) are very large.
+
+```{r wsgroup}
+library(rmapshaper)
+x <- fwa_read_watershed_groups(ask = FALSE) %>%
+  # simplify with rmapshaper package
+  rmapshaper::ms_simplify()  
+
+ggplot() + 
+  geom_sf(data = x, size = 0.05, aes(fill = WATERSHED_GROUP_NAME), show.legend = FALSE) +
+  ggtitle("watershed-groups layer")
+```
+
+### Search and pull
+Often, the `WATERSHED_KEY` or `WATERSHED_GROUP_CODE` is unknown. Use the `fwa_search_` and `fwa_pull_` functions to help.
+
+Match a regular expression to an official stream name (`GNIS_NAME`) or watershed group name (`WATERSHED_GROUP_NAME`):
+
+```{r search}
+fwa_search_gnis("skagi|scagi")
+fwa_search_watershed_group("skagi|scagi")
+```
+
+Pull the `WATERSHED_KEY` or `WATERSHED_GROUP_CODE` from the official name and provide to `fwa_read_`:
+
+```{r pipe}
+stream <- fwa_search_gnis("skagi|scagi") %>%
+  fwa_pull_watershed_key() %>%
+  fwa_read_stream_network()
+
+wshed <- fwa_search_watershed_group("skagi|scagi") %>%
+  fwa_pull_watershed_group_code() %>%
+  fwa_read_watershed_groups()
+
+ggplot() +
+  geom_sf(data = wshed, size = 0.2) +
+  geom_sf(data = stream) +
+  ggtitle("Skagit River")
+  
+```
+
+### Tributaries
+Use `fwa_pull_tributaries()` to get tributaries from a `WATERSHED_KEY`:
+
+```{r tribs}
+tribs <- fwa_search_gnis("skagit") %>%
+  fwa_pull_watershed_key() %>%
+  fwa_pull_tributaries(order = 1L) %>%
+  fwa_read_stream_network()
+
+ggplot() +
+  geom_sf(data = wshed, size = 0.2) +
+  geom_sf(data = stream) +
+  geom_sf(data = tribs, size = 0.1) +
+  ggtitle("Skagit River and Primary Tributaries")
+
+```
+
+### Lookup tables
+`fwabc` provides three lookup tables (`fwa_lookup_gnis`, `fwa_lookup_watershed_group`, `fwa_lookup_layer`), which can be useful for finding layer names, named features or which layers have data for particular features. 
+
+## Other packages
+`fwabc` read functions use the [`bcdata`](https://github.com/bcgov/bcdata) package (specifically, `bcdata::bcdc_query_geodata()`) to query the freshwater atlas remotely. `fwabc` provides convenience for common requests
+
+```{r bcdata, eval = FALSE}
+fwa_read_stream_network(c("SKGT", 356439092))
+
+#### ---- returns the same result as ---- ####
+
+bcdata::bcdc_query_geodata("freshwater-atlas-stream-network") %>%
+  bcdata::filter(WATERSHED_GROUP_CODE == "SKGT" | WATERSHED_KEY == 356439092) %>%
+  bcdata::collect()
+
+```
+
+and resources/functions to get tributaries and official `GNIS_NAME`, `WATERSHED_KEY` and `WATERSHED_GROUP_CODE`. 
+
+However, if you are very familiar with the atlas and require greater filtering flexibility (or even want to use your own CQL), then we suggest trying the fantastic `bcdata` package.
 
 ## Contribution
 
