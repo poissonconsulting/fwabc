@@ -29,7 +29,7 @@ fwa_pull_watershed_group_code <- function(x){
 #' e.g. order = 1L will retrieve all primary upstream tributaries.
 #' @return A vector of WATERSHED_KEY tributaries.
 #' @examples
-#' fwa_pull_tributaries("Sangan River")
+#' fwa_pull_tributaries(360709847)
 #' @export
 fwa_pull_tributaries <- function(x, order = 1){
   check_wskey(x)
