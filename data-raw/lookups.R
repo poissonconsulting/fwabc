@@ -204,6 +204,10 @@ lookup_wsgroup <- lookup %>%
   modify_if(.p = ~ is.logical(.), .f = ~ replace_na(., FALSE))
 
 lookup_wsgroup$`watershed-groups` <- TRUE
-lookup_wsgroup %<>% left_join(wsgroup %>% select(WATERSHED_GROUP_CODE, WATERSHED_GROUP_NAME), "WATERSHED_GROUP_CODE")
+lookup_wsgroup %<>% left_join(wsgroup %>% select(WATERSHED_GROUP_CODE, WATERSHED_GROUP_NAME), "WATERSHED_GROUP_CODE") %>%
+  select(WATERSHED_GROUP_CODE, WATERSHED_GROUP_NAME, everything())
 
+fwa_lookup_watershed_group <- lookup_wsgroup
+
+use_data(fwa_lookup_watershed_group, overwrite = TRUE)
 use_data(lookup_gnis, lookup_wskey, lookup_wsgroup, internal = TRUE, overwrite = TRUE)

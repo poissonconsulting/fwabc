@@ -3,17 +3,27 @@
 \docType{data}
 \name{fwa_lookup_gnis}
 \alias{fwa_lookup_gnis}
-\title{Stream BlueLineKey lookup table}
-\format{A data frame with 53940 rows and 10 variables:
+\title{GNIS_NAME lookup table}
+\format{A data frame with 18614 rows and 12 variables:
 \describe{
-  \item{price}{price, in US dollars}
-  \item{carat}{weight of the diamond, in carats}
+  \item{GNIS_NAME}{gnis name}
+  \item{WATERSHED_KEY}{fwa watershed key}
+  \item{stream-network}{whether data is available for stream-network layer}
+  \item{linear-boundaries}{whether data is available for linear-boundaries layer}
+  \item{watersheds}{whether data is available for watersheds layer}
+  \item{coastlines}{whether data is available for coastlines layer}
+  \item{obstructions}{whether data is available for obstructions layer}
+  \item{lakes}{whether data is available for lakes layer}
+  \item{wetlands}{whether data is available for wetlands layer}
+  \item{rivers}{whether data is available for rivers layer}
+  \item{manmade-waterbodies}{whether data is available for manmade-waterbodies layer}
+  \item{glaciers}{wwhether data is available for glaciers layer}
   ...
 }}
 \usage{
 fwa_lookup_gnis
 }
 \description{
-A dataset of all stream BlueLineKey and WatershedCode.
+A dataset of all GNIS_NAMEs and which layers are available for each.
 }
 \keyword{datasets}
