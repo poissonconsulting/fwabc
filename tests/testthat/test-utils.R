@@ -40,17 +40,22 @@ test_that("utils work", {
   expect_identical(x[2], lookup_wskey$FWA_WATERSHED_CODE[1])
   expect_true(all(is_wscode(x)))
 
-  wsg <- unique(lookup_wskey$WATERSHED_GROUP_CODE)[2]
-  y <- c(lookup_wskey$WATERSHED_KEY[1], wsg)
-  x <- wsgcode_to_wskey(y)
-  z <- wsgcode_to_wskey(wsg)
-  expect_true(length(x) - length(z) == 1)
-  expect_true(all(is_wskey(x)))
-  expect_length(x, 1464L)
-  expect_identical(setdiff(x, z), lookup_wskey$WATERSHED_KEY[1])
+  ### filters
+  wskey <- c(360709847, 360843586)
+  x <- filter_wskey(wskey, layer = "stream-network", crs = 3005)
+  expect_identical(nrow(x), 43L)
+  expect_is(x, "sf")
+  expect_equal(sf::st_crs(x)$epsg, 3005)
 
-  wsk <- x[1:2]
-  wsg2 <- wskey_to_wsgcode(x[1:2])
-  expect_identical(wsg2, c("PORI", "UPET"))
+  wsgcode <- c("VICT", "LKEL")
+  x <- filter_wsgcode(wsgcode, layer = "stream-network", crs = 4326)
+  expect_equal(sf::st_crs(x)$epsg, 4326L)
+  expect_identical(nrow(x), 4526L)
+  expect_is(x, "sf")
+
+  x <- filter_both(wskey = 360709847, wsgcode = "VICT",
+                   layer = "stream-network", crs = 4326)
+  expect_identical(nrow(x), 2161L)
+  expect_is(x, "sf")
 
 })

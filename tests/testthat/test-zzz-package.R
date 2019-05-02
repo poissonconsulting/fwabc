@@ -3,32 +3,14 @@ context("fwa read")
 test_that("read fwa data", {
 
   ###### ------ fwa_read
-  # works with WATERSHED_KEY
-  streams <- c(360709847, 360843586)
-  x <- fwa_read(streams, layer = "stream-network")
-  expect_identical(nrow(x), 43L)
-  expect_is(x, "sf")
-  expect_equal(st_crs(x), 3005L)
-
-  y <- bcdata::bcdc_query_geodata("freshwater-atlas-stream-network") %>%
-    bcdata::filter(WATERSHED_KEY %in% c(360709847, 360843586)) %>%
-    bcdata::collect()
-  testthat::expect_equal(x %>% st_set_geometry(NULL), y %>% st_set_geometry(NULL))
-
   # works with WATERSHED_GROUP_CODE
-  streams <- c("PORI")
-  x <- fwa_read(streams, layer = "stream-network", crs = 4326)
-  expect_equal(st_crs(x), 4326L)
-  expect_identical(nrow(x), 5203L)
-  expect_is(x, "sf")
+  ws <- c("VICT", 360709847)
+  x <- fwa_read(ws[1], layer = "stream-network")
+  y <- fwa_read(ws[2], layer = "stream-network")
+  z <- fwa_read(ws, layer = "stream-network")
 
-  y <- bcdata::bcdc_query_geodata("freshwater-atlas-stream-network") %>%
-    bcdata::filter(WATERSHED_GROUP_CODE %in% "PORI") %>%
-    bcdata::collect()
-
-  testthat::expect_equal(x %>% st_set_geometry(NULL), y %>% st_set_geometry(NULL))
-
-  x <- c(360843586)
+  expect_equal(nrow(rbind(x, y)), nrow(z))
+  expect_equal(names(rbind(x, y)), names(z))
 
   # test convenience functions work
   # streams
@@ -77,12 +59,42 @@ test_that("read fwa data", {
                    fwa_read(x, layer = "glaciers")$WATERBODY_POLY_ID)
 
   ###### ------ search functions
-  x <- fwa_search_gnis("sangan|hiellen")
-  y <- fwa_search_gnis("sangan|hiellen", ignore.case = FALSE)
-  z <- fwa_search_gnis("sangan", layer = "lakes")
+  # search gnis
+  expect_identical(fwa_search_gnis("sangan|hiellen"),
+                   c("Hiellen River", "Sangan River"))
+  expect_identical(fwa_search_gnis("porcher", layer = "lakes"),
+                   "Porcher Creek")
+  # test that args passed to grepl
+  expect_length(fwa_search_gnis("sangan|hiellen", ignore_case = FALSE), 0)
+  expect_length(fwa_search_gnis("Sangan|Hiellen",
+                                fixed = TRUE, ignore_case = FALSE), 0)
+  expect_identical(fwa_search_gnis("sangan|hiellen", layer = "lakes"),
+                   "Hiellen River")
 
+  # search wsgroups
+  expect_identical(fwa_search_watershed_group("porcher|graham"),
+                   c("Porcher Island", "Graham Island"))
+  expect_identical(fwa_search_watershed_group("porcher", layer = "lakes"),
+                   "Porcher Island")
 
+  ###### ------ pull functions
+  gnis <- c("Sangan River", "Hiellen River")
+  wskey <- lookup_gnis$WATERSHED_KEY[lookup_gnis$GNIS_NAME %in% gnis]
+  expect_error(fwa_pull_watershed_key("sangan"))
+  expect_identical(fwa_pull_watershed_key(gnis), wskey)
 
+  wsg <- c("Porcher Island", "Graham Island")
+  wscode <- lookup_wsgroup$WATERSHED_GROUP_CODE[lookup_wsgroup$WATERSHED_GROUP_NAME %in% wsg]
+  expect_error(fwa_pull_watershed_group_code("PORI"))
+  expect_identical(fwa_pull_watershed_group_code(wsg), wscode)
 
+  x <- fwa_pull_tributaries(wskey, 1)
+  y <- fwa_pull_tributaries(wskey, 2)
+  z <- fwa_pull_tributaries(wskey[1], 1)
+
+  expect_true(length(y) > length(x))
+  expect_true(all(is_wskey(x)))
+  expect_length(z, 35)
+  expect_error(fwa_pull_tributaries("Sangan River"))
 
 })
