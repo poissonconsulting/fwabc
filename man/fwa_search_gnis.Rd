@@ -4,12 +4,14 @@
 \alias{fwa_search_gnis}
 \title{Search valid GNIS_NAME.}
 \usage{
-fwa_search_gnis(pattern, layer = NULL, ...)
+fwa_search_gnis(pattern, layer = NULL, ignore_case = TRUE, ...)
 }
 \arguments{
 \item{pattern}{A character string containing a regular expression (or character string for fixed = TRUE) to be matched.}
 
 \item{layer}{A valid layer from fwa_lookup_layer.}
+
+\item{ignore_case}{A flag of whether to ignore case when matching regular expression.}
 
 \item{...}{Arguments passed to grepl.}
 }
@@ -20,5 +22,5 @@ A character vector.
 Search valid GNIS_NAME.
 }
 \examples{
-fwa_search_gnis_name("sangan")
+fwa_search_gnis("sangan")
 }
