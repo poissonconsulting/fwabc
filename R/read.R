@@ -22,8 +22,15 @@ fwa_read <- function(x = NULL, ask = TRUE, layer = "stream-network", crs = 3005)
     return()
   }
 
+  if(layer %in% c("watershed-groups", "glaciers")){
+    check_wsgcode(x)
+    return(bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer), crs = crs) %>%
+               bcdata::filter(WATERSHED_GROUP_CODE %in% x) %>%
+               bcdata::collect())
+  }
+
   check_wskey_wsgcode(x, layer = layer)
-  x <- wsgcode_to_wskey(x, layer = layer)
+  x <- wsgcode_to_wskey(x)
 
   bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer), crs = crs) %>%
     bcdata::filter(WATERSHED_KEY %in% x) %>%
@@ -132,6 +139,7 @@ fwa_read_manmade_waterbodies <- function(x = NULL, ask = FALSE, crs = 3005) {
 
 #' Read from glaciers layer.
 #'
+#' @param x A vector of valid WATERSHED_GROUP_CODE. If NULL, entire dataset is read.
 #' @inheritParams fwa_read
 #' @return A sf object.
 #' @examples
@@ -143,30 +151,12 @@ fwa_read_glaciers <- function(x = NULL, ask = FALSE, crs = 3005) {
 
 #' Read from watershed-groups layer.
 #'
+#' @param x A vector of valid WATERSHED_GROUP_CODE. If NULL, entire dataset is read.
 #' @inheritParams fwa_read
 #' @return A sf object.
 #' @examples
-#' fwa_read_watershed_group("GRAI")
+#' fwa_read_watershed_groups("GRAI")
 #' @export
 fwa_read_watershed_groups <- function(x = NULL, ask = FALSE, crs = 3005) {
-
-  layer <- "watershed-groups"
-
-  if(is.null(x)){
-    if(!ask){
-      return(all_data(layer))
-    }
-    if(yesno::yesno("This is a very large dataset. Do you want to download the entire ",
-                    layer, " layer?")){
-      return(all_data(layer))
-    }
-    return()
-  }
-
-  check_wsgcode(x, layer = layer)
-  x <- wskey_to_wsgcode(x, layer = layer)
-
-  bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer), crs = crs) %>%
-    bcdata::filter(WATERSHED_GROUP_CODE %in% x) %>%
-    bcdata::collect()
+  fwa_read(x = x, ask = ask, layer = "watershed-groups", crs = crs)
 }
