@@ -93,8 +93,8 @@ line_rkm <- function(x, distance, label_name = "Rkm", sfc_name = "geometry"){
   if(i > n/2){
     label <- rev(label)
   }
-  data.frame(label[1:n], pts) %>%
-    setNames(c(label_name, sfc_name)) %>%
-    st_sf()
+  dat <- data.frame(label[1:n], pts)
+  names(dat) <- c(label_name, sfc_name)
+  dat %>% st_sf()
 }
 
