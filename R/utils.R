@@ -38,28 +38,37 @@ tribs <- function(x, n){
   a <- gsub("-000000", "", x)
   b <- lookup_wskey$FWA_WATERSHED_CODE[grepl(a, lookup_wskey$FWA_WATERSHED_CODE, fixed = TRUE)]
   c <- gsub("-000000", "", b) %>% gsub(paste0(a, "-"), "", .)
-  d <- c(x, b[sapply(strsplit(c, "-"), function(x) length(x) <= order)])
+  d <- c(x, b[sapply(strsplit(c, "-"), function(x) length(x) <= n)])
   lookup_wskey$WATERSHED_KEY[lookup_wskey$FWA_WATERSHED_CODE %in% d]
 }
 
+### these are designed to also take as input what you are trying to convert to
 wskey_to_wscode <- function(x){
-  lookup_wskey$FWA_WATERSHED_CODE[lookup_wskey$WATERSHED_KEY %in% x]
-}
-
-wsgcode_to_wskey <- function(x){
-  wskey <- x[is_wskey(x)]
-  y <- lookup_wskey$WATERSHED_KEY[lookup_wskey$WATERSHED_GROUP_CODE %in% x]
-  unique(as.numeric(c(wskey, y)))
-}
-
-wskey_to_wsgcode <- function(x){
-  wsgcode <- x[is_wsgcode(x)]
-  y <- lookup_wskey$WATERSHED_GROUP_CODE[lookup_wskey$WATERSHED_KEY %in% x]
-  unique(c(wsgcode, y))
+  wscode <- x[is_wscode(x)]
+  y <- lookup_wskey$FWA_WATERSHED_CODE[lookup_wskey$WATERSHED_KEY %in% x]
+  unique(c(wscode, y))
 }
 
 all_data <- function(layer){
   bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer)) %>%
+    bcdata::collect()
+}
+
+filter_wskey <- function(x, layer, crs){
+  bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer), crs = crs) %>%
+    bcdata::filter(WATERSHED_KEY %in% x) %>%
+    bcdata::collect()
+}
+
+filter_wsgcode <- function(x, layer, crs){
+  bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer), crs = crs) %>%
+    bcdata::filter(WATERSHED_GROUP_CODE %in% x) %>%
+    bcdata::collect()
+}
+
+filter_both <- function(wskey, wsgcode, layer, crs){
+  bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer), crs = crs) %>%
+    bcdata::filter(WATERSHED_GROUP_CODE %in% wsgcode | WATERSHED_KEY %in% wskey) %>%
     bcdata::collect()
 }
 
