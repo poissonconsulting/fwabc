@@ -24,17 +24,20 @@ fwa_read <- function(x = NULL, ask = TRUE, layer = "stream-network", crs = 3005)
 
   if(layer %in% c("watershed-groups", "glaciers")){
     check_wsgcode(x)
-    return(bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer), crs = crs) %>%
-               bcdata::filter(WATERSHED_GROUP_CODE %in% x) %>%
-               bcdata::collect())
+    return(filter_wsgcode(x, layer = layer, crs = crs))
   }
 
   check_wskey_wsgcode(x, layer = layer)
-  x <- wsgcode_to_wskey(x)
+  wskey <- x[is_wskey(x)]
+  wsgcode <- x[is_wsgcode(x)]
 
-  bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer), crs = crs) %>%
-    bcdata::filter(WATERSHED_KEY %in% x) %>%
-    bcdata::collect()
+  if(length(wskey) & !length(wsgcode))
+    return(filter_wskey(x, layer = layer, crs = crs))
+
+  if(length(wsgcode) & !length(wskey))
+    return(filter_wsgcode(x, layer = layer, crs = crs))
+
+  filter_both(wskey, wsgcode, layer = layer, crs = crs)
 }
 
 #' Read from stream-network layer.
