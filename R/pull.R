@@ -19,7 +19,7 @@ fwa_pull_watershed_key <- function(x){
 #' @export
 fwa_pull_watershed_group_code <- function(x){
   check_wsgname(x)
-  fwa_lookup_watershedgroup$WATERSHED_GROUP_CODE[fwa_lookup_watershedgroup$WATERSHED_GROUP_NAME %in% x]
+  lookup_wsgroup$WATERSHED_GROUP_CODE[lookup_wsgroup$WATERSHED_GROUP_NAME %in% x]
 }
 
 #' Pull tributaries from WATERSHED_KEY.
@@ -31,8 +31,11 @@ fwa_pull_watershed_group_code <- function(x){
 #' @examples
 #' fwa_pull_tributaries("Sangan River")
 #' @export
-fwa_pull_tributaries <- function(x){
+fwa_pull_tributaries <- function(x, order = 1){
   check_wskey(x)
+  order <- as.integer(order)
+  check_vector(order, 1L, length = 1)
+
   x <- wskey_to_wscode(x)
   unlist(lapply(x, function(x){tribs(x, order)}))
 }
