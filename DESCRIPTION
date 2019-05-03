@@ -20,5 +20,5 @@ Suggests:
     spelling,
     testthat
 Remotes:
-    bcdata
+    bcgov/bcdata
 RoxygenNote: 6.1.1
