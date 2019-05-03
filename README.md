@@ -2,7 +2,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 [![Lifecycle:
-maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis build
 status](https://travis-ci.org/poissonconsulting/fwabc.svg?branch=master)](https://travis-ci.org/poissonconsulting/fwabc)
 [![AppVeyor build
@@ -19,16 +19,24 @@ Atlas](https://www2.gov.bc.ca/assets/gov/data/geographic/topography/fwa/fwa_user
 
 ## Installation
 
-Install the latest development version of `bcdata` from
-[GitHub](https://github.com/bcgov/bcdata) with `remotes` package:
+To install the latest development version from the Poisson drat
+[repository](https://github.com/poissonconsulting/drat)
 
-    install.packages("remotes")
-    remotes::install_github("bcgov/bcdata")
+    if(!"drat" %in% installed.packages()[,1]) 
+      install.packages("drat")
+    drat::addRepo("poissonconsulting")
+    install.packages("fwabc")
 
-Install the latest development version of `fwabc` from
-[GitHub](https://github.com/poissonconsulting/fwabc):
+To install the latest development version from
+[GitHub](https://github.com/poissonconsulting/fwabc)
 
-    remotes::install_github("poissonconsulting/fwabc")
+    if(!"devtools" %in% installed.packages()[,1]) 
+      install.packages("devtools")
+    devtools::install_github("bcgov/bcdata")
+    devtools::install_github("poissonconsulting/yesno")
+    devtools::install_github("poissonconsulting/err")
+    devtools::install_github("poissonconsulting/checkr")
+    devtools::install_github("poissonconsulting/fwabc")
 
 ## Usage
 
@@ -50,9 +58,6 @@ library(magrittr)
 library(fwabc)
 
 fwa_read(c("SKGT", 356439092), layer = "stream-network") 
-#> Warning: It is advised to use the permanent id ('92344413-8035-4c08-
-#> b996-65a9b3f62fca') rather than the name of the record ('freshwater-atlas-
-#> stream-network') to guard against future name changes
 #> Simple feature collection with 6913 features and 27 fields
 #> geometry type:  LINESTRING
 #> dimension:      XYZ

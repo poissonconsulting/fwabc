@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 ```
-[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis build status](https://travis-ci.org/poissonconsulting/fwabc.svg?branch=master)](https://travis-ci.org/poissonconsulting/fwabc)
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/poissonconsulting/fwabc?branch=master&svg=true)](https://ci.appveyor.com/project/poissonconsulting/fwabc)
 [![Coverage status](https://codecov.io/gh/poissonconsulting/fwabc/branch/master/graph/badge.svg)](https://codecov.io/github/poissonconsulting/fwabc?branch=master)
@@ -24,18 +24,27 @@ knitr::opts_chunk$set(
 
 ## Installation
 
-Install the latest development version of `bcdata` from [GitHub](https://github.com/bcgov/bcdata) with `remotes` package:
+To install the latest development version from the Poisson drat [repository](https://github.com/poissonconsulting/drat)
 ```
-install.packages("remotes")
-remotes::install_github("bcgov/bcdata")
+if(!"drat" %in% installed.packages()[,1]) 
+  install.packages("drat")
+drat::addRepo("poissonconsulting")
+install.packages("fwabc")
 ```
 
-Install the latest development version of `fwabc` from [GitHub](https://github.com/poissonconsulting/fwabc):
+To install the latest development version from [GitHub](https://github.com/poissonconsulting/fwabc)
 ```
-remotes::install_github("poissonconsulting/fwabc")
+if(!"devtools" %in% installed.packages()[,1]) 
+  install.packages("devtools")
+devtools::install_github("bcgov/bcdata")
+devtools::install_github("poissonconsulting/yesno")
+devtools::install_github("poissonconsulting/err")
+devtools::install_github("poissonconsulting/checkr")
+devtools::install_github("poissonconsulting/fwabc")
 ```
 
 ## Usage
+
 ### Function families
 + `fwa_read_` - read features from BC Freshwater Atlas layers.
 + `fwa_pull_` - return a modified version of some input (e.g. another input type, or tributaries of that input).
