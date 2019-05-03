@@ -2,7 +2,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 [![Lifecycle:
-maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis build
 status](https://travis-ci.org/poissonconsulting/fwabc.svg?branch=master)](https://travis-ci.org/poissonconsulting/fwabc)
 [![AppVeyor build
@@ -40,6 +40,12 @@ Install the latest development version of `fwabc` from
   - `fwa_search_` - match a regular expression to official named
     features.
 
+### Lookup tables
+
+`fwa_lookup_gnis`, `fwa_lookup_watershed_group`, `fwa_lookup_layer`
+provide resources for finding layer names, named features and which
+layers have data for particular features.
+
 ### Read
 
 Read features from available layers using the `fwa_read()` function:
@@ -50,9 +56,6 @@ library(magrittr)
 library(fwabc)
 
 fwa_read(c("SKGT", 356439092), layer = "stream-network") 
-#> Warning: It is advised to use the permanent id ('92344413-8035-4c08-
-#> b996-65a9b3f62fca') rather than the name of the record ('freshwater-atlas-
-#> stream-network') to guard against future name changes
 #> Simple feature collection with 6913 features and 27 fields
 #> geometry type:  LINESTRING
 #> dimension:      XYZ
@@ -191,13 +194,6 @@ ggplot() +
 ```
 
 ![](man/figures/README-tribs-1.png)<!-- -->
-
-### Lookup tables
-
-`fwabc` provides three lookup tables (`fwa_lookup_gnis`,
-`fwa_lookup_watershed_group`, `fwa_lookup_layer`), which can be useful
-for finding layer names, named features or which layers have data for
-particular features.
 
 ## Other packages
 
