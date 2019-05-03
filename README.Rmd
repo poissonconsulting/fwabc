@@ -48,13 +48,14 @@ library(ggplot2)
 library(magrittr)
 library(fwabc)
 
-# see available layers
-fwa_lookup_layer
-
 fwa_read(c("SKGT", 356439092), layer = "stream-network") 
 
 ```
-All `fwa_read_` functions return a [sf](https://github.com/r-spatial/sf) object and require any combination of `WATERSHED_KEY` and `WATERSHED_GROUP_CODE` as input. The `glaciers` and `watershed-groups` layers do not accept `WATERSHED_KEY` as input.
+All `fwa_read_` functions return a [sf](https://github.com/r-spatial/sf) object and require some combination of `WATERSHED_KEY` and `WATERSHED_GROUP_CODE` as input.
+
+```{r lookup}
+fwa_lookup_layer
+```
 
 Read features from multiple layers for Skagit River watershed group:
 ```{r layers}
@@ -84,7 +85,7 @@ ggplot() +
 ```
 
 ### Search and pull
-Often, the `WATERSHED_KEY` or `WATERSHED_GROUP_CODE` is unknown. Use the `fwa_search_` and `fwa_pull_` functions to help.
+`fwa_search_` and `fwa_pull_` functions can be used to find `WATERSHED_KEY` or `WATERSHED_GROUP_CODE`.
 
 Match a regular expression to an official stream name (`GNIS_NAME`) or watershed group name (`WATERSHED_GROUP_NAME`):
 

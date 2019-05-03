@@ -49,23 +49,6 @@ library(ggplot2)
 library(magrittr)
 library(fwabc)
 
-# see available layers
-print(fwa_lookup_layer)
-#> # A tibble: 11 x 3
-#>    layer               WATERSHED_KEY WATERSHED_GROUP_CODE
-#>    <chr>               <lgl>         <lgl>               
-#>  1 stream-network      TRUE          TRUE                
-#>  2 coastlines          TRUE          TRUE                
-#>  3 watersheds          TRUE          TRUE                
-#>  4 manmade-waterbodies TRUE          TRUE                
-#>  5 obstructions        TRUE          TRUE                
-#>  6 linear-boundaries   TRUE          TRUE                
-#>  7 lakes               TRUE          TRUE                
-#>  8 rivers              TRUE          TRUE                
-#>  9 wetlands            TRUE          TRUE                
-#> 10 watershed-groups    FALSE         TRUE                
-#> 11 glaciers            FALSE         TRUE
-
 fwa_read(c("SKGT", 356439092), layer = "stream-network") 
 #> Warning: It is advised to use the permanent id ('92344413-8035-4c08-
 #> b996-65a9b3f62fca') rather than the name of the record ('freshwater-atlas-
@@ -102,9 +85,26 @@ fwa_read(c("SKGT", 356439092), layer = "stream-network")
 ```
 
 All `fwa_read_` functions return a [sf](https://github.com/r-spatial/sf)
-object and require any combination of `WATERSHED_KEY` and
-`WATERSHED_GROUP_CODE` as input. The `glaciers` and `watershed-groups`
-layers do not accept `WATERSHED_KEY` as input.
+object and require some combination of `WATERSHED_KEY` and
+`WATERSHED_GROUP_CODE` as input.
+
+``` r
+fwa_lookup_layer
+#> # A tibble: 11 x 3
+#>    layer               WATERSHED_KEY WATERSHED_GROUP_CODE
+#>    <chr>               <lgl>         <lgl>               
+#>  1 stream-network      TRUE          TRUE                
+#>  2 coastlines          TRUE          TRUE                
+#>  3 watersheds          TRUE          TRUE                
+#>  4 manmade-waterbodies TRUE          TRUE                
+#>  5 obstructions        TRUE          TRUE                
+#>  6 linear-boundaries   TRUE          TRUE                
+#>  7 lakes               TRUE          TRUE                
+#>  8 rivers              TRUE          TRUE                
+#>  9 wetlands            TRUE          TRUE                
+#> 10 watershed-groups    FALSE         TRUE                
+#> 11 glaciers            FALSE         TRUE
+```
 
 Read features from multiple layers for Skagit River watershed group:
 
@@ -142,8 +142,8 @@ ggplot() +
 
 ### Search and pull
 
-Often, the `WATERSHED_KEY` or `WATERSHED_GROUP_CODE` is unknown. Use the
-`fwa_search_` and `fwa_pull_` functions to help.
+`fwa_search_` and `fwa_pull_` functions can be used to find
+`WATERSHED_KEY` or `WATERSHED_GROUP_CODE`.
 
 Match a regular expression to an official stream name (`GNIS_NAME`) or
 watershed group name (`WATERSHED_GROUP_NAME`):
