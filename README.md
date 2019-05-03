@@ -48,6 +48,12 @@ To install the latest development version from
   - `fwa_search_` - match a regular expression to official named
     features.
 
+### Lookup tables
+
+`fwa_lookup_gnis`, `fwa_lookup_watershed_group`, `fwa_lookup_layer`
+provide resources for finding layer names, named features and which
+layers have data for particular features.
+
 ### Read
 
 Read features from available layers using the `fwa_read()` function:
@@ -196,13 +202,6 @@ ggplot() +
 ```
 
 ![](man/figures/README-tribs-1.png)<!-- -->
-
-### Lookup tables
-
-`fwabc` provides three lookup tables (`fwa_lookup_gnis`,
-`fwa_lookup_watershed_group`, `fwa_lookup_layer`), which can be useful
-for finding layer names, named features or which layers have data for
-particular features.
 
 ## Other packages
 

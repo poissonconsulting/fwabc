@@ -50,6 +50,9 @@ devtools::install_github("poissonconsulting/fwabc")
 + `fwa_pull_` - return a modified version of some input (e.g. another input type, or tributaries of that input).
 + `fwa_search_` - match a regular expression to official named features.
 
+### Lookup tables
+`fwa_lookup_gnis`, `fwa_lookup_watershed_group`, `fwa_lookup_layer` provide resources for finding layer names, named features and which layers have data for particular features. 
+
 ### Read 
 Read features from available layers using the `fwa_read()` function:
 ```{r stream}
@@ -135,9 +138,6 @@ ggplot() +
   geom_sf(data = tribs, size = 0.1) 
 
 ```
-
-### Lookup tables
-`fwabc` provides three lookup tables (`fwa_lookup_gnis`, `fwa_lookup_watershed_group`, `fwa_lookup_layer`), which can be useful for finding layer names, named features or which layers have data for particular features. 
 
 ## Other packages
 `fwabc` read functions use the [`bcdata`](https://github.com/bcgov/bcdata) package (specifically, `bcdata::bcdc_query_geodata()`) to query the freshwater atlas remotely. `fwabc` provides convenience for common requests
