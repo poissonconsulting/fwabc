@@ -1,3 +1,5 @@
+quiet <- function(x) suppressWarnings(suppressMessages(x))
+
 is_wskey <- function(x, layer = NULL){
   if(is.null(layer)){
     return(x %in% unique(lookup_wskey$WATERSHED_KEY))
@@ -56,21 +58,21 @@ all_data <- function(layer){
 }
 
 filter_wskey <- function(x, layer, crs){
-  bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer), crs = crs) %>%
+  quiet(bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer), crs = crs) %>%
     bcdata::filter(WATERSHED_KEY %in% x) %>%
-    bcdata::collect()
+    bcdata::collect())
 }
 
 filter_wsgcode <- function(x, layer, crs){
-  bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer), crs = crs) %>%
+  quiet(bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer), crs = crs) %>%
     bcdata::filter(WATERSHED_GROUP_CODE %in% x) %>%
-    bcdata::collect()
+    bcdata::collect())
 }
 
 filter_both <- function(wskey, wsgcode, layer, crs){
-  bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer), crs = crs) %>%
+  quiet(bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", layer), crs = crs) %>%
     bcdata::filter(WATERSHED_GROUP_CODE %in% wsgcode | WATERSHED_KEY %in% wskey) %>%
-    bcdata::collect()
+    bcdata::collect())
 }
 
 # line_sample <- function(x, distance){
