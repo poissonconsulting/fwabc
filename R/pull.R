@@ -3,7 +3,9 @@
 #' @param x A vector of valid GNIS_NAME.
 #' @return A character vector.
 #' @examples
+#' \dontrun{
 #' fwa_pull_watershed_key("Sangan River")
+#' }
 #' @export
 fwa_pull_watershed_key <- function(x){
   check_gnis(x)
@@ -15,7 +17,9 @@ fwa_pull_watershed_key <- function(x){
 #' @param x A vector of valid WATERSHED_GROUP_NAME.
 #' @return A character vector.
 #' @examples
+#' \dontrun{
 #' fwa_pull_watershed_group_code("Graham Island")
+#' }
 #' @export
 fwa_pull_watershed_group_code <- function(x){
   check_wsgname(x)
@@ -29,7 +33,9 @@ fwa_pull_watershed_group_code <- function(x){
 #' e.g. order = 1L will retrieve all primary upstream tributaries.
 #' @return A vector of WATERSHED_KEY tributaries.
 #' @examples
+#' \dontrun{
 #' fwa_pull_tributaries(360709847)
+#' }
 #' @export
 fwa_pull_tributaries <- function(x, order = 1){
   check_wskey(x)

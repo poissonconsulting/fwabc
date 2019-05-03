@@ -12,7 +12,7 @@ fwa_read(x = NULL, ask = TRUE, layer = "stream-network",
 
 \item{ask}{A flag indicating whether to ask before reading entire dataset.}
 
-\item{layer}{A character string of valid layer name. See fwa_lookup_layers.}
+\item{layer}{A character string of valid layer name. See fwa_lookup_layer.}
 
 \item{crs}{The epsg code for the coordinate reference system. Defaults to `3005`
 (B.C. Albers). See https://epsgi.io.}

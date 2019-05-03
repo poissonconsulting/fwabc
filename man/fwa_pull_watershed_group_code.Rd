@@ -16,5 +16,7 @@ A character vector.
 Pull WATERSHED_GROUP_CODE from WATERSHED_GROUP_NAME.
 }
 \examples{
+\dontrun{
 fwa_pull_watershed_group_code("Graham Island")
+}
 }

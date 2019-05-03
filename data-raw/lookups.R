@@ -13,7 +13,7 @@ dsn_lb <- "~/Poisson/Data/spatial/fwa/gdb/FWA_LINEAR_BOUNDARIES_SP.gdb/"
 dsn_st <- "~/Poisson/Data/spatial/fwa/gdb/FWA_STREAM_NETWORKS_SP.gdb/"
 
 ###### ------ layers
-fwa_lookup_layer <- tibble(layer = c("stream-network", "coastlines",
+lookup_layer <- tibble(layer = c("stream-network", "coastlines",
                       "watersheds", "manmade-waterbodies",
                       "obstructions", "linear-boundaries",
                       "lakes", "rivers", "wetlands",
@@ -21,6 +21,7 @@ fwa_lookup_layer <- tibble(layer = c("stream-network", "coastlines",
                       WATERSHED_KEY = c(rep(TRUE, 9), FALSE, FALSE),
                       WATERSHED_GROUP_CODE = TRUE)
 
+fwa_lookup_layer <- lookup_layer
 use_data(fwa_lookup_layer, overwrite = TRUE)
 
 ###### ------ streams
@@ -210,4 +211,4 @@ lookup_wsgroup %<>% left_join(wsgroup %>% select(WATERSHED_GROUP_CODE, WATERSHED
 fwa_lookup_watershed_group <- lookup_wsgroup
 
 use_data(fwa_lookup_watershed_group, overwrite = TRUE)
-use_data(lookup_gnis, lookup_wskey, lookup_wsgroup, internal = TRUE, overwrite = TRUE)
+use_data(lookup_gnis, lookup_wskey, lookup_wsgroup, lookup_layer, internal = TRUE, overwrite = TRUE)

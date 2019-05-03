@@ -6,8 +6,8 @@
 \title{WATERSHED_GROUP_CODE lookup table}
 \format{A data frame with 18614 rows and 12 variables:
 \describe{
-  \item{GNIS_NAME}{gnis name}
-  \item{WATERSHED_KEY}{fwa watershed key}
+  \item{WATERSHED_GROUP_CODE}{watershed group code}
+  \item{WATERSHED_GROUP_NAME}{watershed group name}
   \item{stream-network}{whether data is available for stream-network layer}
   \item{linear-boundaries}{whether data is available for linear-boundaries layer}
   \item{watersheds}{whether data is available for watersheds layer}
@@ -18,6 +18,7 @@
   \item{rivers}{whether data is available for rivers layer}
   \item{manmade-waterbodies}{whether data is available for manmade-waterbodies layer}
   \item{glaciers}{wwhether data is available for glaciers layer}
+  \item{watershed-groups}{wwhether data is available for watershed-groups layer}
   ...
 }}
 \usage{

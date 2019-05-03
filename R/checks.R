@@ -34,7 +34,7 @@ check_wskey_wsgcode <- function(x, layer = NULL){
 
 check_layer <- function(x){
   checkor(check_length(x, 1L), check_null(x))
-  if(x %in% fwa_lookup_layer$layer || is.null(x)) return(TRUE)
+  if(x %in% lookup_layer$layer || is.null(x)) return(TRUE)
   err(x, " is not a valid layer (see fwa_lookup_layer for reference).")
 }
 

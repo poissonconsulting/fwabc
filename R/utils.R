@@ -37,7 +37,8 @@ tribs <- function(x, n){
   x <- as.character(x)
   a <- gsub("-000000", "", x)
   b <- lookup_wskey$FWA_WATERSHED_CODE[grepl(a, lookup_wskey$FWA_WATERSHED_CODE, fixed = TRUE)]
-  c <- gsub("-000000", "", b) %>% gsub(paste0(a, "-"), "", .)
+  c <- gsub("-000000", "", b)
+  c <- gsub(paste0(a, "-"), "", c)
   d <- c(x, b[sapply(strsplit(c, "-"), function(x) length(x) <= n)])
   lookup_wskey$WATERSHED_KEY[lookup_wskey$FWA_WATERSHED_CODE %in% d]
 }
@@ -72,29 +73,29 @@ filter_both <- function(wskey, wsgcode, layer, crs){
     bcdata::collect()
 }
 
-line_sample <- function(x, distance){
-  x <- x %>% st_cast("LINESTRING")
-  sample <- seq(0, 1, 1/as.vector(round(st_length(x)/distance)))
-  x %>%
-    st_line_sample(sample = sample)  %>%
-    st_cast("POINT")
-}
-
-line_rkm <- function(x, distance, label_name = "Rkm", sfc_name = "geometry"){
-  # check_linestringz(x)
-
-  start <- x %>% st_cast("POINT")
-  start <- start[which.min(st_coordinates(start)[,"Z"]),]
-
-  pts <- line_sample(x, distance)
-  i <- st_nearest_feature(start %>% st_zm(), pts %>% st_zm())
-  n <- length(pts)
-  label <- seq(0, n*distance, distance)/1000
-  if(i > n/2){
-    label <- rev(label)
-  }
-  dat <- data.frame(label[1:n], pts)
-  names(dat) <- c(label_name, sfc_name)
-  dat %>% st_sf()
-}
+# line_sample <- function(x, distance){
+#   x <- x %>% st_cast("LINESTRING")
+#   sample <- seq(0, 1, 1/as.vector(round(st_length(x)/distance)))
+#   x %>%
+#     st_line_sample(sample = sample)  %>%
+#     st_cast("POINT")
+# }
+#
+# line_rkm <- function(x, distance, label_name = "Rkm", sfc_name = "geometry"){
+#   # check_linestringz(x)
+#
+#   start <- x %>% st_cast("POINT")
+#   start <- start[which.min(st_coordinates(start)[,"Z"]),]
+#
+#   pts <- line_sample(x, distance)
+#   i <- st_nearest_feature(start %>% st_zm(), pts %>% st_zm())
+#   n <- length(pts)
+#   label <- seq(0, n*distance, distance)/1000
+#   if(i > n/2){
+#     label <- rev(label)
+#   }
+#   dat <- data.frame(label[1:n], pts)
+#   names(dat) <- c(label_name, sfc_name)
+#   dat %>% st_sf()
+# }
 

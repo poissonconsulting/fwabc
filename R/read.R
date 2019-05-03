@@ -1,7 +1,7 @@
 #' Read features from FWA database layer.
 #'
 #' @param x A vector of valid WATERSHED_KEY or WATERSHED_GROUP_CODE. If NULL, entire dataset is read.
-#' @param layer A character string of valid layer name. See fwa_lookup_layers.
+#' @param layer A character string of valid layer name. See fwa_lookup_layer.
 #' @param ask A flag indicating whether to ask before reading entire dataset.
 #' @param crs The epsg code for the coordinate reference system. Defaults to `3005`
 #'        (B.C. Albers). See https://epsgi.io.
@@ -12,6 +12,8 @@
 #' }
 #' @export
 fwa_read <- function(x = NULL, ask = TRUE, layer = "stream-network", crs = 3005) {
+
+  check_layer(layer)
 
   if(is.null(x)){
     if(!ask){
@@ -24,7 +26,7 @@ fwa_read <- function(x = NULL, ask = TRUE, layer = "stream-network", crs = 3005)
     return()
   }
 
-  if(layer %in% fwa_lookup_layer$layer[!fwa_lookup_layer$WATERSHED_KEY]){
+  if(layer %in% lookup_layer$layer[!lookup_layer$WATERSHED_KEY]){
     check_wsgcode(x)
     return(filter_wsgcode(x, layer = layer, crs = crs))
   }

@@ -19,5 +19,7 @@ A vector of WATERSHED_KEY tributaries.
 Pull tributaries from WATERSHED_KEY.
 }
 \examples{
+\dontrun{
 fwa_pull_tributaries(360709847)
+}
 }

@@ -16,5 +16,7 @@ A character vector.
 Pull WATERSHED_KEY from GNIS_NAME.
 }
 \examples{
+\dontrun{
 fwa_pull_watershed_key("Sangan River")
+}
 }
