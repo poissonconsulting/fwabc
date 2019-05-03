@@ -21,5 +21,7 @@ A sf object with sfc_POLYGON geometry.
 Read from wetlands layer.
 }
 \examples{
+\dontrun{
 fwa_read_wetlands("GRAI")
+}
 }

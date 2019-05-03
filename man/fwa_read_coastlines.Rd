@@ -21,5 +21,7 @@ A sf object with sfc_LINESTRING geometry.
 Read from coastlines layer.
 }
 \examples{
+\dontrun{
 fwa_read_coastlines("GRAI")
+}
 }

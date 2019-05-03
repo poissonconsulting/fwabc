@@ -21,5 +21,7 @@ A sf object.
 Read from manmade-waterbodies layer.
 }
 \examples{
+\dontrun{
 fwa_read_manmade_waterbodies("GRAI")
+}
 }

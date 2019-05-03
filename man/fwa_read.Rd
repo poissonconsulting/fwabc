@@ -24,5 +24,7 @@ A sf object.
 Read features from FWA database layer.
 }
 \examples{
-fwa_read(c(360709847, 360843586), layer = "stream-network")
+\dontrun{
+fwa_read(c("VICT", 360843586), layer = "stream-network")
+}
 }

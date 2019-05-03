@@ -21,6 +21,8 @@ A sf object with sfc_LINESTRING geometry.
 Read from stream-network layer.
 }
 \examples{
+\dontrun{
 fwa_read_stream_network(ask = FALSE)
 fwa_read_stream_network(c(360709847, 360843586))
+}
 }

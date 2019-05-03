@@ -21,5 +21,7 @@ A sf object with sfc_POINT geometry.
 Read from obstructions layer.
 }
 \examples{
+\dontrun{
 fwa_read_obstructions("GRAI")
+}
 }

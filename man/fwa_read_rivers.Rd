@@ -21,5 +21,7 @@ A sf object with sfc_POLYGON geometry.
 Read from rivers layer.
 }
 \examples{
+\dontrun{
 fwa_read_rivers("GRAI")
+}
 }

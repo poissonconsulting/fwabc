@@ -21,5 +21,7 @@ A sf object with sfc_LINESTRING geometry.
 Read from linear-boundaries layer.
 }
 \examples{
+\dontrun{
 fwa_read_linear_boundaries("GRAI")
+}
 }

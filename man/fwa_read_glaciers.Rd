@@ -21,5 +21,7 @@ A sf object.
 Read from glaciers layer.
 }
 \examples{
+\dontrun{
 fwa_read_glaciers("GRAI")
+}
 }

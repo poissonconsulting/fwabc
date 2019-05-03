@@ -21,5 +21,7 @@ A sf object with sfc_POLYGON geometry.
 Read from watersheds layer.
 }
 \examples{
+\dontrun{
 fwa_read_watersheds(c(360709847, 360843586))
+}
 }

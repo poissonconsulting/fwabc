@@ -21,5 +21,7 @@ A sf object.
 Read from watershed-groups layer.
 }
 \examples{
+\dontrun{
 fwa_read_watershed_groups("GRAI")
+}
 }
