@@ -1,10 +1,10 @@
 Package: fwabc
-Title: Read Data from BC Freshwater Atlas
+Title: Read Data from the BC Freshwater Atlas
 Version: 0.0.0.9000
 Authors@R: c(
     person("Sebastian", "Dalgarno", role = c("aut", "cre"), email = "seb@poissonconsulting.ca"),
     person("Joe", "Thorley", role = "ctb", email = "joe@poissonconsulting.ca", comment = c(ORCID = "0000-0002-7683-4592")))
-Description: Read subsets of data from various layers in the BC Freshwater Atlas geodatabases. 
+Description: Read data from the BC Freshwater Atlas. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -14,10 +14,11 @@ Imports:
     magrittr,
     sf,
     err,
-    yesno,
-    bcdata
+    yesno
 Suggests: 
     covr,
     spelling,
     testthat
+Remotes:
+    bcdata
 RoxygenNote: 6.1.1
