@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
   dpi = 300
 )
 ```
-[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![Travis build status](https://travis-ci.org/poissonconsulting/fwabc.svg?branch=master)](https://travis-ci.org/poissonconsulting/fwabc)
 [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/poissonconsulting/fwabc?branch=master&svg=true)](https://ci.appveyor.com/project/poissonconsulting/fwabc)
 [![Coverage status](https://codecov.io/gh/poissonconsulting/fwabc/branch/master/graph/badge.svg)](https://codecov.io/github/poissonconsulting/fwabc?branch=master)
@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 # fwabc
 
-`fwabc` is an R package to read data from the [BC Freshwater Atlas](https://www2.gov.bc.ca/assets/gov/data/geographic/topography/fwa/fwa_user_guide.pdf). Reference tables and functions are provided to simplify working with the database.
+`fwabc` is an R package to read data from the [BC Freshwater Atlas](https://www2.gov.bc.ca/assets/gov/data/geographic/topography/fwa/fwa_user_guide.pdf). 
 
 ## Installation
 
@@ -35,12 +35,12 @@ Install the latest development version of `fwabc` from [GitHub](https://github.c
 remotes::install_github("poissonconsulting/fwabc")
 ```
 
-## Functions
-+ `fwa_read_` - Read features from BC Freshwater Atlas layers.
-+ `fwa_pull_` - Provide an input and return some modified version of it (e.g. another input type, or tributaries of that input).
-+ `fwa_search_` Match a regular expression to official named features (`GNIS_NAME` and `WATERSHED_GROUP_NAME`).
-
 ## Usage
+### Function families
++ `fwa_read_` - read features from BC Freshwater Atlas layers.
++ `fwa_pull_` - return a modified version of some input (e.g. another input type, or tributaries of that input).
++ `fwa_search_` - match a regular expression to official named features (`GNIS_NAME` and `WATERSHED_GROUP_NAME`).
+
 ### Read 
 Read features from available layers using the `fwa_read()` function:
 ```{r stream}
@@ -48,11 +48,10 @@ library(ggplot2)
 library(magrittr)
 library(fwabc)
 
-x <- fwa_read(c("SKGT", 356439092), layer = "stream-network") 
+# see available layers
+fwa_lookup_layer
 
-ggplot() + 
-  geom_sf(data = x, size = 0.2) +
-  ggtitle("Skagit River stream-network layer")
+fwa_read(c("SKGT", 356439092), layer = "stream-network") 
 
 ```
 All `fwa_read_` functions return a [sf](https://github.com/r-spatial/sf) object and require any combination of `WATERSHED_KEY` and `WATERSHED_GROUP_CODE` as input. The `glaciers` and `watershed-groups` layers do not accept `WATERSHED_KEY` as input.
@@ -67,9 +66,7 @@ ggplot() +
     geom_sf(data = x[["watershed-groups"]], size = 0.2) +
     geom_sf(data = x[["lakes"]], size = 0.3, fill = "steelblue") +
     geom_sf(data = x[["rivers"]], size = 0.3, fill = "steelblue") +
-    geom_sf(data = x[["stream-network"]][x[["stream-network"]]$STREAM_ORDER > 2,], size = 0.07) +
-    geom_sf_label(data = x[["rivers"]], aes(label = GNIS_NAME_1)) +
-    ggtitle("Skagit River Watershed Group")
+    geom_sf(data = x[["stream-network"]][x[["stream-network"]]$STREAM_ORDER > 2,], size = 0.07) 
   
 ```
 
@@ -83,8 +80,7 @@ x <- fwa_read_watershed_groups(ask = FALSE) %>%
   rmapshaper::ms_simplify()  
 
 ggplot() + 
-  geom_sf(data = x, size = 0.05, aes(fill = WATERSHED_GROUP_NAME), show.legend = FALSE) +
-  ggtitle("watershed-groups layer")
+  geom_sf(data = x, size = 0.05, aes(fill = WATERSHED_GROUP_NAME), show.legend = FALSE) 
 ```
 
 ### Search and pull
@@ -110,8 +106,7 @@ wshed <- fwa_search_watershed_group("skagi|scagi") %>%
 
 ggplot() +
   geom_sf(data = wshed, size = 0.2) +
-  geom_sf(data = stream) +
-  ggtitle("Skagit River")
+  geom_sf(data = stream) 
   
 ```
 
@@ -127,8 +122,7 @@ tribs <- fwa_search_gnis("skagit") %>%
 ggplot() +
   geom_sf(data = wshed, size = 0.2) +
   geom_sf(data = stream) +
-  geom_sf(data = tribs, size = 0.1) +
-  ggtitle("Skagit River and Primary Tributaries")
+  geom_sf(data = tribs, size = 0.1) 
 
 ```
 
