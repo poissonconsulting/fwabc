@@ -17,6 +17,26 @@ MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org
 `fwabc` is an R package to read data from the [BC Freshwater
 Atlas](https://www2.gov.bc.ca/assets/gov/data/geographic/topography/fwa/fwa_user_guide.pdf).
 
+`fwabc` uses the [`bcdata`](https://github.com/bcgov/bcdata) package to
+query the atlas remotely. It provides convenience for common queries and
+tools to facilitate working with the data.
+
+``` r
+fwa_search_gnis("sangan") %>%
+  fwa_pull_watershed_key() %>%
+  fwa_read_watersheds()
+
+#### ---- returns the same result as ---- ####
+
+bcdata::bcdc_query_geodata("freshwater-atlas-watersheds") %>%
+  bcdata::filter(WATERSHED_KEY == 360879896) %>%
+  bcdata::collect()
+```
+
+If you are familiar with the atlas and require greater query
+flexibility, then we suggest using the fantastic `bcdata` package
+directly.
+
 ## Installation
 
 Install the latest development version of `bcdata` from
@@ -194,30 +214,6 @@ ggplot() +
 ```
 
 ![](man/figures/README-tribs-1.png)<!-- -->
-
-## Other packages
-
-`fwabc` read functions use the
-[`bcdata`](https://github.com/bcgov/bcdata) package (specifically,
-`bcdata::bcdc_query_geodata()`) to query the freshwater atlas remotely.
-`fwabc` provides convenience for common requests
-
-``` r
-fwa_read_stream_network(c("SKGT", 356439092))
-
-#### ---- returns the same result as ---- ####
-
-bcdata::bcdc_query_geodata("freshwater-atlas-stream-network") %>%
-  bcdata::filter(WATERSHED_GROUP_CODE == "SKGT" | WATERSHED_KEY == 356439092) %>%
-  bcdata::collect()
-```
-
-and resources/functions to get tributaries and official `GNIS_NAME`,
-`WATERSHED_KEY` and `WATERSHED_GROUP_CODE`.
-
-However, if you are very familiar with the atlas and require greater
-filtering flexibility (or even want to use your own CQL), then we
-suggest trying the fantastic `bcdata` package.
 
 ## Contribution
 
