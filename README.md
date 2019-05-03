@@ -26,7 +26,7 @@ Install the latest development version of `bcdata` from
     remotes::install_github("bcgov/bcdata")
 
 Install the latest development version of `fwabc` from
-[GitHub](https://github.com/poissonconsulting/fwabc)
+[GitHub](https://github.com/poissonconsulting/fwabc):
 
     remotes::install_github("poissonconsulting/fwabc")
 
@@ -38,7 +38,7 @@ Install the latest development version of `fwabc` from
   - `fwa_pull_` - return a modified version of some input (e.g. another
     input type, or tributaries of that input).
   - `fwa_search_` - match a regular expression to official named
-    features (`GNIS_NAME` and `WATERSHED_GROUP_NAME`).
+    features.
 
 ### Read
 
