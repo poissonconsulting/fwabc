@@ -1,2 +1,2 @@
-#' @import checkr err sf magrittr yesno
+#' @import checkr err sf magrittr yesno bcdata
 NULL
