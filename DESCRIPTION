@@ -14,7 +14,8 @@ Imports:
     magrittr,
     sf,
     err,
-    yesno
+    yesno,
+    bcdata
 Suggests: 
     covr,
     spelling,
