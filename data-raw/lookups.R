@@ -13,13 +13,27 @@ dsn_lb <- "~/Poisson/Data/spatial/fwa/gdb/FWA_LINEAR_BOUNDARIES_SP.gdb/"
 dsn_st <- "~/Poisson/Data/spatial/fwa/gdb/FWA_STREAM_NETWORKS_SP.gdb/"
 
 ###### ------ layers
-lookup_layer <- tibble(layer = c("stream-network", "coastlines",
-                      "watersheds", "manmade-waterbodies",
-                      "obstructions", "linear-boundaries",
-                      "lakes", "rivers", "wetlands",
-                      "watershed-groups", "glaciers"),
-                      WATERSHED_KEY = c(rep(TRUE, 9), FALSE, FALSE),
-                      WATERSHED_GROUP_CODE = TRUE)
+layer_names <- function(x){
+  y <- bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", x))
+  n <- y$obj$details$column_name
+  tibble(
+    layer = x,
+    WATERSHED_KEY = "WATERSHED_KEY" %in% n,
+         WATERSHED_GROUP_CODE = "WATERSHED_GROUP_CODE" %in% n,
+    GNIS_NAME_ = "GNIS_NAME" %in% n || "GNIS_NAME_1" %in% n,
+         GNIS_NAME = "GNIS_NAME" %in% n,
+         FWA_WATERSHED_CODE = "FWA_WATERSHED_CODE" %in% n)
+}
+
+y <- bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", x))
+
+layers <- c("stream-network", "coastlines",
+          "watersheds", "manmade-waterbodies",
+          "obstructions", "linear-boundaries",
+          "lakes", "rivers", "wetlands",
+          "watershed-groups", "glaciers")
+
+lookup_layer <- do.call("rbind", lapply(layers, layer_names))
 
 fwa_lookup_layer <- lookup_layer
 use_data(fwa_lookup_layer, overwrite = TRUE)
