@@ -8,11 +8,6 @@ fwa_read_watershed_groups(x = NULL, ask = FALSE, crs = 3005)
 }
 \arguments{
 \item{x}{A vector of valid WATERSHED_GROUP_CODE. If NULL, entire dataset is read.}
-
-\item{ask}{A flag indicating whether to ask before reading entire dataset.}
-
-\item{crs}{The epsg code for the coordinate reference system. Defaults to `3005`
-(B.C. Albers). See https://epsgi.io.}
 }
 \value{
 A sf object.
