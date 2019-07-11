@@ -97,4 +97,13 @@ test_that("read fwa data", {
   expect_length(z, 35)
   expect_error(fwa_pull_tributaries("Sangan River"))
 
+  # check that can process large vectors
+  pori <- bcdata::bcdc_query_geodata("freshwater-atlas-stream-network") %>%
+    bcdata::filter(WATERSHED_GROUP_CODE %in% "PORI") %>%
+    bcdata::collect()
+
+  # fails
+  expect_is(bcdata::bcdc_query_geodata("freshwater-atlas-stream-network") %>%
+    bcdata::filter(WATERSHED_KEY %in% pori$WATERSHED_KEY) %>%
+    bcdata::collect(), "sf")
 })

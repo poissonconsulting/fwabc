@@ -38,6 +38,12 @@ check_layer <- function(x){
   err(x, " is not a valid layer (see fwa_lookup_layer for reference).")
 }
 
+check_layers <- function(x){
+  x <- x[!(is_layer(x))]
+  if(!length(x)) return(TRUE)
+  err(x, " is not a valid layer (see fwa_lookup_layer for reference).")
+}
+
 # check_linestringz <- function(x){
 #   works <- try(st_cast(x, "LINESTRING", silent = TRUE))
 #   if(inherits(data, "try-error")) err("data cannot be cast to LINESTRING")

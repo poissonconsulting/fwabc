@@ -35,6 +35,10 @@ is_gnis <- function(x, layer = NULL){
   x %in% unique(lookup_gnis$GNIS_NAME[lookup_gnis[[layer]]])
 }
 
+is_layer <- function(x){
+  x %in% lookup_layer$layer || is.null(x)
+}
+
 tribs <- function(x, n){
   x <- as.character(x)
   a <- gsub("-000000", "", x)
