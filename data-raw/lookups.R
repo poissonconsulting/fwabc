@@ -193,14 +193,14 @@ lookup_wskey <- lookup %>%
 lookup_wskey %<>% modify_if(.p = ~ is.logical(.), .f = ~ replace_na(., FALSE))
 
 lookup_gnis <- lookup %>%
-  select(-FWA_WATERSHED_CODE, -WATERSHED_GROUP_CODE) %>%
+  select(-WATERSHED_KEY, -WATERSHED_GROUP_CODE) %>%
   gather(tmp, GNIS_NAME, GNIS_NAME, GNIS_NAME_1, GNIS_NAME_2, GNIS_NAME_3) %>%
   select(-tmp) %>%
   filter(!is.na(GNIS_NAME)) %>%
   distinct()
 
 lookup_gnis %<>% modify_if(.p = ~ is.logical(.), .f = ~ replace_na(., FALSE))
-lookup_gnis %<>% select(GNIS_NAME, WATERSHED_KEY, everything())
+lookup_gnis %<>% select(GNIS_NAME, FWA_WATERSHED_CODE, everything())
 
 fwa_lookup_gnis <- lookup_gnis
 use_data(fwa_lookup_gnis, overwrite = TRUE)
