@@ -35,6 +35,20 @@ is_gnis <- function(x, layer = NULL){
   x %in% unique(lookup_gnis$GNIS_NAME[lookup_gnis[[layer]]])
 }
 
+what_is_it <- function(x){
+  if(is_gnis(x))
+    return("GNIS_NAME")
+  if(is_wsgcode(x))
+    return("WATERSHED_GROUP_CODE")
+  if(is_wsgname(x))
+    return("WATERSHED_GROUP_NAME")
+  if(is_wskey(x))
+    return("WATERSHED_KEY")
+  if(is.null(x))
+    return("NULL")
+  FALSE
+}
+
 is_layer <- function(x){
   x %in% lookup_layer$layer || is.null(x)
 }
@@ -49,11 +63,21 @@ tribs <- function(x, n){
   lookup_wskey$WATERSHED_KEY[lookup_wskey$FWA_WATERSHED_CODE %in% d]
 }
 
-### these are designed to also take as input what you are trying to convert to
+### converter functions
 wskey_to_wscode <- function(x){
-  wscode <- x[is_wscode(x)]
-  y <- lookup_wskey$FWA_WATERSHED_CODE[lookup_wskey$WATERSHED_KEY %in% x]
-  unique(c(wscode, y))
+  lookup_wskey$FWA_WATERSHED_CODE[lookup_wskey$WATERSHED_KEY %in% x]
+}
+
+gnis_to_wscode <- function(x){
+  lookup_gnis$FWA_WATERSHED_CODE[lookup_gnis$GNIS_NAME %in% x]
+}
+
+wsgcode_to_wsgname <- function(x){
+  lookup_wsgroup$WATERSHED_GROUP_NAME[lookup_wsgroup$WATERSHED_GROUP_CODE %in% x]
+}
+
+wsgname_to_wsgcode <- function(x){
+  lookup_wsgroup$WATERSHED_GROUP_CODE[lookup_wsgroup$WATERSHED_GROUP_NAME %in% x]
 }
 
 all_data <- function(layer){
