@@ -25,8 +25,6 @@ layer_names <- function(x){
          FWA_WATERSHED_CODE = "FWA_WATERSHED_CODE" %in% n)
 }
 
-y <- bcdata::bcdc_query_geodata(paste0("freshwater-atlas-", x))
-
 layers <- c("stream-network", "coastlines",
           "watersheds", "manmade-waterbodies",
           "obstructions", "linear-boundaries",
@@ -37,6 +35,13 @@ lookup_layer <- do.call("rbind", lapply(layers, layer_names))
 
 fwa_lookup_layer <- lookup_layer
 use_data(fwa_lookup_layer, overwrite = TRUE)
+
+###### ------ records
+tmp <- bcdata::bcdc_search("freshwater-atlas-")
+records <- names(tmp)[grepl("freshwater-atlas-", names(tmp))]
+name <- gsub("freshwater-atlas-", "", records)
+lookup_record <- lapply(records, function(x) tmp[[x]]$id)
+names(lookup_record) <- name
 
 ###### ------ streams
 layers <- st_layers(dsn_st)$name[1:246]
@@ -225,4 +230,4 @@ lookup_wsgroup %<>% left_join(wsgroup %>% select(WATERSHED_GROUP_CODE, WATERSHED
 fwa_lookup_watershed_group <- lookup_wsgroup
 
 use_data(fwa_lookup_watershed_group, overwrite = TRUE)
-use_data(lookup_gnis, lookup_wskey, lookup_wsgroup, lookup_layer, internal = TRUE, overwrite = TRUE)
+use_data(lookup_gnis, lookup_wskey, lookup_wsgroup, lookup_layer, lookup_record, internal = TRUE, overwrite = TRUE)
