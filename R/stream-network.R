@@ -38,7 +38,8 @@ fwa_read_stream_network <- function(x = NULL,
 
   what <- what_is_it(x)[1]
   x <- read_layer(what, "stream-network", x, named_only,
-                  tributaries, min_stream_order, crs)
+                  tributaries, crs) %>%
+    bcdata::filter(STREAM_ORDER > min_stream_order)
 
   if(collect)
     return(x %>% bcdata::collect())
