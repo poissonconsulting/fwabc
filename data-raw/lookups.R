@@ -26,7 +26,8 @@ layer_names <- function(x){
 }
 
 layers <- c("stream-network", "coastlines",
-          "watersheds", "manmade-waterbodies",
+          "watersheds", "named-watersheds",
+          "manmade-waterbodies",
           "obstructions", "linear-boundaries",
           "lakes", "rivers", "wetlands",
           "watershed-groups", "glaciers")
@@ -154,10 +155,20 @@ wsgroup$WATERSHED_GROUP_CODE %<>% as.character()
 wsgroup$WATERSHED_GROUP_NAME %<>% as.character()
 wsgroup$`watershed-groups` <- TRUE
 
+###### ------ named watersheds
+named_ws <- st_read(dsn_bc,
+                   layer = "FWA_NAMED_WATERSHEDS_POLY")
+
+named_ws <- named_ws %>%
+  st_set_geometry(NULL)
+
+named_ws$`named-watersheds` <- TRUE
+
 ###### ------ combine lookup
 all_data <- bind_rows(stream,
                     linear,
                     watershed,
+                    named_ws,
                     coastline,
                     obstruction,
                     lake,
@@ -175,6 +186,7 @@ lookup <- all_data %>%
 lookup %<>% left_join(stream %>% select(WATERSHED_KEY, WATERSHED_GROUP_CODE, `stream-network`) %>% distinct(), c("WATERSHED_KEY", "WATERSHED_GROUP_CODE"))
 lookup %<>% left_join(linear %>% select(WATERSHED_KEY, WATERSHED_GROUP_CODE, `linear-boundaries`) %>% distinct(), c("WATERSHED_KEY", "WATERSHED_GROUP_CODE"))
 lookup %<>% left_join(watershed %>% select(WATERSHED_KEY, WATERSHED_GROUP_CODE, `watersheds`) %>% distinct(), c("WATERSHED_KEY", "WATERSHED_GROUP_CODE"))
+lookup %<>% left_join(named_ws %>% select(WATERSHED_KEY, WATERSHED_GROUP_CODE, `named-watersheds`) %>% distinct(), c("WATERSHED_KEY", "WATERSHED_GROUP_CODE"))
 lookup %<>% left_join(coastline %>% select(WATERSHED_KEY, WATERSHED_GROUP_CODE, `coastlines`) %>% distinct(), c("WATERSHED_KEY", "WATERSHED_GROUP_CODE"))
 lookup %<>% left_join(obstruction %>% select(WATERSHED_KEY, WATERSHED_GROUP_CODE, `obstructions`) %>% distinct(), c("WATERSHED_KEY", "WATERSHED_GROUP_CODE"))
 lookup %<>% left_join(lake %>% select(WATERSHED_KEY, WATERSHED_GROUP_CODE, `lakes`) %>% distinct(), c("WATERSHED_KEY", "WATERSHED_GROUP_CODE"))
@@ -224,6 +236,7 @@ lookup_wsgroup <- lookup %>%
   modify_if(.p = ~ is.logical(.), .f = ~ replace_na(., FALSE))
 
 lookup_wsgroup$`watershed-groups` <- TRUE
+lookup_wsgroup$`named-watersheds` <- FALSE
 lookup_wsgroup %<>% left_join(wsgroup %>% select(WATERSHED_GROUP_CODE, WATERSHED_GROUP_NAME), "WATERSHED_GROUP_CODE") %>%
   select(WATERSHED_GROUP_CODE, WATERSHED_GROUP_NAME, everything())
 
