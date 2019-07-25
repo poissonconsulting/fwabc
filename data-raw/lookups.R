@@ -20,9 +20,10 @@ layer_names <- function(x){
     layer = x,
     WATERSHED_KEY = "WATERSHED_KEY" %in% n,
          WATERSHED_GROUP_CODE = "WATERSHED_GROUP_CODE" %in% n,
-    GNIS_NAME_ = "GNIS_NAME" %in% n || "GNIS_NAME_1" %in% n,
-         GNIS_NAME = "GNIS_NAME" %in% n,
-         FWA_WATERSHED_CODE = "FWA_WATERSHED_CODE" %in% n)
+    GNIS_NAME = "GNIS_NAME" %in% n || "GNIS_NAME_1" %in% n,
+         GNIS_NAME_ = "GNIS_NAME_1" %in% n,
+         FWA_WATERSHED_CODE = "FWA_WATERSHED_CODE" %in% n,
+    STREAM_ORDER = "STREAM_ORDER" %in% n)
 }
 
 layers <- c("stream-network", "coastlines",
@@ -44,31 +45,6 @@ name <- gsub("freshwater-atlas-", "", records)
 lookup_record <- lapply(records, function(x) tmp[[x]]$id)
 names(lookup_record) <- name
 
-# lookups <- lapply(lookup_layer$layer[c(5, 10)], function(x){
-#   y <- bcdata::bcdc_query_geodata(lookup_record[[x]]) %>%
-#     select(WATERSHED_KEY, FWA_WATERSHED_CODE, WATERSHED_GROUP_CODE) %>%
-#     bcdata::collect()
-#   st_write(y, paste0("~/Poisson/Data/spatial/fwa/bcdata_layers/fwa_", x, ".gpkg"))
-#   y
-# })
-#
-# lookup_wskey <- lapply(lookup_layer$layer, function(x){
-#   y <- st_read(paste0("~/Poisson/Data/spatial/fwa/bcdata_layers/fwa_", x, ".gpkg"))
-#   y <- y %>% st_set_geometry(NULL)
-#   n <- intersect(c("WATERSHED_KEY", "FWA_WATERSHED_CODE", "WATERSHED_GROUP_CODE"),
-#                  names(y))
-#   y[n]
-# })
-# names(lookup_wskey) <- lookup_layer$layer
-#
-# lookup_gnis <- lapply(lookup_layer$layer, function(x){
-#   y <- st_read(paste0("~/Poisson/Data/spatial/fwa/bcdata_layers/fwa_", x, ".gpkg"))
-#   y <- y %>% st_set_geometry(NULL)
-#   n <- intersect(c("GNIS_NAME", "GNIS_NAME_1", "GNIS_NAME_2", "GNIS_NAME_3"),
-#                  names(y))
-#   y <- y[n]
-#   tibble(GNIS_NAME = unlist(y, use.names = FALSE))
-# })
 ###### ------ streams
 layers <- st_layers(dsn_st)$name[1:246]
 
