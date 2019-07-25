@@ -1,5 +1,3 @@
-quiet <- function(x) suppressWarnings(suppressMessages(x))
-
 is_wskey <- function(x, layer = NULL){
   if(is.null(layer)){
     return(x %in% unique(lookup_wskey$WATERSHED_KEY))
@@ -49,10 +47,6 @@ what_is_it <- function(x){
   FALSE
 }
 
-is_layer <- function(x){
-  x %in% lookup_layer$layer || is.null(x)
-}
-
 ### converter functions
 wskey_to_wscode <- function(x, layer){
   look <- lookup_wskey[lookup_wskey[[layer]],]
@@ -60,7 +54,7 @@ wskey_to_wscode <- function(x, layer){
   unique(gsub("-000000", "", y))
 }
 
-gnis_to_wscode <- function(x){
+gnis_to_wscode <- function(x, layer){
   look <- lookup_gnis[lookup_gnis[[layer]],]
   y <- look$FWA_WATERSHED_CODE[look$GNIS_NAME %in% x]
   unique(gsub("-000000", "", y))

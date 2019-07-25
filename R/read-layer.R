@@ -1,155 +1,255 @@
-#' @param x A vector of valid GNIS_NAME, WATERSHED_KEY, WATERSHED_GROUP_NAME or WATERSHED_GROUP_CODE.
-#' If NULL, entire dataset is read.
-#' @param named_only A flag indicating whether to only include features with GNIS_NAME.
-#' @param tributaries A flag indicating whether to read all tributaries in addition
-#'  (only applicable if x is GNIS_NAME or WATERSHED_KEY).
-#' @param crs The epsg code for the coordinate reference system. Defaults to `3005`
-#'        (B.C. Albers). See https://epsgi.io.
-#' @param collect A flag indicating whether to collect result.
-#' @param check A flag indicating whether to check that x is valid.
-read_gkcn <- function(...){
-  read_layer(types = "gkcn", ...)
-}
-
-#' @param x A vector of valid GNIS_NAME or WATERSHED_KEY.
-#' If NULL, entire dataset is read.
+#' Read from stream-network layer.
+#'
+#' @param min_stream_order An integer indicating minimum STREAM_ORDER to read.
 #' @inheritParams read_gkcn
-read_gk <- function(...){
-  read_layer(types = "gk", ...)
-}
+#' @return A sf object with sfc_LINESTRING geometry.
+#' @examples
+#' \dontrun{
+#' fwa_read_stream_network("GRAI")
+#' }
+#' @export
+fwa_read_stream_network <- function(x = NULL, tributaries = FALSE,
+                                    named_only = FALSE, min_stream_order = 1L,
+                                    crs = 3005, collect = TRUE, check = TRUE) {
 
-#' @param x A vector of valid WATERSHED_KEY, WATERSHED_GROUP_NAME or WATERSHED_GROUP_CODE.
-#' If NULL, entire dataset is read.
-#' @inheritParams read_gkcn
-read_kcn <- function(...){
-  read_layer(types = "kcn", ...)
-}
+  check_integer(min_stream_order)
 
-#' @param x A vector of valid WATERSHED_GROUP_NAME or WATERSHED_GROUP_CODE.
-#' If NULL, entire dataset is read.
-#' @inheritParams read_gkcn
-read_cn <- function(...){
-  read_layer(types = "cn", ...)
-}
+  x <- read_gkcn(layer = "stream-network", x = x,
+                 named_only = named_only,
+                 tributaries = tributaries,
+                 crs = crs, collect = FALSE,
+                 check = check)
 
-read_layer <- function(types, layer, x, named_only = FALSE,
-                       tributaries, crs, collect, check){
+  x <- x %>% bcdata::filter(STREAM_ORDER >= min_stream_order)
 
-  check_flag(check)
-  check_flag(named_only)
-  check_flag(tributaries)
-  check_numeric(crs)
-
-  what <- what_is_it(x[1])
-  if(check){
-    if(!is.null(what)){
-      check_x(x, types)
-      check_x_layer(x, what, types, layer)
-    }
-  }
-
-  if(what == "WATERSHED_GROUP_NAME"){
-    what <- "WATERSHED_GROUP_CODE"
-    x <- wsgname_to_wsgcode(x)
-  }
-
-  x <- switch(what,
-              "GNIS_NAME" = read_layer_gnis(layer = layer,
-                                            x = x,
-                                            named_only = named_only,
-                                            tributaries = tributaries,
-                                            crs = crs),
-              "WATERSHED_GROUP_CODE" = read_layer_wsgcode(layer = layer,
-                                                          x = x,
-                                                          named_only = named_only,
-                                                          crs = crs),
-              "WATERSHED_KEY" = read_layer_wskey(layer = layer,
-                                                 x = x,
-                                                 named_only = named_only,
-                                                 tributaries = tributaries,
-                                                 crs = crs),
-              "NULL" = read_layer_null(layer = layer,
-                                       x = x,
-                                       named_only = named_only,
-                                       multiple_gnis = multiple_gnis,
-                                       crs = crs),
-              NULL)
   if(collect)
     return(x %>% bcdata::collect())
   x
 }
 
-read_layer_gnis <- function(layer, x, named_only, tributaries, crs){
-
-  y <- bcdata::bcdc_query_geodata(lookup_record[[layer]], crs = crs)
-  multiple_gnis <- lookup_layer$GNIS_NAME_[lookup_layer$layer == layer]
-
-  if(tributaries){
-    cql <- paste0("FWA_WATERSHED_CODE LIKE '", gnis_to_wscode(x, layer), "-%'")
-    y <- y %>% bcdata::filter(CQL(cql))
-  } else if(multiple_gnis){
-    y <- y %>% bcdata::filter(GNIS_NAME_1 == x | GNIS_NAME_2 == x | GNIS_NAME_3 == x)
-  } else {
-    y <- y %>% bcdata::filter(GNIS_NAME == x)
-  }
-
-  if(named_only){
-    if(multiple_gnis){
-      return(y %>% bcdata::filter(!is.na(GNIS_NAME_1)))
-    } else {
-      return(y %>% bcdata::filter(!is.na(GNIS_NAME)))
-    }
-  }
-  y
+#' Read from coastlines layer.
+#'
+#' @inheritParams read_kcn
+#' @return A sf object with sfc_LINESTRING geometry.
+#' @examples
+#' \dontrun{
+#' fwa_read_coastlines("GRAI")
+#' }
+#' @export
+fwa_read_coastlines <- function(x = NULL, crs = 3005, collect = TRUE, check = TRUE) {
+  read_kcn(layer = "coastlines", x = x,
+           tributaries = FALSE,
+           crs = crs, collect = collect,
+           check = check)
 }
 
-read_layer_wskey <- function(layer, x, named_only, tributaries, crs){
-
-  y <- bcdata::bcdc_query_geodata(lookup_record[[layer]], crs = crs)
-  multiple_gnis <- lookup_layer$GNIS_NAME_[lookup_layer$layer == layer]
-
-  if(tributaries){
-    cql <- paste0("FWA_WATERSHED_CODE LIKE '", wskey_to_wscode(x, layer), "-%'")
-    y <- y %>% bcdata::filter(CQL(cql))
-  } else {
-    y <- y %>% bcdata::filter(WATERSHED_KEY == x)
-  }
-
-  if(named_only){
-    if(multiple_gnis){
-      return(y %>% bcdata::filter(!is.na(GNIS_NAME_1)))
-    } else {
-      return(y %>% bcdata::filter(!is.na(GNIS_NAME)))
-    }
-  }
-  y
+#' Read from watersheds layer.
+#'
+#' @inheritParams read_kcn
+#' @return A sf object with sfc_POLYGON geometry.
+#' @examples
+#' \dontrun{
+#' fwa_read_watersheds("GRAI")
+#' }
+#' @export
+fwa_read_watersheds <- function(x = NULL, tributaries = FALSE,
+                                crs = 3005, collect = TRUE, check = TRUE) {
+  read_kcn(layer = "watersheds", x = x,
+           tributaries = tributaries,
+           crs = crs, collect = collect,
+           check = check)
 }
 
-read_layer_wsgcode <- function(layer, x, named_only, crs){
-  y <- bcdata::bcdc_query_geodata(lookup_record[[layer]], crs = crs) %>%
-    bcdata::filter(WATERSHED_GROUP_CODE %in% x)
-  multiple_gnis <- lookup_layer$GNIS_NAME_[lookup_layer$layer == layer]
+#' Read from named-watersheds layer.
+#'
+#' @param min_stream_order An integer indicating minimum STREAM_ORDER to read.
+#' @inheritParams read_gk
+#' @return A sf object with sfc_POLYGON geometry.
+#' @examples
+#' \dontrun{
+#' fwa_read_named_watersheds("GRAI")
+#' }
+#' @export
+fwa_read_named_watersheds <- function(x = NULL, tributaries = FALSE,
+                                      named_only = FALSE, min_stream_order = 1L,
+                                      crs = 3005, collect = TRUE, check = TRUE) {
+  check_integer(min_stream_order)
 
-  if(named_only){
-    if(multiple_gnis){
-      return(y %>% bcdata::filter(!is.na(GNIS_NAME_1)))
-    } else {
-      return(y %>% bcdata::filter(!is.na(GNIS_NAME)))
-    }
-  }
-  y
+  x <- read_gk(layer = "named-watersheds", x = x,
+                 named_only = named_only,
+                 tributaries = tributaries,
+                 crs = crs, collect = FALSE,
+                 check = check)
+
+  x <- x %>% bcdata::filter(STREAM_ORDER >= min_stream_order)
+
+  if(collect)
+    return(x %>% bcdata::collect())
+  x
 }
 
-read_layer_null <- function(layer, x, named_only, crs){
-  y <- bcdata::bcdc_query_geodata(lookup_record[[layer]], crs = crs)
-  multiple_gnis <- lookup_layer$GNIS_NAME_[lookup_layer$layer == layer]
-
-  if(named_only){
-    if(multiple_gnis){
-      return(y %>% filter(!is.na(GNIS_NAME_1)))
-    } else {
-      return(y %>% filter(!is.na(GNIS_NAME)))
-    }
-  }
-  y
+#' Read from manmade-waterbodies layer.
+#'
+#' @inheritParams read_gkcn
+#' @return A sf object with sfc_POLYGON geometry.
+#' @examples
+#' \dontrun{
+#' fwa_read_manmade_waterbodies("GRAI")
+#' }
+#' @export
+fwa_read_manmade_waterbodies <- function(x = NULL, tributaries = FALSE,
+                                         named_only = FALSE, crs = 3005,
+                                         collect = TRUE, check = TRUE) {
+  read_gkcn(layer = "manmade-waterbodies",
+            x = x,
+            tributaries = tributaries,
+            named_only - named_only,
+            crs = crs,
+            collect = collect,
+            check = check)
 }
+
+#' Read from obstructions layer.
+#'
+#' @inheritParams read_gkcn
+#' @return A sf object with sfc_POLYGON geometry.
+#' @examples
+#' \dontrun{
+#' fwa_read_obstructions("GRAI")
+#' }
+#' @export
+fwa_read_obstructions <- function(x = NULL, tributaries = FALSE,
+                                  named_only = FALSE, crs = 3005,
+                                  collect = TRUE, check = TRUE) {
+  read_gkcn(layer = "obstructions",
+            x = x,
+            tributaries = trinutaries,
+            named_only = named_only,
+            crs = crs,
+            collect = collect,
+            check = check)
+}
+
+#' Read from linear-boundaries layer.
+#'
+#' @inheritParams read_kcn
+#' @return A sf object with sfc_POLYGON geometry.
+#' @examples
+#' \dontrun{
+#' fwa_read_linear_boundaries("GRAI")
+#' }
+#' @export
+fwa_read_linear_boundaries <- function(x = NULL, crs = 3005,
+                                  collect = TRUE, check = TRUE) {
+  read_kcn(layer = "linear-boundaries",
+            x = x,
+            tributaries = FALSE,
+            crs = crs,
+            collect = collect,
+            check = check)
+}
+
+#' Read from lakes layer.
+#'
+#' @inheritParams read_gkcn
+#' @return A sf object with sfc_POLYGON geometry.
+#' @examples
+#' \dontrun{
+#' fwa_read_lakes("GRAI")
+#' }
+#' @export
+fwa_read_lakes <- function(x = NULL, tributaries = FALSE,
+                                  named_only = FALSE, crs = 3005,
+                                  collect = TRUE, check = TRUE) {
+  read_gkcn(layer = "lakes",
+            x = x,
+            tributaries = tributaries,
+            named_only = named_only,
+            crs = crs,
+            collect = collect,
+            check = check)
+}
+
+#' Read from rivers layer.
+#'
+#' @inheritParams read_gkcn
+#' @return A sf object with sfc_POLYGON geometry.
+#' @examples
+#' \dontrun{
+#' fwa_read_rivers("GRAI")
+#' }
+#' @export
+fwa_read_rivers <- function(x = NULL, tributaries = FALSE,
+                           named_only = FALSE, crs = 3005,
+                           collect = TRUE, check = TRUE) {
+  read_gkcn(layer = "rivers",
+            x = x,
+            tributaries = tributaries,
+            named_only = named_only,
+            crs = crs,
+            collect = collect,
+            check = check)
+}
+
+#' Read from wetlands layer.
+#'
+#' @inheritParams read_gkcn
+#' @return A sf object with sfc_POLYGON geometry.
+#' @examples
+#' \dontrun{
+#' fwa_read_wetlands("GRAI")
+#' }
+#' @export
+fwa_read_wetlands <- function(x = NULL, tributaries = FALSE,
+                           named_only = FALSE, crs = 3005,
+                           collect = TRUE, check = TRUE) {
+  read_gkcn(layer = "wetlands",
+            x = x,
+            tributaries = tributaries,
+            named_only = named_only,
+            crs = crs,
+            collect = collect,
+            check = check)
+}
+
+#' Read from glaciers layer.
+#'
+#' @inheritParams read_kcn
+#' @return A sf object with sfc_POLYGON geometry.
+#' @examples
+#' \dontrun{
+#' fwa_read_glaciers("GRAI")
+#' }
+#' @export
+fwa_read_glaciers <- function(x = NULL, crs = 3005,
+                                       collect = TRUE, check = TRUE) {
+  read_kcn(layer = "glaciers",
+           x = x,
+           tributaries = FALSE,
+           crs = crs,
+           collect = collect,
+           check = check)
+}
+
+#' Read from watershed-groups layer.
+#'
+#' @inheritParams read_cn
+#' @return A sf object with sfc_POLYGON geometry.
+#' @examples
+#' \dontrun{
+#' fwa_read_watershed_groups("GRAI")
+#' }
+#' @export
+fwa_read_watershed_groups <- function(x = NULL, crs = 3005,
+                              collect = TRUE, check = TRUE) {
+  read_cn(layer = "glaciers",
+           x = x,
+           tributaries = FALSE,
+           crs = crs,
+           collect = collect,
+           check = check)
+}
+
+
+
+
