@@ -150,10 +150,10 @@ wetlands_wskey$wetlands <- TRUE
 
 ###### ------ manmade waterbodies
 manmade_gnis <- get_gnis("FWA_MANMADE_WATERBODIES_POLY", dsn_bc, gniscols2)
-manmade_gnis$manmade <- TRUE
+manmade_gnis$`manmade-waterbodies` <- TRUE
 
 manmade_wskey <- get_wskey("FWA_MANMADE_WATERBODIES_POLY", dsn_bc, wscols1)
-manmade_wskey$manmade <- TRUE
+manmade_wskey$`manmade-waterbodies` <- TRUE
 
 ###### ------ glaciers
 glaciers_wskey <- get_wskey("FWA_GLACIERS_POLY", dsn_bc, wscols1)
