@@ -1,248 +1,255 @@
-#' Read features from FWA database layer.
-#'
-#' @param x A vector of valid WATERSHED_KEY or WATERSHED_GROUP_CODE. If NULL, entire dataset is read.
-#' @param layer A character string of valid layer name. See fwa_lookup_layer.
-#' @param crs The epsg code for the coordinate reference system. Defaults to `3005`
-#'        (B.C. Albers). See https://epsgi.io.
-#' @param ask A flag indicating whether to ask before reading entire dataset.
-#' @return A sf object.
-#' @examples
-#'\dontrun{
-#' fwa_read_layer(c("VICT", 360843586), layer = "stream-network")
-#' }
-#' @export
-fwa_read_layer <- function(x = NULL, layer = "stream-network", crs = 3005, ask = TRUE) {
-
-  check_layer(layer)
-
-  if(is.null(x)){
-    if(!ask){
-      return(all_data(layer))
-    }
-    if(yesno::yesno("This is a very large dataset. Do you want to download the entire ",
-                    layer, " layer?")){
-      return(all_data(layer))
-    }
-    return()
-  }
-
-  if(layer %in% lookup_layer$layer[!lookup_layer$WATERSHED_KEY]){
-    check_wsgcode(x)
-    return(filter_wsgcode(x, layer = layer, crs = crs))
-  }
-
-  check_wskey_wsgcode(x, layer = layer)
-  wskey <- x[is_wskey(x)]
-  wsgcode <- x[is_wsgcode(x)]
-
-  if(length(wskey) & !length(wsgcode))
-    return(filter_wskey(x, layer = layer, crs = crs))
-
-  if(length(wsgcode) & !length(wskey))
-    return(filter_wsgcode(x, layer = layer, crs = crs))
-
-  filter_both(wskey, wsgcode, layer = layer, crs = crs)
-}
-
-#' Read features from FWA database layers.
-#'
-#' @inheritParams fwa_read_layer
-#' @param layers A vector of valid character string layer names. See fwa_lookup_layer.
-#' @param remove_empty A flag indicating whether to remove list elements of layers with no data.
-#' @return A named list of sf objects.
-#' If no data available and remove_empty = FALSE, value of list element will be NULL.
-#' @examples
-#'\dontrun{
-#' fwa_read_layers(c("VICT"), layers = c("stream-network", "watersheds"), remove_empty = TRUE)
-#' }
-#' @export
-fwa_read_layers <- function(x = NULL, ask = TRUE, layers = fwa_lookup_layer, crs = 3005, remove_empty = FALSE) {
-
-  check_layers(layers)
-
-  y <- list()
-  for(i in layers){
-    z <- try(fwa_read_layer(x = x, layer = i, ask = ask, crs = crs), silent = TRUE)
-    if(inherits(y, "try-error")){
-      y[[i]] <- z
-
-    }
-  }
-
-  layers = c("a", "b")
-
-  if(is.null(x)){
-    if(!ask){
-      return(all_data(layer))
-    }
-    if(yesno::yesno("This is a very large dataset. Do you want to download the entire ",
-                    layer, " layer?")){
-      return(all_data(layer))
-    }
-    return()
-  }
-
-  if(layer %in% lookup_layer$layer[!lookup_layer$WATERSHED_KEY]){
-    check_wsgcode(x)
-    return(filter_wsgcode(x, layer = layer, crs = crs))
-  }
-
-  check_wskey_wsgcode(x, layer = layer)
-  wskey <- x[is_wskey(x)]
-  wsgcode <- x[is_wsgcode(x)]
-
-  if(length(wskey) & !length(wsgcode))
-    return(filter_wskey(x, layer = layer, crs = crs))
-
-  if(length(wsgcode) & !length(wskey))
-    return(filter_wsgcode(x, layer = layer, crs = crs))
-
-  filter_both(wskey, wsgcode, layer = layer, crs = crs)
-}
-
 #' Read from stream-network layer.
 #'
-#' @inheritParams fwa_read
+#' @param min_stream_order An integer indicating minimum STREAM_ORDER to read.
+#' @inheritParams read_gkcn
 #' @return A sf object with sfc_LINESTRING geometry.
 #' @examples
 #' \dontrun{
-#' fwa_read_stream_network(ask = FALSE)
-#' fwa_read_stream_network(c(360709847, 360843586))
+#' fwa_read_stream_network("GRAI")
 #' }
 #' @export
-fwa_read_stream_network <- function(x = NULL, ask = TRUE, crs = 3005) {
- fwa_read(x = x, ask = ask, layer = "stream-network", crs = crs)
-}
+fwa_read_stream_network <- function(x = NULL, tributaries = FALSE,
+                                    named_only = FALSE, min_stream_order = 1L,
+                                    crs = 3005, collect = TRUE, check = TRUE) {
 
-#' Read from watersheds layer.
-#'
-#' @inheritParams fwa_read
-#' @return A sf object with sfc_POLYGON geometry.
-#' @examples
-#' \dontrun{
-#' fwa_read_watersheds(c(360709847, 360843586))
-#' }
-#' @export
-fwa_read_watersheds <- function(x = NULL, ask = TRUE, crs = 3005) {
-  fwa_read(x = x, ask = ask, layer = "watersheds", crs = crs)
+  check_integer(min_stream_order)
+
+  x <- read_gkcn(layer = "stream-network", x = x,
+                 named_only = named_only,
+                 tributaries = tributaries,
+                 crs = crs, collect = FALSE,
+                 check = check)
+
+  x <- x %>% bcdata::filter(STREAM_ORDER >= min_stream_order)
+
+  if(collect)
+    return(x %>% bcdata::collect())
+  x
 }
 
 #' Read from coastlines layer.
 #'
-#' @inheritParams fwa_read
+#' @inheritParams read_kcn
 #' @return A sf object with sfc_LINESTRING geometry.
 #' @examples
 #' \dontrun{
 #' fwa_read_coastlines("GRAI")
 #' }
 #' @export
-fwa_read_coastlines <- function(x = NULL, ask = FALSE, crs = 3005) {
-  fwa_read(x = x, ask = ask, layer = "coastlines", crs = crs)
+fwa_read_coastlines <- function(x = NULL, crs = 3005, collect = TRUE, check = TRUE) {
+  read_kcn(layer = "coastlines", x = x,
+           tributaries = FALSE,
+           crs = crs, collect = collect,
+           check = check)
+}
+
+#' Read from watersheds layer.
+#'
+#' @inheritParams read_kcn
+#' @return A sf object with sfc_POLYGON geometry.
+#' @examples
+#' \dontrun{
+#' fwa_read_watersheds("GRAI")
+#' }
+#' @export
+fwa_read_watersheds <- function(x = NULL, tributaries = FALSE,
+                                crs = 3005, collect = TRUE, check = TRUE) {
+  read_kcn(layer = "watersheds", x = x,
+           tributaries = tributaries,
+           crs = crs, collect = collect,
+           check = check)
+}
+
+#' Read from named-watersheds layer.
+#'
+#' @param min_stream_order An integer indicating minimum STREAM_ORDER to read.
+#' @inheritParams fwa_gk
+#' @return A sf object with sfc_POLYGON geometry.
+#' @examples
+#' \dontrun{
+#' fwa_read_named_watersheds("GRAI")
+#' }
+#' @export
+fwa_read_named_watersheds <- function(x = NULL, tributaries = FALSE,
+                                      named_only = FALSE, min_stream_order = 1L,
+                                      crs = 3005, collect = TRUE, check = TRUE) {
+  check_integer(min_stream_order)
+
+  x <- read_gk(layer = "named-watersheds", x = x,
+                 named_only = named_only,
+                 tributaries = tributaries,
+                 crs = crs, collect = FALSE,
+                 check = check)
+
+  x <- x %>% bcdata::filter(STREAM_ORDER >= min_stream_order)
+
+  if(collect)
+    return(x %>% bcdata::collect())
+  x
+}
+
+#' Read from manmade-waterbodies layer.
+#'
+#' @inheritParams read_gkcn
+#' @return A sf object with sfc_POLYGON geometry.
+#' @examples
+#' \dontrun{
+#' fwa_read_manmade_waterbodies("GRAI")
+#' }
+#' @export
+fwa_read_manmade_waterbodies <- function(x = NULL, tributaries = FALSE,
+                                         named_only = FALSE, crs = 3005,
+                                         collect = TRUE, check = TRUE) {
+  read_gkcn(layer = "manmade-waterbodies",
+            x = x,
+            tributaries = tributaries,
+            named_only - named_only,
+            crs = crs,
+            collect = collect,
+            check = check)
 }
 
 #' Read from obstructions layer.
 #'
-#' @inheritParams fwa_read
-#' @return A sf object with sfc_POINT geometry.
+#' @inheritParams read_gkcn
+#' @return A sf object with sfc_POLYGON geometry.
 #' @examples
 #' \dontrun{
 #' fwa_read_obstructions("GRAI")
 #' }
 #' @export
-fwa_read_obstructions <- function(x = NULL, ask = FALSE, crs = 3005) {
-  fwa_read(x = x, ask = ask, layer = "obstructions", crs = crs)
+fwa_read_obstructions <- function(x = NULL, tributaries = FALSE,
+                                  named_only = FALSE, crs = 3005,
+                                  collect = TRUE, check = TRUE) {
+  read_gkcn(layer = "obstructions",
+            x = x,
+            tributaries = trinutaries,
+            named_only = named_only,
+            crs = crs,
+            collect = collect,
+            check = check)
 }
 
 #' Read from linear-boundaries layer.
 #'
-#' @inheritParams fwa_read
-#' @return A sf object with sfc_LINESTRING geometry.
+#' @inheritParams read_kcn
+#' @return A sf object with sfc_POLYGON geometry.
 #' @examples
 #' \dontrun{
 #' fwa_read_linear_boundaries("GRAI")
 #' }
 #' @export
-fwa_read_linear_boundaries <- function(x = NULL, ask = FALSE, crs = 3005) {
-  fwa_read(x = x, ask = ask, layer = "linear-boundaries", crs = crs)
+fwa_read_linear_boundaries <- function(x = NULL, crs = 3005,
+                                  collect = TRUE, check = TRUE) {
+  read_kcn(layer = "linear-boundaries",
+            x = x,
+            tributaries = FALSE,
+            crs = crs,
+            collect = collect,
+            check = check)
 }
 
 #' Read from lakes layer.
 #'
-#' @inheritParams fwa_read
+#' @inheritParams read_gkcn
 #' @return A sf object with sfc_POLYGON geometry.
 #' @examples
 #' \dontrun{
 #' fwa_read_lakes("GRAI")
 #' }
 #' @export
-fwa_read_lakes <- function(x = NULL, ask = FALSE, crs = 3005) {
-  fwa_read(x = x, ask = ask, layer = "lakes", crs = crs)
+fwa_read_lakes <- function(x = NULL, tributaries = FALSE,
+                                  named_only = FALSE, crs = 3005,
+                                  collect = TRUE, check = TRUE) {
+  read_gkcn(layer = "lakes",
+            x = x,
+            tributaries = tributaries,
+            named_only = named_only,
+            crs = crs,
+            collect = collect,
+            check = check)
 }
 
 #' Read from rivers layer.
 #'
-#' @inheritParams fwa_read
+#' @inheritParams read_gkcn
 #' @return A sf object with sfc_POLYGON geometry.
 #' @examples
 #' \dontrun{
 #' fwa_read_rivers("GRAI")
 #' }
 #' @export
-fwa_read_rivers <- function(x = NULL, ask = FALSE, crs = 3005) {
-  fwa_read(x = x, ask = ask, layer = "rivers", crs = crs)
+fwa_read_rivers <- function(x = NULL, tributaries = FALSE,
+                           named_only = FALSE, crs = 3005,
+                           collect = TRUE, check = TRUE) {
+  read_gkcn(layer = "rivers",
+            x = x,
+            tributaries = tributaries,
+            named_only = named_only,
+            crs = crs,
+            collect = collect,
+            check = check)
 }
 
 #' Read from wetlands layer.
 #'
-#' @inheritParams fwa_read
+#' @inheritParams read_gkcn
 #' @return A sf object with sfc_POLYGON geometry.
 #' @examples
 #' \dontrun{
 #' fwa_read_wetlands("GRAI")
 #' }
 #' @export
-#'
-fwa_read_wetlands <- function(x = NULL, ask = FALSE, crs = 3005) {
-  fwa_read(x = x, ask = ask, layer = "wetlands", crs = crs)
-}
-
-#' Read from manmade-waterbodies layer.
-#'
-#' @inheritParams fwa_read
-#' @return A sf object.
-#' @examples
-#' \dontrun{
-#' fwa_read_manmade_waterbodies("GRAI")
-#' }
-#' @export
-fwa_read_manmade_waterbodies <- function(x = NULL, ask = FALSE, crs = 3005) {
-  fwa_read(x = x, ask = ask, layer = "manmade-waterbodies", crs = crs)
+fwa_read_wetlands <- function(x = NULL, tributaries = FALSE,
+                           named_only = FALSE, crs = 3005,
+                           collect = TRUE, check = TRUE) {
+  read_gkcn(layer = "wetlands",
+            x = x,
+            tributaries = tributaries,
+            named_only = named_only,
+            crs = crs,
+            collect = collect,
+            check = check)
 }
 
 #' Read from glaciers layer.
 #'
-#' @param x A vector of valid WATERSHED_GROUP_CODE. If NULL, entire dataset is read.
-#' @inheritParams fwa_read
-#' @return A sf object.
+#' @inheritParams read_kcn
+#' @return A sf object with sfc_POLYGON geometry.
 #' @examples
 #' \dontrun{
 #' fwa_read_glaciers("GRAI")
 #' }
 #' @export
-fwa_read_glaciers <- function(x = NULL, ask = FALSE, crs = 3005) {
-  fwa_read(x = x, ask = ask, layer = "glaciers", crs = crs)
+fwa_read_glaciers <- function(x = NULL, crs = 3005,
+                                       collect = TRUE, check = TRUE) {
+  read_kcn(layer = "glaciers",
+           x = x,
+           tributaries = FALSE,
+           crs = crs,
+           collect = collect,
+           check = check)
 }
 
 #' Read from watershed-groups layer.
 #'
-#' @param x A vector of valid WATERSHED_GROUP_CODE. If NULL, entire dataset is read.
-#' @inheritParams fwa_read
-#' @return A sf object.
+#' @inheritParams read_cn
+#' @return A sf object with sfc_POLYGON geometry.
 #' @examples
 #' \dontrun{
 #' fwa_read_watershed_groups("GRAI")
 #' }
 #' @export
-fwa_read_watershed_groups <- function(x = NULL, ask = FALSE, crs = 3005) {
-  fwa_read(x = x, ask = ask, layer = "watershed-groups", crs = crs)
+fwa_read_watershed_groups <- function(x = NULL, crs = 3005,
+                              collect = TRUE, check = TRUE) {
+  read_cn(layer = "glaciers",
+           x = x,
+           tributaries = FALSE,
+           crs = crs,
+           collect = collect,
+           check = check)
 }
+
+
+
+

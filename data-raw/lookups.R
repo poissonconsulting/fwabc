@@ -35,6 +35,13 @@ layers <- c("stream-network", "coastlines",
 
 lookup_layer <- do.call("rbind", lapply(layers, layer_names))
 
+# glaciers and watersheds have so few GNIS it is not worth providing filter option
+lookup_layer$GNIS_NAME_[lookup_layer$layer == "watersheds"] <- FALSE
+lookup_layer$GNIS_NAME[lookup_layer$layer == "watersheds"] <- FALSE
+
+lookup_layer$GNIS_NAME_[lookup_layer$layer == "glaciers"] <- FALSE
+lookup_layer$GNIS_NAME[lookup_layer$layer == "glaciers"] <- FALSE
+
 fwa_lookup_layer <- lookup_layer
 use_data(fwa_lookup_layer, overwrite = TRUE)
 
@@ -106,9 +113,6 @@ linear_wskey$`linear-boundaries` <- TRUE
 ###### ------ watersheds
 layers <- st_layers(dsn_wsp)$name
 
-lookup_layer$GNIS_NAME_[lookup_layer$layer == "watersheds"] <- FALSE
-lookup_layer$GNIS_NAME[lookup_layer$layer == "watersheds"] <- FALSE
-
 watersheds_wskey <- get_wskey(layers, dsn_wsp, wscols1)
 watersheds_wskey$`watersheds` <- TRUE
 
@@ -152,9 +156,6 @@ manmade_wskey <- get_wskey("FWA_MANMADE_WATERBODIES_POLY", dsn_bc, wscols1)
 manmade_wskey$manmade <- TRUE
 
 ###### ------ glaciers
-lookup_layer$GNIS_NAME_[lookup_layer$layer == "glaciers"] <- FALSE
-lookup_layer$GNIS_NAME[lookup_layer$layer == "glaciers"] <- FALSE
-
 glaciers_wskey <- get_wskey("FWA_GLACIERS_POLY", dsn_bc, wscols1)
 glaciers_wskey$glaciers <- TRUE
 

@@ -25,8 +25,7 @@ check_x <- function(x, types){
   x
 }
 
-check_x_layer <- function(x, types, layer){
-  what <- what_is_it(x[1])
+check_x_layer <- function(x, what, types, layer){
   if(types == "gkcn"){
     y <- switch(what,
                 "GNIS_NAME" = x[!is_gnis(x, layer)],

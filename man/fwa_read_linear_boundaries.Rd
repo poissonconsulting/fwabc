@@ -4,10 +4,15 @@
 \alias{fwa_read_linear_boundaries}
 \title{Read from linear-boundaries layer.}
 \usage{
-fwa_read_linear_boundaries(x = NULL, ask = FALSE, crs = 3005)
+fwa_read_linear_boundaries(x = NULL, crs = 3005, collect = TRUE,
+  check = TRUE)
+}
+\arguments{
+\item{x}{A vector of valid WATERSHED_KEY, WATERSHED_GROUP_NAME or WATERSHED_GROUP_CODE.
+If NULL, entire dataset is read.}
 }
 \value{
-A sf object with sfc_LINESTRING geometry.
+A sf object with sfc_POLYGON geometry.
 }
 \description{
 Read from linear-boundaries layer.

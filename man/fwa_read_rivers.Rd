@@ -4,7 +4,24 @@
 \alias{fwa_read_rivers}
 \title{Read from rivers layer.}
 \usage{
-fwa_read_rivers(x = NULL, ask = FALSE, crs = 3005)
+fwa_read_rivers(x = NULL, tributaries = FALSE, named_only = FALSE,
+  crs = 3005, collect = TRUE, check = TRUE)
+}
+\arguments{
+\item{x}{A vector of valid GNIS_NAME, WATERSHED_KEY, WATERSHED_GROUP_NAME or WATERSHED_GROUP_CODE.
+If NULL, entire dataset is read.}
+
+\item{tributaries}{A flag indicating whether to read all tributaries in addition
+(only applicable if x is GNIS_NAME or WATERSHED_KEY).}
+
+\item{named_only}{A flag indicating whether to only include features with GNIS_NAME.}
+
+\item{crs}{The epsg code for the coordinate reference system. Defaults to `3005`
+(B.C. Albers). See https://epsgi.io.}
+
+\item{collect}{A flag indicating whether to collect result.}
+
+\item{check}{A flag indicating whether to check that x is valid.}
 }
 \value{
 A sf object with sfc_POLYGON geometry.

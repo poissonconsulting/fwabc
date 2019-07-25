@@ -4,13 +4,15 @@
 \alias{fwa_read_watershed_groups}
 \title{Read from watershed-groups layer.}
 \usage{
-fwa_read_watershed_groups(x = NULL, ask = FALSE, crs = 3005)
+fwa_read_watershed_groups(x = NULL, crs = 3005, collect = TRUE,
+  check = TRUE)
 }
 \arguments{
-\item{x}{A vector of valid WATERSHED_GROUP_CODE. If NULL, entire dataset is read.}
+\item{x}{A vector of valid WATERSHED_GROUP_NAME or WATERSHED_GROUP_CODE.
+If NULL, entire dataset is read.}
 }
 \value{
-A sf object.
+A sf object with sfc_POLYGON geometry.
 }
 \description{
 Read from watershed-groups layer.

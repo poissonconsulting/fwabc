@@ -4,13 +4,15 @@
 \alias{fwa_read_glaciers}
 \title{Read from glaciers layer.}
 \usage{
-fwa_read_glaciers(x = NULL, ask = FALSE, crs = 3005)
+fwa_read_glaciers(x = NULL, crs = 3005, collect = TRUE,
+  check = TRUE)
 }
 \arguments{
-\item{x}{A vector of valid WATERSHED_GROUP_CODE. If NULL, entire dataset is read.}
+\item{x}{A vector of valid WATERSHED_KEY, WATERSHED_GROUP_NAME or WATERSHED_GROUP_CODE.
+If NULL, entire dataset is read.}
 }
 \value{
-A sf object.
+A sf object with sfc_POLYGON geometry.
 }
 \description{
 Read from glaciers layer.

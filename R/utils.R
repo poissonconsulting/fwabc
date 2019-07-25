@@ -54,13 +54,15 @@ is_layer <- function(x){
 }
 
 ### converter functions
-wskey_to_wscode <- function(x){
-  y <- lookup_wskey$FWA_WATERSHED_CODE[lookup_wskey$WATERSHED_KEY %in% x]
+wskey_to_wscode <- function(x, layer){
+  look <- lookup_wskey[lookup_wskey[[layer]],]
+  y <- look$FWA_WATERSHED_CODE[look$WATERSHED_KEY %in% x]
   unique(gsub("-000000", "", y))
 }
 
 gnis_to_wscode <- function(x){
-  y <- lookup_gnis$FWA_WATERSHED_CODE[lookup_gnis$GNIS_NAME %in% x]
+  look <- lookup_gnis[lookup_gnis[[layer]],]
+  y <- look$FWA_WATERSHED_CODE[look$GNIS_NAME %in% x]
   unique(gsub("-000000", "", y))
 }
 
