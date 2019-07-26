@@ -203,7 +203,7 @@ lookup_wsgroup <- lookup_wskey %>%
   summarise(`stream-network` = ifelse(any(`stream-network`), TRUE, FALSE),
             `coastlines` = ifelse(any(`coastlines`), TRUE, FALSE),
             `watersheds` = ifelse(any(`watersheds`), TRUE, FALSE),
-            `manmade` = ifelse(any(`manmade`), TRUE, FALSE),
+            `manmade-waterbodies` = ifelse(any(`manmade-waterbodies`), TRUE, FALSE),
             `obstructions` = ifelse(any(`obstructions`), TRUE, FALSE),
             `linear-boundaries` = ifelse(any(`linear-boundaries`), TRUE, FALSE),
             `lakes` = ifelse(any(`lakes`), TRUE, FALSE),
