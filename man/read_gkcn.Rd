@@ -21,6 +21,10 @@ If NULL, entire dataset is read.}
 \item{collect}{A flag indicating whether to collect result.}
 
 \item{check}{A flag indicating whether to check that x is valid.}
+
+\item{input_type}{A character string of the column name to filter x by.
+If NULL, input_type is guessed. This is useful if input is
+both GNIS_NAME and WATERSHED_GROUP_NAME, e.g. 'Skagit River'.}
 }
 \description{
 Read layer from GNIS_NAME, WATERSHED_KEY, WATERSHED_GROUP_NAME or WATERSHED_GROUP_CODE

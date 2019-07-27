@@ -5,7 +5,8 @@
 \title{Read from obstructions layer.}
 \usage{
 fwa_read_obstructions(x = NULL, tributaries = FALSE,
-  named_only = FALSE, crs = 3005, collect = TRUE, check = TRUE)
+  named_only = FALSE, crs = 3005, collect = TRUE, check = TRUE,
+  input_type = NULL)
 }
 \arguments{
 \item{x}{A vector of valid GNIS_NAME, WATERSHED_KEY, WATERSHED_GROUP_NAME or WATERSHED_GROUP_CODE.
@@ -22,6 +23,10 @@ If NULL, entire dataset is read.}
 \item{collect}{A flag indicating whether to collect result.}
 
 \item{check}{A flag indicating whether to check that x is valid.}
+
+\item{input_type}{A character string of the column name to filter x by.
+If NULL, input_type is guessed. This is useful if input is
+both GNIS_NAME and WATERSHED_GROUP_NAME, e.g. 'Skagit River'.}
 }
 \value{
 A sf object with sfc_POLYGON geometry.

@@ -9,6 +9,9 @@
 #'        (B.C. Albers). See https://epsgi.io.
 #' @param collect A flag indicating whether to collect result.
 #' @param check A flag indicating whether to check that x is valid.
+#' @param input_type A character string of the column name to filter x by.
+#' If NULL, input_type is guessed. This is useful if input is
+#' both GNIS_NAME and WATERSHED_GROUP_NAME, e.g. 'Skagit River'.
 read_gkcn <- function(...){
   read(types = "gkcn", ...)
 }
@@ -41,18 +44,23 @@ read_cn <- function(...){
 }
 
 read <- function(types, layer, x, named_only = FALSE,
-                       tributaries, crs, collect, check){
+                 tributaries, crs, collect,
+                 check, input_type){
 
   check_flag(check)
   check_flag(named_only)
   check_flag(tributaries)
   check_numeric(crs)
+  check_input_type(input_type)
 
-  what <- what_is_it(x[1])
+  what <- input_type
+  if(is.null(input_type))
+    what <- what_is_it(x[1])
+
   if(check){
     if(!is.null(what)){
       check_x(x, types)
-      check_x_layer(x, what, types, layer)
+      check_x_layer(x, what, layer)
     }
   }
 
@@ -60,6 +68,8 @@ read <- function(types, layer, x, named_only = FALSE,
     what <- "WATERSHED_GROUP_CODE"
     x <- wsgname_to_wsgcode(x)
   }
+  print(x)
+  print(what)
 
   x <- switch(what,
               "GNIS_NAME" = read_gnis(layer = layer,

@@ -18,52 +18,104 @@ MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org
 Atlas](https://www2.gov.bc.ca/assets/gov/data/geographic/topography/fwa/fwa_user_guide.pdf).
 
 `fwabc` uses the [`bcdata`](https://github.com/bcgov/bcdata) package to
-query the atlas remotely. It provides convenience for common queries and
-tools to facilitate working with the data.
+query the atlas remotely. No local storage of the database is required.
+`fwabc` provides convenience for common queries and tools/lookups to
+facilitate working with the atlas.
 
-Let’s say we want to use the bcdata package to get the Fraser River
-stream-network polyline plus all its named tributaries with stream order
-\> 5.
+### Function families
 
-We could do:
+  - `fwa_read_` - read features from BC Freshwater Atlas layers.
+  - `fwa_search_` - match a regular expression to named features.
+
+### Lookup tables
+
+  - `fwa_lookup_gnis`
+  - `fwa_lookup_watershed_group`
+  - `fwa_lookup_layer`
+
+These provide resources for finding layer names, features (GNIS\_NAME,
+WATERSHED\_GROUP\_NAME, WATERSHED\_GROUP\_CODE) and which layers are
+available for given features.
+
+There are 12 variants of `fwa_read_` functions - one for each available
+layer. These functions are very similar, although arguments and
+acceptable input differ slightly due to differences in attributes.
 
 ``` r
-# frasr river stream
+# available layers
+fwa_lookup_layer
+```
+
+As an example, let’s get the stream-network feature for Fraser River.
+The `fwa_read_stream_network()` accepts a vector of valid GNIS\_NAME,
+WATERSHED\_KEY, WATERSHED\_GROUP\_CODE, or WATERSHED\_GROUP\_NAME as
+input. Use the `fwa_search_` functions if unsure about valid input.
+
+``` r
+fwa_search_gnis("fraser") 
+
+fraser <- fwa_read_stream_network("Fraser River")
+fraser
+```
+
+Now let’s get all named tributaries of the Fraser River with a stream
+order \>=
+5.
+
+``` r
+fraser_tribs <- fwa_read_stream_network("Fraser River", tributaries = TRUE, named_only = TRUE, min_stream_order = 5L)
+```
+
+The equivalent call using the `bcdata` package would be:
+
+``` r
 bcdata::bcdc_query_geodata("92344413-8035-4c08-b996-65a9b3f62fca") %>%
   bcdata::filter(CQL("FWA_WATERSHED_CODE LIKE '100-%'")) %>%
-  bcdata::filter(STREAM_ORDER > 5, !is.na(GNIS_NAME))
+  bcdata::filter(!is.na(GNIS_NAME), STREAM_ORDER >= 5L) %>%
   bcdata::collect()
 ```
 
-This requires us to know: 1. that the record id for the ‘stream-network’
-dataset is ‘92344413-8035-4c08-b996-65a9b3f62fca’; 2. that any
-tributaries of the Fraser River have FWA\_WATERSHED\_CODE starting with
-“100-”; 3. some CQL; 4. variable names in the ‘stream-network’
-dataset.
-
-With the `fwabc` package we make these queries easier by doing much of
-the work in the background and by providing functions and lookup tables
-to search for valid feature names. For example, the above can be
-accomplished with:
+Finally, let’s create a map showing a number of layers in the ‘Skagit
+River’ watershed group.
 
 ``` r
-fwa_search_gnis("fraser river") %>%
-  fwa_read_stream_network(named_only = TRUE, tributaries = TRUE, min_stream_order = 5L)
+group <- fwa_search_watershed_group("skagi|scagi")
+group
+
+# in this case, 'Skagit River' is both a GNIS_NAME and WATERSHED_GROUP_NAME,
+# so we should specify the `input_type`.
+
+stream <- fwa_read_stream_network(group, tributaries = TRUE, 
+                                  min_stream_order = 5L, 
+                                  input_type = "WATERSHED_GROUP_NAME")
+lakes <- fwa_read_lakes(group, input_type = "WATERSHED_GROUP_NAME")
+rivers <- fwa_read_rivers(group, input_type = "WATERSHED_GROUP_NAME")
+wetlands <- fwa_read_wetlands(group, input_type = "WATERSHED_GROUP_NAME")
+border <- fwa_read_watershed_groups(group, input_type = "WATERSHED_GROUP_NAME")
+
+ggplot() +
+  geom_sf(data = stream, size = 0.2) + 
+  geom_sf(data = lakes, size = 0.3, fill = "steelblue") + 
+  geom_sf(data = rivers, size = 0.3, fill = "blue") +
+  geom_sf(data = wetlands, size = 0.3, fill = "green")
+  geom_sf(data = border, size = 0.07) 
 ```
 
-If you prefer to review the result without collecting (which can take a
-long time for large requests), use the argument `collect = FALSE`.
+<!-- With the `fwabc` package we make these queries easier by doing much of the work in the background and by providing functions and lookup tables to search for valid feature names. For example, the above can be accomplished with: -->
 
-We currently provide functions for 11 datasets. Since each dataset has
-different attributes, acceptable x input and function arguments differ
-slightly for each. For example, fwa\_read\_watershed\_group() accepts
-only valid WATERSHED\_GROUP\_CODE or WATERSHED\_GROUP\_NAME as input and
-does not provide the option to get tributaries or filter by named/stream
-order.
+<!-- ```{r bcdata, eval = FALSE} -->
 
-If you are familiar with the atlas and require greater query
-flexibility, then we suggest using the fantastic `bcdata` package
-directly.
+<!-- fwa_search_gnis("fraser river") %>% -->
+
+<!--   fwa_read_stream_network(named_only = TRUE, tributaries = TRUE, min_stream_order = 5L) -->
+
+<!-- ``` -->
+
+<!-- If you prefer to review the result without collecting (which can take a long time for large requests), use the argument `collect = FALSE`. -->
+
+<!-- We currently provide functions for 11 datasets. Since each dataset has different attributes, acceptable x input and function arguments differ slightly for each. For example, fwa_read_watershed_group() accepts only valid WATERSHED_GROUP_CODE or WATERSHED_GROUP_NAME as input and does not provide the option to get tributaries or filter by named/stream order. -->
+
+<!-- If you are familiar with the atlas and require greater query flexibility, then we suggest using the fantastic `bcdata` package directly. -->
 
 ## Installation
 

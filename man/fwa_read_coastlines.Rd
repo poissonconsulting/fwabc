@@ -5,7 +5,7 @@
 \title{Read from coastlines layer.}
 \usage{
 fwa_read_coastlines(x = NULL, crs = 3005, collect = TRUE,
-  check = TRUE)
+  check = TRUE, input_type = NULL)
 }
 \arguments{
 \item{x}{A vector of valid WATERSHED_KEY, WATERSHED_GROUP_NAME or WATERSHED_GROUP_CODE.

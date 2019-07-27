@@ -6,7 +6,7 @@
 \usage{
 fwa_read_named_watersheds(x = NULL, tributaries = FALSE,
   named_only = FALSE, min_stream_order = 1L, crs = 3005,
-  collect = TRUE, check = TRUE)
+  collect = TRUE, check = TRUE, input_type = NULL)
 }
 \arguments{
 \item{x}{A vector of valid GNIS_NAME or WATERSHED_KEY.

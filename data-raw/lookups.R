@@ -220,6 +220,7 @@ lookup_wsgroup <- watershed_group %>%
   select(WATERSHED_GROUP_CODE, WATERSHED_GROUP_NAME) %>%
   st_set_geometry(NULL) %>%
   right_join(lookup_wsgroup, "WATERSHED_GROUP_CODE")
+lookup_wsgroup$`watershed-groups` <- TRUE
 
 fwa_lookup_watershed_group <- lookup_wsgroup
 fwa_lookup_gnis <- lookup_gnis

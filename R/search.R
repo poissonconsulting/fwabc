@@ -9,13 +9,16 @@
 #' fwa_search_gnis("sangan")
 #' @export
 fwa_search_gnis <- function(pattern, layer = NULL, ignore_case = TRUE, ...){
+
   check_layer(layer)
+  check_character(pattern)
+  check_flag(ignore_case)
 
   gnis <- lookup_gnis$GNIS_NAME
   if(!is.null(layer)){
     gnis <- lookup_gnis$GNIS_NAME[lookup_gnis[[layer]]]
   }
-  gnis[grepl(pattern, gnis, ignore.case = ignore_case, ...)]
+  unique(gnis[grepl(pattern, gnis, ignore.case = ignore_case, ...)])
 }
 
 #' Search valid WATERSHED_GROUP_NAME.
@@ -27,9 +30,11 @@ fwa_search_gnis <- function(pattern, layer = NULL, ignore_case = TRUE, ...){
 #' @export
 fwa_search_watershed_group <- function(pattern, layer = NULL,
                                        ignore_case = TRUE, ...){
+  check_layer(layer)
+
   wsgroup <- lookup_wsgroup$WATERSHED_GROUP_NAME
   if(!is.null(layer)){
     wsgroup <- lookup_wsgroup$WATERSHED_GROUP_NAME[lookup_wsgroup[[layer]]]
   }
-  wsgroup[grepl(pattern, wsgroup, ignore.case = ignore_case, ...)]
+  unique(wsgroup[grepl(pattern, wsgroup, ignore.case = ignore_case, ...)])
 }

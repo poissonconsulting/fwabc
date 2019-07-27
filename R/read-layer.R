@@ -10,7 +10,8 @@
 #' @export
 fwa_read_stream_network <- function(x = NULL, tributaries = FALSE,
                                     named_only = FALSE, min_stream_order = 1L,
-                                    crs = 3005, collect = TRUE, check = TRUE) {
+                                    crs = 3005, collect = TRUE,
+                                    check = TRUE, input_type = NULL) {
 
   check_integer(min_stream_order)
 
@@ -18,7 +19,8 @@ fwa_read_stream_network <- function(x = NULL, tributaries = FALSE,
                  named_only = named_only,
                  tributaries = tributaries,
                  crs = crs, collect = FALSE,
-                 check = check)
+                 check = check,
+                 input_type = input_type)
 
   x <- x %>% bcdata::filter(STREAM_ORDER >= min_stream_order)
 
@@ -36,11 +38,13 @@ fwa_read_stream_network <- function(x = NULL, tributaries = FALSE,
 #' fwa_read_coastlines("GRAI")
 #' }
 #' @export
-fwa_read_coastlines <- function(x = NULL, crs = 3005, collect = TRUE, check = TRUE) {
+fwa_read_coastlines <- function(x = NULL, crs = 3005, collect = TRUE,
+                                check = TRUE, input_type = NULL) {
   read_kcn(layer = "coastlines", x = x,
            tributaries = FALSE,
            crs = crs, collect = collect,
-           check = check)
+           check = check,
+           input_type = input_type)
 }
 
 #' Read from watersheds layer.
@@ -53,11 +57,13 @@ fwa_read_coastlines <- function(x = NULL, crs = 3005, collect = TRUE, check = TR
 #' }
 #' @export
 fwa_read_watersheds <- function(x = NULL, tributaries = FALSE,
-                                crs = 3005, collect = TRUE, check = TRUE) {
+                                crs = 3005, collect = TRUE,
+                                check = TRUE, input_type = NULL) {
   read_kcn(layer = "watersheds", x = x,
            tributaries = tributaries,
            crs = crs, collect = collect,
-           check = check)
+           check = check,
+           input_type = input_type)
 }
 
 #' Read from named-watersheds layer.
@@ -72,14 +78,16 @@ fwa_read_watersheds <- function(x = NULL, tributaries = FALSE,
 #' @export
 fwa_read_named_watersheds <- function(x = NULL, tributaries = FALSE,
                                       named_only = FALSE, min_stream_order = 1L,
-                                      crs = 3005, collect = TRUE, check = TRUE) {
+                                      crs = 3005, collect = TRUE,
+                                      check = TRUE, input_type = NULL) {
   check_integer(min_stream_order)
 
   x <- read_gk(layer = "named-watersheds", x = x,
                  named_only = named_only,
                  tributaries = tributaries,
                  crs = crs, collect = FALSE,
-                 check = check)
+                 check = check,
+               input_type = input_type)
 
   x <- x %>% bcdata::filter(STREAM_ORDER >= min_stream_order)
 
@@ -99,14 +107,16 @@ fwa_read_named_watersheds <- function(x = NULL, tributaries = FALSE,
 #' @export
 fwa_read_manmade_waterbodies <- function(x = NULL, tributaries = FALSE,
                                          named_only = FALSE, crs = 3005,
-                                         collect = TRUE, check = TRUE) {
+                                         collect = TRUE,
+                                         check = TRUE, input_type = NULL) {
   read_gkcn(layer = "manmade-waterbodies",
             x = x,
             tributaries = tributaries,
             named_only - named_only,
             crs = crs,
             collect = collect,
-            check = check)
+            check = check,
+            input_type = input_type)
 }
 
 #' Read from obstructions layer.
@@ -120,14 +130,16 @@ fwa_read_manmade_waterbodies <- function(x = NULL, tributaries = FALSE,
 #' @export
 fwa_read_obstructions <- function(x = NULL, tributaries = FALSE,
                                   named_only = FALSE, crs = 3005,
-                                  collect = TRUE, check = TRUE) {
+                                  collect = TRUE,
+                                  check = TRUE, input_type = NULL) {
   read_gkcn(layer = "obstructions",
             x = x,
             tributaries = trinutaries,
             named_only = named_only,
             crs = crs,
             collect = collect,
-            check = check)
+            check = check,
+            input_type = input_type)
 }
 
 #' Read from linear-boundaries layer.
@@ -140,13 +152,15 @@ fwa_read_obstructions <- function(x = NULL, tributaries = FALSE,
 #' }
 #' @export
 fwa_read_linear_boundaries <- function(x = NULL, crs = 3005,
-                                  collect = TRUE, check = TRUE) {
+                                  collect = TRUE,
+                                  check = TRUE, input_type = NULL) {
   read_kcn(layer = "linear-boundaries",
             x = x,
             tributaries = FALSE,
             crs = crs,
             collect = collect,
-            check = check)
+            check = check,
+           input_type = input_type)
 }
 
 #' Read from lakes layer.
@@ -159,15 +173,17 @@ fwa_read_linear_boundaries <- function(x = NULL, crs = 3005,
 #' }
 #' @export
 fwa_read_lakes <- function(x = NULL, tributaries = FALSE,
-                                  named_only = FALSE, crs = 3005,
-                                  collect = TRUE, check = TRUE) {
+                           named_only = FALSE, crs = 3005,
+                           collect = TRUE,
+                           check = TRUE, input_type = NULL) {
   read_gkcn(layer = "lakes",
             x = x,
             tributaries = tributaries,
             named_only = named_only,
             crs = crs,
             collect = collect,
-            check = check)
+            check = check,
+            input_type = input_type)
 }
 
 #' Read from rivers layer.
@@ -181,14 +197,16 @@ fwa_read_lakes <- function(x = NULL, tributaries = FALSE,
 #' @export
 fwa_read_rivers <- function(x = NULL, tributaries = FALSE,
                            named_only = FALSE, crs = 3005,
-                           collect = TRUE, check = TRUE) {
+                           collect = TRUE,
+                           check = TRUE, input_type = NULL) {
   read_gkcn(layer = "rivers",
             x = x,
             tributaries = tributaries,
             named_only = named_only,
             crs = crs,
             collect = collect,
-            check = check)
+            check = check,
+            input_type = input_type)
 }
 
 #' Read from wetlands layer.
@@ -202,14 +220,16 @@ fwa_read_rivers <- function(x = NULL, tributaries = FALSE,
 #' @export
 fwa_read_wetlands <- function(x = NULL, tributaries = FALSE,
                            named_only = FALSE, crs = 3005,
-                           collect = TRUE, check = TRUE) {
+                           collect = TRUE,
+                           check = TRUE, input_type = NULL) {
   read_gkcn(layer = "wetlands",
             x = x,
             tributaries = tributaries,
             named_only = named_only,
             crs = crs,
             collect = collect,
-            check = check)
+            check = check,
+            input_type = input_type)
 }
 
 #' Read from glaciers layer.
@@ -222,13 +242,15 @@ fwa_read_wetlands <- function(x = NULL, tributaries = FALSE,
 #' }
 #' @export
 fwa_read_glaciers <- function(x = NULL, crs = 3005,
-                                       collect = TRUE, check = TRUE) {
+                              collect = TRUE,
+                              check = TRUE, input_type = NULL) {
   read_kcn(layer = "glaciers",
            x = x,
            tributaries = FALSE,
            crs = crs,
            collect = collect,
-           check = check)
+           check = check,
+           input_type = input_type)
 }
 
 #' Read from watershed-groups layer.
@@ -241,13 +263,15 @@ fwa_read_glaciers <- function(x = NULL, crs = 3005,
 #' }
 #' @export
 fwa_read_watershed_groups <- function(x = NULL, crs = 3005,
-                              collect = TRUE, check = TRUE) {
-  read_cn(layer = "glaciers",
+                              collect = TRUE,
+                              check = TRUE, input_type = NULL) {
+  read_cn(layer = "watershed-groups",
            x = x,
            tributaries = FALSE,
            crs = crs,
            collect = collect,
-           check = check)
+           check = check,
+          input_type = input_type)
 }
 
 
