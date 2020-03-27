@@ -4,9 +4,16 @@
 \alias{fwa_read_stream_network}
 \title{Read from stream-network layer.}
 \usage{
-fwa_read_stream_network(x = NULL, tributaries = FALSE,
-  named_only = FALSE, min_stream_order = 1L, crs = 3005,
-  collect = TRUE, check = TRUE, input_type = NULL)
+fwa_read_stream_network(
+  x = NULL,
+  tributaries = FALSE,
+  named_only = FALSE,
+  min_stream_order = 1L,
+  crs = 3005,
+  collect = TRUE,
+  check = TRUE,
+  input_type = NULL
+)
 }
 \arguments{
 \item{x}{A vector of valid GNIS_NAME, WATERSHED_KEY, WATERSHED_GROUP_NAME or WATERSHED_GROUP_CODE.

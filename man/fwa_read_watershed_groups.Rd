@@ -4,8 +4,13 @@
 \alias{fwa_read_watershed_groups}
 \title{Read from watershed-groups layer.}
 \usage{
-fwa_read_watershed_groups(x = NULL, crs = 3005, collect = TRUE,
-  check = TRUE, input_type = NULL)
+fwa_read_watershed_groups(
+  x = NULL,
+  crs = 3005,
+  collect = TRUE,
+  check = TRUE,
+  input_type = NULL
+)
 }
 \arguments{
 \item{x}{A vector of valid WATERSHED_GROUP_NAME or WATERSHED_GROUP_CODE.

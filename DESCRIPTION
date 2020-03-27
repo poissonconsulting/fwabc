@@ -22,4 +22,4 @@ Suggests:
     testthat
 Remotes:
     bcgov/bcdata
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
