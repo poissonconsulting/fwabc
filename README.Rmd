@@ -20,6 +20,8 @@ knitr::opts_chunk$set(
 
 # fwabc
 
+#### ***** This package is no longer being maintained - switched to [fwapgr](https://github.com/poissonconsulting/fwapgr) *****
+
 `fwabc` is an R package to read data from the [BC Freshwater Atlas](https://www2.gov.bc.ca/assets/gov/data/geographic/topography/fwa/fwa_user_guide.pdf). 
 
 `fwabc` uses the [`bcdata`](https://github.com/bcgov/bcdata) package to query the atlas remotely. No local storage of the database is required. `fwabc` provides convenience for common queries and tools/lookups to facilitate working with the atlas.

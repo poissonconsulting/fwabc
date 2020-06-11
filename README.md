@@ -14,6 +14,8 @@ MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org
 
 # fwabc
 
+#### \*\*\*\*\* This package is no longer being maintained - switched to [fwapgr](https://github.com/poissonconsulting/fwapgr) \*\*\*\*\*
+
 `fwabc` is an R package to read data from the [BC Freshwater
 Atlas](https://www2.gov.bc.ca/assets/gov/data/geographic/topography/fwa/fwa_user_guide.pdf).
 
@@ -59,8 +61,7 @@ fraser
 ```
 
 Now let’s get all named tributaries of the Fraser River with a stream
-order \>=
-5.
+order \>= 5.
 
 ``` r
 fraser_tribs <- fwa_read_stream_network("Fraser River", tributaries = TRUE, named_only = TRUE, min_stream_order = 5L)
